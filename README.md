@@ -36,4 +36,4 @@ gcc -o some src/* -Iinclude $(sdl2-config --cflags --libs) -lSDL2_image -lSDL2_t
 René Horstmann
 
 ## Licence
-This project is licensed under the MIT License - see the LICENSE file for details
+This project is licensed under the MIT License - see the someLICENSE file for details
