@@ -1,5 +1,5 @@
-#ifndef PIXELC_CANVAS_CAMERA_H
-#define PIXELC_CANVAS_CAMERA_H
+#ifndef SOME_CAMERA_H
+#define SOME_CAMERA_H
 
 /*
  * PixelPerfect canvas camera with view matrix.
@@ -57,4 +57,4 @@ void camera_set_size(float size);
 
 void camera_set_angle(float alpha);
 
-#endif //PIXELC_CANVAS_CAMERA_H
+#endif //SOME_CAMERA_H
