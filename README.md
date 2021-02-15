@@ -9,7 +9,7 @@ Fork this repo and have fun
 e_* is for window and environment management, like window, input, sdl stuff...
 
 ## r
-r_* is dor OpenGL rendering
+r_* is for OpenGL rendering
 
 ## u
 Utilities like setting up a 2D pose
