@@ -57,7 +57,7 @@ static void main_loop(float delta_time) {
     static float val = 10;
     e_gui_wnd_float_attribute("val", &val, 0, 100, 5);
     char buf[128];
-    sprintf(buf, "Hello World\nval=%.1f", val);
+    sprintf(buf, "Hello World\nval=%5.1f", val);
     r_ro_text_set_text(&text, buf);
     r_ro_text_render(&text);
     //
