@@ -1,3 +1,4 @@
+
 #include "e/e.h"
 #include "r/r.h"
 #include "u/u.h"
@@ -35,7 +36,6 @@ int main(int argc, char **argv) {
     // see u/pose.h, sets a mat4 transformation pose
     u_pose_set_xy(&text.pose, camera_left() + 20, 0);
     //
-    
 
     e_window_main_loop(main_loop);
 
