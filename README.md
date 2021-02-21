@@ -1,9 +1,13 @@
 # some
 Sdl2 OpenGl Mini Engine.
 
-
 ## Getting started
 Fork this repo and have fun
+
+## Example Apps
+- [Pixelc](https://github.com/renehorstmann/Pixelc): A pixel art editor.
+- [Tilec](https://github.com/renehorstmann/Tilec): A tile map editor.
+- [JumpHare](https://github.com/renehorstmann/JumpHare): Platformer game.
 
 ## e
 e_* is for window and environment management, like window, input, sdl stuff...
