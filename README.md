@@ -42,6 +42,6 @@ René Horstmann
 ## Licence
 This project is licensed under the MIT License - see the someLICENSE file for details
 
-- Used Libraries:
-  - [SDL2](https://www.libsdl.org/)
-  - [nuklear](https://github.com/Immediate-Mode-UI/Nuklear) for debug gui windows
+- Used third party libraries:
+  - [SDL2](https://www.libsdl.org/) (zlib License)
+  - [nuklear](https://github.com/Immediate-Mode-UI/Nuklear) for debug gui windows (MIT Licence)
