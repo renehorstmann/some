@@ -11,7 +11,7 @@ Fork this repo and have fun
 
 ## e
 e_* is for window and environment management, like window, input, sdl stuff...
-
+- e_gui: [nuklear](https://github.com/Immediate-Mode-UI/Nuklear) based debug gui
 ## r
 r_* is for OpenGL rendering
 
@@ -41,3 +41,7 @@ René Horstmann
 
 ## Licence
 This project is licensed under the MIT License - see the someLICENSE file for details
+
+- Used Libraries:
+  - [SDL2](https://www.libsdl.org/)
+  - [nuklear](https://github.com/Immediate-Mode-UI/Nuklear) for debug gui windows
