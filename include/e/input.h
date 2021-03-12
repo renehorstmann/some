@@ -54,7 +54,13 @@ void e_input_update();
 // registers a callback for mouse and touch
 void e_input_register_pointer_event(ePointerEventFn event, void *user_data);
 
+// unregisters a callback
+void e_input_unregister_pointer_event(ePointerEventFn event_to_unregister);
+
 // registers a callback for mouse wheel
 void e_input_register_wheel_event(eWheelEventFn event, void *user_data);
+
+// unregisters a callback
+void e_input_unregister_wheel_event(eWheelEventFn event_to_unregister);
 
 #endif //E_INPUT_H
