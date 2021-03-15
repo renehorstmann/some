@@ -9,9 +9,16 @@
 // 'r'ender 'R'ender'o'bject 
 // renders text via rRoBatch
 static rRoText text;
+
+// will be called on mouse or touch events
+static void on_pointer_callback(ePointer_s pointer, void *ud) {
+    if(pointer.action == E_POINTER_DOWN)
+        printf("clicked at x=%f, y=%f\n", pointer.pos.x, pointer.pos.y);
+}
 //
 
 static void main_loop(float delta_time);
+
 
 
 int main(int argc, char **argv) {
@@ -34,6 +41,9 @@ int main(int argc, char **argv) {
     r_ro_text_init_font55(&text, 128, camera.gl);
     // see u/pose.h, sets a mat4 transformation pose
     u_pose_set_xy(&text.pose, camera_left() + 20, 0);
+
+    // setup a pointer listener
+    e_input_register_pointer_event(on_pointer_callback, NULL);
     //
 
     e_window_main_loop(main_loop);
@@ -47,7 +57,6 @@ int main(int argc, char **argv) {
 static void main_loop(float delta_time) {
     // e updates
     e_input_update();
-    
 
     // simulate
     camera_update();
@@ -63,7 +72,7 @@ static void main_loop(float delta_time) {
     // min, max, step
     e_gui_wnd_float_attribute("val", &val, 0, 100, 5);
     char buf[128];
-    sprintf(buf, "Hello World\nval=%5.1f\n", val);
+    sprintf(buf, "Hello World\nval=%5.1f\nspace pressed: %i", val, e_input.keys.space);
     // rRoText methods: set text, render
     r_ro_text_set_text(&text, buf);
     r_ro_text_render(&text);

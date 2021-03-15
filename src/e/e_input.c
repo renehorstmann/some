@@ -55,7 +55,6 @@ static ePointer_s pointer_finger(enum ePointerAction action, float x, float y, i
 
 static void input_handle_pointer(SDL_Event *event) {
     switch (event->type) {
-#ifdef GLES
         case SDL_FINGERDOWN: {
             ePointer_s action = pointer_finger(E_POINTER_DOWN,
                                               event->tfinger.x, event->tfinger.y, event->tfinger.fingerId);
@@ -77,7 +76,6 @@ static void input_handle_pointer(SDL_Event *event) {
                 L.reg_pointer_e[i].cb(action, L.reg_pointer_e[i].ud);
         }
             break;
-#else
         case SDL_MOUSEBUTTONDOWN: {
             if(event->button.button<=0 || event->button.button>3)
                 break;
@@ -104,7 +102,6 @@ static void input_handle_pointer(SDL_Event *event) {
                 L.reg_pointer_e[i].cb(action, L.reg_pointer_e[i].ud);
         }
             break;
-#endif
     }
 }
 
@@ -145,7 +142,6 @@ static void input_handle_keys(SDL_Event *event) {
 }
 
 
-#ifdef GLES
 static void input_handle_sensors(SDL_Event *event) {
     SDL_Sensor *sensor = SDL_SensorFromInstanceID(event->sensor.which);
     if (!sensor
@@ -160,11 +156,8 @@ static void input_handle_sensors(SDL_Event *event) {
     //SDL_Log("Gyro update: %.2f, %.2f, %.2f\n", data[0], data[1], data[2]);
       
 }
-#endif
 
 void e_input_init() {
-
-#ifdef GLES
     int num_sensors = SDL_NumSensors();
     bool accel_opened = false;
     for(int i=0; i<num_sensors; i++) {
@@ -180,7 +173,6 @@ void e_input_init() {
     e_input.accel_active = accel_opened;
     if(accel_opened)
         SDL_Log("Opened acceleration sensor");
-#endif
 }
 
 void e_input_update() {
@@ -209,11 +201,9 @@ void e_input_update() {
             case SDL_KEYUP:
                 input_handle_keys(&event);
                 break;
-#ifdef GLES
-                case SDL_SENSORUPDATE:
-                    input_handle_sensors(&event);
-                    break;
-#endif
+            case SDL_SENSORUPDATE:
+                input_handle_sensors(&event);
+                break;
         }
     }
 
