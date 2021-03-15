@@ -154,4 +154,5 @@ cmake.check_cache
 C.includecache
 
 ## some specific
+web/
 some
