@@ -13,7 +13,7 @@ static rRoText text;
 // will be called on mouse or touch events
 static void on_pointer_callback(ePointer_s pointer, void *ud) {
     if(pointer.action == E_POINTER_DOWN)
-        printf("clicked at x=%f, y=%f\n", pointer.pos.x, pointer.pos.y);
+        printf("clicked at x=%f, y=%f, is touch: %i\n", pointer.pos.x, pointer.pos.y, e_input.is_touch);
 }
 //
 

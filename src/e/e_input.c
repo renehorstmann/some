@@ -53,7 +53,7 @@ static ePointer_s pointer_finger(enum ePointerAction action, float x, float y, i
     return res;
 }
 
-static void input_handle_pointer(SDL_Event *event) {
+static void input_handle_pointer_touch(SDL_Event *event) {
     switch (event->type) {
         case SDL_FINGERDOWN: {
             ePointer_s action = pointer_finger(E_POINTER_DOWN,
@@ -76,7 +76,11 @@ static void input_handle_pointer(SDL_Event *event) {
                 L.reg_pointer_e[i].cb(action, L.reg_pointer_e[i].ud);
         }
             break;
-#ifndef IS_ANDROID_OS
+    }
+}
+
+static void input_handle_pointer_mouse(SDL_Event *event) {
+    switch (event->type) {
         case SDL_MOUSEBUTTONDOWN: {
             if (event->button.button <= 0 || event->button.button > 3)
                 break;
@@ -103,7 +107,6 @@ static void input_handle_pointer(SDL_Event *event) {
                 L.reg_pointer_e[i].cb(action, L.reg_pointer_e[i].ud);
         }
             break;
-#endif
     }
 }
 
@@ -160,6 +163,9 @@ static void input_handle_sensors(SDL_Event *event) {
 }
 
 void e_input_init() {
+    e_input.is_touch = SDL_GetNumTouchDevices() > 0;
+    SDL_Log("Has touch input: %i", e_input.is_touch);
+
     int num_sensors = SDL_NumSensors();
     bool accel_opened = false;
     for (int i = 0; i < num_sensors; i++) {
@@ -179,6 +185,9 @@ void e_input_init() {
 
 void e_input_update() {
     if (e_gui.ctx) nk_input_begin(e_gui.ctx);
+
+    void (*input_handle_pointer)(SDL_Event *event) = e_input.is_touch?
+            input_handle_pointer_touch : input_handle_pointer_mouse;
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
