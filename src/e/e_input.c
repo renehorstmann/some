@@ -103,8 +103,8 @@ static void input_handle_pointer(SDL_Event *event) {
                 L.reg_pointer_e[i].cb(action, L.reg_pointer_e[i].ud);
         }
             break;
-    }
 #endif
+    }
 }
 
 static void input_handle_wheel(SDL_Event *event) {
