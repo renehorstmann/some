@@ -4,6 +4,7 @@ project(some C)
 # Optional definitions set:
 # USING_GLES        for OpenGLES3.0 instead of OpenGL3.3
 # USING_GLEW        if GLEW is available
+# USING_GYRO        if gyro sensor is available
 # IS_ANDROID_OS     for Android
 
 set(CMAKE_C_STANDARD 11)
@@ -36,6 +37,7 @@ elseif (GLES_LIB)
     message("GLES found: Mobile mode")
     add_definitions(-DUSING_GLES)
     add_definitions(-DUSING_TOUCH)
+    add_definitions(-DUSING_GYRO)
     add_definitions(-DIS_ANDROID_OS)
     add_definitions(-DMATHC_NO_PRINT_COLOR)
     target_link_libraries(some ${GLES_LIB})
