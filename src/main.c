@@ -9,11 +9,15 @@
 // 'r'ender 'R'ender'o'bject 
 // renders text via rRoBatch
 static rRoText text;
+// stores the last pressed mouse click / touch to render with rRoText text
+static ePointer_s last_click;
 
 // will be called on mouse or touch events
 static void on_pointer_callback(ePointer_s pointer, void *ud) {
-    if(pointer.action == E_POINTER_DOWN)
-        printf("clicked at x=%f, y=%f, is touch: %i\n", pointer.pos.x, pointer.pos.y, e_input.is_touch);
+    if(pointer.action != E_POINTER_DOWN)
+        return;
+    last_click = pointer;
+    printf("clicked at x=%f, y=%f, id=%i, is touch: %i\n", pointer.pos.x, pointer.pos.y, pointer.id, e_input.is_touch);
 }
 //
 
@@ -34,7 +38,9 @@ int main(int argc, char **argv) {
 
     // init systems
     camera_init();
-    
+
+
+    printf("touch devices: %i\n", SDL_GetNumTouchDevices());
     // example code
     // class init of rRoText
     // rRoText *self, int max_chars, const float *camera_vp_matrix
@@ -72,7 +78,8 @@ static void main_loop(float delta_time) {
     // min, max, step
     e_gui_wnd_float_attribute("val", &val, 0, 100, 5);
     char buf[128];
-    sprintf(buf, "Hello World\nval=%5.1f\nspace pressed: %i", val, e_input.keys.space);
+    sprintf(buf, "Hello World\nval=%5.1f\nspace pressed: %i\nid=%i x=%.2f y=%.2f",
+            val, e_input.keys.space, last_click.id, last_click.pos.x, last_click.pos.y);
     // rRoText methods: set text, render
     r_ro_text_set_text(&text, buf);
     r_ro_text_render(&text);

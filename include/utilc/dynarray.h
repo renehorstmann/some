@@ -18,9 +18,9 @@
  * Kill it with <fn_name>_kill;
  * <fn_name>_set_capacity sets the internal capacity. If realloc fails, nothing changes.
  * <fn_name>_resize sets the array size and may set capacity with size*2.
- * <fn_name>_push copies an item to the end of the array (copies to the last element).
- * <fn_name>_append creates an item at the end and returns its pointer (returns the last element).
- * <fn_name>_pop returns a copy of the last item and removes it from the array.
+ * <fn_name>_push copies an item to the end of the array (copies to the last_click element).
+ * <fn_name>_append creates an item at the end and returns its pointer (returns the last_click element).
+ * <fn_name>_pop returns a copy of the last_click item and removes it from the array.
  */
 #define DynArray(type, class_name, fn_name) \
 typedef struct { \
@@ -75,9 +75,9 @@ static type fn_name ## _pop(class_name *self) { \
  * Kill it with <fn_name>_kill;
  * <fn_name>_set_capacity sets the internal capacity. If realloc fails, nothing changes.
  * <fn_name>_resize sets the array size and may set capacity with size*2.
- * <fn_name>_push copies an item to the end of the array (copies to the last element).
- * <fn_name>_append creates an item at the end and returns its pointer (returns the last element).
- * <fn_name>_pop returns a copy of the last item and removes it from the array.
+ * <fn_name>_push copies an item to the end of the array (copies to the last_click element).
+ * <fn_name>_append creates an item at the end and returns its pointer (returns the last_click element).
+ * <fn_name>_pop returns a copy of the last_click item and removes it from the array.
  */
 #define DynArrayTry(type, class_name, fn_name) \
 typedef struct { \
@@ -140,7 +140,7 @@ static type fn_name ## _pop(class_name *self) { \
  * Kill it with <fn_name>_kill;
  * <fn_name>_set_capacity sets the internal capacity. If realloc fails, nothing changes.
  * <fn_name>_resize sets the array size and may set capacity with size*2.
- * <fn_name>_append creates an item at the end and returns its pointer (returns the last element).
+ * <fn_name>_append creates an item at the end and returns its pointer (returns the last_click element).
  */
 #define DynArrayWithoutCopy(type, class_name, fn_name) \
 typedef struct { \
@@ -183,7 +183,7 @@ static type *fn_name ## _append(class_name *self) { \
  * Kill it with <fn_name>_kill;
  * <fn_name>_set_capacity sets the internal capacity. If realloc fails, nothing changes.
  * <fn_name>_resize sets the array size and may set capacity with size*2.
- * <fn_name>_append creates an item at the end and returns its pointer (returns the last element).
+ * <fn_name>_append creates an item at the end and returns its pointer (returns the last_click element).
  */
 #define DynArrayTryWithoutCopy(type, class_name, fn_name) \
 typedef struct { \

@@ -162,7 +162,7 @@ static int sv_find_first(strviu viu, char find) {
     return -1;
 }
 
-/** @returns: The index of the last found char find in viu, or -1 if nothing found */
+/** @returns: The index of the last_click found char find in viu, or -1 if nothing found */
 static int sv_find_last(strviu viu, char find) {
     int n = (int) sv_length(viu) - 1;
     if (find == ' ') {
@@ -193,7 +193,7 @@ static int sv_find_first_sv(strviu viu, strviu find) {
     return -1;
 }
 
-/** @returns: The index of the last found StrViu find in viu, or -1 if nothing found */
+/** @returns: The index of the last_click found StrViu find in viu, or -1 if nothing found */
 static int sv_find_last_sv(strviu viu, strviu find) {
     int find_len = sv_length(find);
     viu.end -= find_len;
@@ -211,7 +211,7 @@ static int sv_find_first_cstring(strviu viu, const char *find) {
     return sv_find_first_sv(viu, ToStrViu(find));
 }
 
-/** @returns: The index of the last found cstring find in viu, or -1 if nothing found */
+/** @returns: The index of the last_click found cstring find in viu, or -1 if nothing found */
 static int sv_find_last_cstring(strviu viu, const char *find) {
     return sv_find_last_sv(viu, ToStrViu(find));
 }
@@ -230,7 +230,7 @@ static int sv_find_first_multiple(strviu viu, const char *multiple_chars) {
     return -1;
 }
 
-/** @returns: The index of the last found char of multiple_chars in viu, or -1 if nothing found */
+/** @returns: The index of the last_click found char of multiple_chars in viu, or -1 if nothing found */
 static int sv_find_last_multiple(strviu viu, const char *multiple_chars) {
     int n = (int) sv_length(viu) - 1;
     while (--viu.end >= viu.begin) {
