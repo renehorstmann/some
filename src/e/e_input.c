@@ -188,10 +188,12 @@ EM_BOOL touch_callback_func(int type, const EmscriptenTouchEvent *event, void *u
             action = E_POINTER_UP;
     }
     for(int i=0; i<event->numTouches; i++) {
-        float x = event->touches[i].targetX;
-        float y = event->touches[i].targetY;
-        int id = event->touches[i].identifier;
-        L.emscripten_pointer_stack[L.emscripten_pointer_stack_size++] = pointer_emscripten_touch(action, x, y, id);
+        if(event->touches[i].isChanged) {
+            float x = event->touches[i].targetX;
+            float y = event->touches[i].targetY;
+            int id = event->touches[i].identifier;
+            L.emscripten_pointer_stack[L.emscripten_pointer_stack_size++] = pointer_emscripten_touch(action, x, y, id);
+        }
     }
     return true;
 }
