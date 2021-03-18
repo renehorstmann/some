@@ -135,9 +135,6 @@ void r_ro_particle_init(rRoParticle *self, int num, const float *vp, GLuint tex_
                                   (void *) offsetof(rParticleRect_s, uv_step));
             glVertexAttribDivisor(loc_uv_step_and_time, 1);
 
-            // uv_time
-            assert(offsetof(rParticleRect_s, uv_time) - offsetof(rParticleRect_s, uv_step) == 2);
-
             // start_time
             glEnableVertexAttribArray(loc_start_time);
             glVertexAttribPointer(loc_start_time, 1, GL_FLOAT, GL_FALSE,
