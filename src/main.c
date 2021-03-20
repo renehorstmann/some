@@ -74,14 +74,17 @@ int main(int argc, char **argv) {
 
 static void main_loop(float delta_time) {
     static int cnt = 0;
-    float time = 0;
+    static float time = 0;
     cnt++;
     time+=delta_time;
-    if(time>=2) {
+    if(time>=2.0) {
     	printf("fps: %f\n", cnt / time);
     	cnt = 0;
     	time = 0;
     }
+    
+    SDL_Delay(1);
+    
     /*
     // e updates
     e_input_update();
