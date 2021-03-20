@@ -26,17 +26,6 @@ static void main_loop(float delta_time);
 
 
 int main(int argc, char **argv) {
-    puts("Hallo");
-    e_window_init("ioS(HIT)_test");
-    puts("Nick");
-    e_input_init();
-    puts("Guten Morgen!");
-    
-    e_window_main_loop(main_loop);
-    puts("hmmm?");
-    return 0;
-    
-    /*
     SDL_Log("some");
 
     // init e (environment)
@@ -68,24 +57,10 @@ int main(int argc, char **argv) {
     e_gui_kill();
     
     return 0;
-    */
 }
 
 
 static void main_loop(float delta_time) {
-    static int cnt = 0;
-    static float time = 0;
-    cnt++;
-    time+=delta_time;
-    if(time>=2.0) {
-    	printf("fps: %f\n", cnt / time);
-    	cnt = 0;
-    	time = 0;
-    }
-    
-    SDL_Delay(1);
-    
-    /*
     // e updates
     e_input_update();
 
@@ -119,7 +94,6 @@ static void main_loop(float delta_time) {
 
     // check for opengl errors:
     r_render_error_check();
-    */
 }
 
 
