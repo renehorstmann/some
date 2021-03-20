@@ -27,12 +27,12 @@ static void main_loop(float delta_time);
 
 int main(int argc, char **argv) {
     puts("Hallo");
-    e_window_init("ioS(HIT)_test");
+    //e_window_init("ioS(HIT)_test");
     puts("Nick");
-    e_input_init();
+    //e_input_init();
     puts("Guten Morgen!");
     
-    e_window_main_loop(main_loop);
+    //e_window_main_loop(main_loop);
     puts("hmmm?");
     return 0;
     
