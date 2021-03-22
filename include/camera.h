@@ -35,8 +35,11 @@ void camera_update();
 float camera_real_pixel_per_pixel();
 
 float camera_left();
+
 float camera_right();
+
 float camera_bottom();
+
 float camera_top();
 
 static float camera_width() {

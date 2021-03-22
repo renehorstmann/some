@@ -34,7 +34,7 @@ void r_ro_single_init(rRoSingle *self, const float *vp, GLuint tex_sink) {
 void r_ro_single_kill(rRoSingle *self) {
     glDeleteProgram(self->program);
     glDeleteVertexArrays(1, &self->vao);
-    if(self->owns_tex)
+    if (self->owns_tex)
         glDeleteTextures(1, &self->tex);
     *self = (rRoSingle) {0};
 }
@@ -65,7 +65,7 @@ void r_ro_single_render(rRoSingle *self) {
 }
 
 void r_ro_single_set_texture(rRoSingle *self, GLuint tex_sink) {
-    if(self->owns_tex)
+    if (self->owns_tex)
         glDeleteTextures(1, &self->tex);
     self->tex = tex_sink;
 }

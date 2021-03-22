@@ -129,7 +129,7 @@ GLuint r_shader_compile_from_file(const char *file) {
 
 GLuint r_shader_compile_glsl_from_files(char **files) {
     int n = -1;
-    while(files[++n]);
+    while (files[++n]);
 
     GLuint program = 0;
     GLuint shaders[n];
@@ -179,7 +179,7 @@ void r_shader_validate(GLuint program) {
 
     GLint status;
     glGetProgramiv(program, GL_VALIDATE_STATUS, &status);
-    if(status == GL_FALSE) {
+    if (status == GL_FALSE) {
         int log_len;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_len);
 

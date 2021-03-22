@@ -28,7 +28,7 @@ void camera_init() {
     camera.matrices.p_inv = mat4_eye();
     camera.matrices.vp = mat4_eye();
     camera.matrices.v_p_inv = mat4_eye();
-    
+
     camera_update();
 }
 
@@ -66,12 +66,15 @@ float camera_real_pixel_per_pixel() {
 float camera_left() {
     return L.left;
 }
+
 float camera_right() {
     return L.right;
 }
+
 float camera_bottom() {
     return L.bottom;
 }
+
 float camera_top() {
     return L.top;
 }
@@ -81,7 +84,7 @@ void camera_set_pos(float x, float y) {
 }
 
 void camera_set_size(float size) {
-	u_pose_set_size(&camera.matrices.v, size, size);
+    u_pose_set_size(&camera.matrices.v, size, size);
 }
 
 void camera_set_angle(float alpha) {
