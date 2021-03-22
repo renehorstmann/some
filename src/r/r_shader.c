@@ -121,6 +121,8 @@ GLuint r_compile_shader_from_file(const char *file) {
     strcpy(shader, shader_begin);
     strcat(shader, src);
 
+    printf("compiling shader: %s\ncode:\n", file);
+    puts(src);
 
     GLint out = r_compile_shader(type, shader);
     free(src);

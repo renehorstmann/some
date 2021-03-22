@@ -43,39 +43,47 @@ void r_ro_single_kill(rRoSingle *self) {
 #include "r/render.h"
 
 void r_ro_single_render(rRoSingle *self) {
-    printf("program id: %i\n", self->program);
     glUseProgram(self->program);
+
+    GLint loc;
+
+    loc = glGetUniformLocation(self->program, "pose");
+    printf("uniforms pose loc: %i\n", loc);
+    r_render_error_check();
+    puts("set");
+    glUniformMatrix4fv(loc, 1, GL_FALSE, &self->rect.pose.m00);
     r_render_error_check();
 
-    puts("uniforms...");
-    glUniformMatrix4fv(glGetUniformLocation(self->program, "pose"),
-                       1, GL_FALSE, &self->rect.pose.m00);
 
-    glUniformMatrix4fv(glGetUniformLocation(self->program, "vp"),
-                       1, GL_FALSE, self->vp);
-
-    glUniformMatrix4fv(glGetUniformLocation(self->program, "uv"),
-                       1, GL_FALSE, &self->rect.uv.m00);
-
-    glUniform4fv(glGetUniformLocation(self->program, "color"),
-                       1, &self->rect.color.v0);
-
+    loc = glGetUniformLocation(self->program, "vp");
+    printf("uniforms vp loc: %i\n", loc);
+    r_render_error_check();
+    puts("set");
+    glUniformMatrix4fv(loc, 1, GL_FALSE, self->vp);
     r_render_error_check();
 
-    puts("texture...");
+    loc = glGetUniformLocation(self->program, "uv");
+    printf("uniforms uv loc: %i\n", loc);
+    r_render_error_check();
+    puts("set");
+    glUniformMatrix4fv(loc, 1, GL_FALSE, &self->rect.uv.m00);
+    r_render_error_check();
+
+    loc = glGetUniformLocation(self->program, "color");
+    printf("uniforms color loc: %i\n", loc);
+    r_render_error_check();
+    puts("set");
+    glUniform4fv(loc, 1, &self->rect.color.v0);
+    r_render_error_check();
+
+    puts("setting texture and draw");
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, self->tex);
-    r_render_error_check();
 
     {
-        puts("vao");
         glBindVertexArray(self->vao);
-        r_render_error_check();
-
-        puts("drawcall");
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        r_render_error_check();
-
         glBindVertexArray(0);
     }
 
