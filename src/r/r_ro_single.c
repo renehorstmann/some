@@ -40,8 +40,6 @@ void r_ro_single_kill(rRoSingle *self) {
 }
 
 
-#include "r/render.h"
-
 void r_ro_single_render(rRoSingle *self) {
     glUseProgram(self->program);
 
