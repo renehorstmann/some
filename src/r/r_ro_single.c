@@ -10,7 +10,7 @@ void r_ro_single_init(rRoSingle *self, const float *vp, GLuint tex_sink) {
 
     self->vp = vp;
 
-    self->program = r_compile_glsl_from_files((char *[]) {
+    self->program = r_shader_compile_glsl_from_files((char *[]) {
             "res/r/single.vsh",
             "res/r/single.fsh",
             NULL
@@ -45,44 +45,20 @@ void r_ro_single_kill(rRoSingle *self) {
 void r_ro_single_render(rRoSingle *self) {
     glUseProgram(self->program);
 
-    GLint loc;
+    glUniformMatrix4fv(glGetUniformLocation(self->program, "pose"), 1, GL_FALSE, &self->rect.pose.m00);
 
-    loc = glGetUniformLocation(self->program, "pose");
-    printf("uniforms pose loc: %i\n", loc);
-    r_render_error_check();
-    puts("set");
-    glUniformMatrix4fv(loc, 1, GL_FALSE, &self->rect.pose.m00);
-    r_render_error_check();
+    glUniformMatrix4fv(glGetUniformLocation(self->program, "vp"), 1, GL_FALSE, self->vp);
 
+    glUniformMatrix4fv(glGetUniformLocation(self->program, "uv"), 1, GL_FALSE, &self->rect.uv.m00);
 
-    loc = glGetUniformLocation(self->program, "vp");
-    printf("uniforms vp loc: %i\n", loc);
-    r_render_error_check();
-    puts("set");
-    glUniformMatrix4fv(loc, 1, GL_FALSE, self->vp);
-    r_render_error_check();
-
-    loc = glGetUniformLocation(self->program, "uv");
-    printf("uniforms uv loc: %i\n", loc);
-    r_render_error_check();
-    puts("set");
-    glUniformMatrix4fv(loc, 1, GL_FALSE, &self->rect.uv.m00);
-    r_render_error_check();
-
-    loc = glGetUniformLocation(self->program, "color");
-    printf("uniforms color loc: %i\n", loc);
-    r_render_error_check();
-    puts("set");
-    glUniform4fv(loc, 1, &self->rect.color.v0);
-    r_render_error_check();
-
-    puts("setting texture and draw");
+    glUniform4fv(glGetUniformLocation(self->program, "color"), 1, &self->rect.color.v0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, self->tex);
 
     {
         glBindVertexArray(self->vao);
+        r_shader_validate(self->program);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
     }

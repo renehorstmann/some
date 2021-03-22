@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 
 
     // example code
-    printf("OpenGL version: %s\n", glGetString(GL_VERSION));
+//    printf("OpenGL version: %s\n", glGetString(GL_VERSION));
 //    // class init of rRoText
 //    // rRoText *self, int max_chars, const float *camera_vp_matrix
 //    r_ro_text_init_font55(&text, 128, camera.gl);
