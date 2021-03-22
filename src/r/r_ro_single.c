@@ -39,9 +39,15 @@ void r_ro_single_kill(rRoSingle *self) {
     *self = (rRoSingle) {0};
 }
 
-void r_ro_single_render(rRoSingle *self) {
-    glUseProgram(self->program);
 
+#include "r/render.h"
+
+void r_ro_single_render(rRoSingle *self) {
+    printf("program id: %i\n", self->program);
+    glUseProgram(self->program);
+    r_render_error_check();
+
+    puts("uniforms...");
     glUniformMatrix4fv(glGetUniformLocation(self->program, "pose"),
                        1, GL_FALSE, &self->rect.pose.m00);
 
@@ -54,12 +60,22 @@ void r_ro_single_render(rRoSingle *self) {
     glUniform4fv(glGetUniformLocation(self->program, "color"),
                        1, &self->rect.color.v0);
 
+    r_render_error_check();
+
+    puts("texture...");
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, self->tex);
+    r_render_error_check();
 
     {
+        puts("vao");
         glBindVertexArray(self->vao);
+        r_render_error_check();
+
+        puts("drawcall");
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        r_render_error_check();
+
         glBindVertexArray(0);
     }
 

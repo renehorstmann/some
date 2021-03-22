@@ -40,7 +40,7 @@ void r_render_error_check() {
         	if(err == errs[i])
         	    continue;
         }
-        printf("OpenGl error in a frame: 0x%04x", err);
+        printf("OpenGl error in a frame: 0x%04x\n", err);
         if(errs_size<32)
             errs[errs_size++] = err;   
     }

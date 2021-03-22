@@ -54,18 +54,11 @@ int main(int argc, char **argv) {
 //    // setup a pointer listener
 //    e_input_register_pointer_event(on_pointer_callback, NULL);
 
-    puts("init texture");
     GLuint white_tex = r_texture_init(1, 1, (uint8_t[]) {255, 255, 255, 255});
-    r_render_error_check();
-
-    puts("init ro");
     r_ro_single_init(&test_ro, camera.gl, white_tex);
-    r_render_error_check();
-
     test_ro.rect.pose = u_pose_new(0, 0, 100, 100);
     //
 
-    puts("main loop");
     e_window_main_loop(main_loop);
 
 //    e_gui_kill();
@@ -83,9 +76,7 @@ static void main_loop(float delta_time) {
     
 
     // render
-    puts("begin frame");
     r_render_begin_frame(e_window.size.x, e_window.size.y);
-    r_render_error_check();
 
 
     // example code
@@ -102,20 +93,20 @@ static void main_loop(float delta_time) {
     //
     puts("ro render");
     r_ro_single_render(&test_ro);
+    puts("ro render end");
     r_render_error_check();
 
 
 //    e_gui_render();
 
     // swap buffers
-    puts("end frame");
     r_render_end_frame();
 
     // check for opengl errors:
     r_render_error_check();
 
-    puts("wait a sec.");
-    SDL_Delay(1000);
+    puts("wait 2 secs");
+    SDL_Delay(2000);
 }
 
 
