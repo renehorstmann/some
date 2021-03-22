@@ -26,14 +26,6 @@ static void main_loop(float delta_time);
 
 
 int main(int argc, char **argv) {
-    puts("Nochmals Guten Morgen :D");
-    e_window_init("doofes_ios");
-    puts("eventuell kommt jetzt ein tolles Dialog Fenster");
-    
-    e_window_main_loop(main_loop);
-    puts("hmm?");
-    
-    /*
     SDL_Log("some");
 
     // init e (environment)
@@ -48,8 +40,8 @@ int main(int argc, char **argv) {
     camera_init();
 
 
-    printf("touch devices: %i\n", SDL_GetNumTouchDevices());
     // example code
+    printf("OpenGL version: %s\n", glGetString(GL_VERSION));
     // class init of rRoText
     // rRoText *self, int max_chars, const float *camera_vp_matrix
     r_ro_text_init_font55(&text, 128, camera.gl);
@@ -65,20 +57,10 @@ int main(int argc, char **argv) {
     e_gui_kill();
     
     return 0;
-    */
 }
 
 
 static void main_loop(float delta_time) {
-    static float time;
-    time += delta_time;
-    if(time>2) {
-    	puts("...");
-    	time = 0;
-    }
-    SDL_Delay(1);
-    
-    /*
     // e updates
     e_input_update();
 
@@ -112,7 +94,6 @@ static void main_loop(float delta_time) {
 
     // check for opengl errors:
     r_render_error_check();
-    */
 }
 
 

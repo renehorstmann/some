@@ -4,13 +4,13 @@ struct rRenderGolabals_s r_render;
 
 void r_render_init(SDL_Window *window) {
     r_render.window = window;
-    
-    printf("OpenGL version: %s", glGetString(GL_VERSION));
+
+    SDL_Log("OpenGL version: %s", glGetString(GL_VERSION));
     
     int max_vertex_attributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &max_vertex_attributes);
     if(max_vertex_attributes < 16) {
-        printf("OpenGL failed: only has %d/16 vertex attributes", max_vertex_attributes);
+        SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "OpenGL failed: only has %d/16 vertex attributes", max_vertex_attributes);
         //exit(EXIT_FAILURE);
     }
 }
