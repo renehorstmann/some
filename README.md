@@ -1,6 +1,9 @@
 # some
 Sdl2 OpenGl Mini Engine.
 
+A small C game engine, that can be compiled to Desktop, Android, Web, ...
+Using SDL2, OpenGL3.3, OpenGLES3.0, WebGL2.0 to be platform independent.
+
 ## Getting started
 Fork this repo and have fun
 
@@ -33,7 +36,8 @@ Using Emscripten:
 ```
 emcc -I../include/ -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s USE_SDL_TTF=2 -s FULL_ES3=1 -s SDL2_IMAGE_FORMATS='["png"]' --preload-file ../res -s ALLOW_MEMORY_GROWTH=1 -DUSING_GLES -DUSING_TOUCH ../src/e/*.c ../src/p/*.c ../src/r/*.c ../src/u/*.c ../src/*.c -o index.html
 ```
-
+May / will not work on Apple, because of their poor WebGL2 support.
+ 
 ## Compiling on Windows
 Compiling with Mingw (msys2).
 Currently not working with cmake, but with the following gcc call.
