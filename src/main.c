@@ -49,6 +49,9 @@ int main(int argc, char **argv) {
 
     // setup a pointer listener
     e_input_register_pointer_event(on_pointer_callback, NULL);
+
+    // set clear color
+    r_render.clear_color = (vec4) {0.5, 0.75, 0.5, 1};
     //
 
     e_window_main_loop(main_loop);
