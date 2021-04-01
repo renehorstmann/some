@@ -74,4 +74,6 @@ void r_ro_ttftext_set_text(rRoTtfText *self, vec4 color, const char *text) {
     self->ratio = (float) w / h;
     r_ro_ttftext_set_size(self, u_pose_get_h(self->ro.rect.pose));
 }
-#endif //USING_TTF
+#else //USING_TTF
+typedef int avoid_iso_c_empty_translation_unit_warning_;
+#endif
