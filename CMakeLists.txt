@@ -2,10 +2,11 @@ cmake_minimum_required(VERSION 3.0)
 project(some C)
 
 # Optional definitions set:
-# USING_GLES        for OpenGLES3.0 instead of OpenGL3.3
-# USING_GLEW        if GLEW is available
-# USING_GYRO        if gyro sensor is available
-# IS_ANDROID_OS     for Android
+# USING_GLES            for OpenGLES3.0 instead of OpenGL3.3
+# USING_GLEW            if GLEW is available
+# USING_GYRO            if gyro sensor is available
+# USING_TTF             to use r_ro_ttftext
+# NUKLEAR_SCALE=3.0     for small hd screens (smartphones)
 
 set(CMAKE_C_STANDARD 11)
 
@@ -36,9 +37,8 @@ if (GL_LIB)
 elseif (GLES_LIB)
     message("GLES found: Mobile mode")
     add_definitions(-DUSING_GLES)
-    add_definitions(-DUSING_TOUCH)
     add_definitions(-DUSING_GYRO)
-    add_definitions(-DIS_ANDROID_OS)
+    add_definitions(-DNUKLEAR_SCALE=3.0)
     add_definitions(-DMATHC_NO_PRINT_COLOR)
     target_link_libraries(some ${GLES_LIB})
 else ()
@@ -53,6 +53,7 @@ if(GLEW_LIB)
 endif()
 
 # SDL
+add_definitions(-DUSING_TTF)
 find_package(SDL2 REQUIRED)
 if (GL_LIB)
     find_library(SDL2_IMAGE_LIBRARIES SDL2_image)

@@ -1,3 +1,4 @@
+#ifdef USING_TTF
 #include "r/texture.h"
 #include "r/ro_ttftext.h"
 
@@ -72,5 +73,4 @@ void r_ro_ttftext_set_text(rRoTtfText *self, vec4 color, const char *text) {
     self->ratio = (float) w / h;
     r_ro_ttftext_set_size(self, u_pose_get_h(self->ro.rect.pose));
 }
-
-
+#endif //USING_TTF
