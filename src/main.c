@@ -8,7 +8,7 @@
 // example code:
 // 'r'ender 'R'ender'o'bject 
 // renders text via rRoBatch
-static rRoText text;
+static RoText text;
 // stores the last pressed mouse click / touch to render with rRoText text
 static ePointer_s last_click;
 
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
     // example code
     // class init of rRoText
     // rRoText *self, int max_chars, const float *camera_vp_matrix
-    r_ro_text_init_font55(&text, 128, camera.gl);
+    ro_text_init_font55(&text, 128, camera.gl);
     // see u/pose.h, sets a mat4 transformation pose
     u_pose_set_xy(&text.pose, camera_left() + 20, 0);
 
@@ -83,8 +83,8 @@ static void main_loop(float delta_time) {
     sprintf(buf, "Hello World\nval=%5.1f\nspace pressed: %i\nid=%i x=%.2f y=%.2f",
             val, e_input.keys.space, last_click.id, last_click.pos.x, last_click.pos.y);
     // rRoText methods: set text, render
-    r_ro_text_set_text(&text, buf);
-    r_ro_text_render(&text);
+    ro_text_set_text(&text, buf);
+    ro_text_render(&text);
     //
 
 
