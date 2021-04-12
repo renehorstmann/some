@@ -6,10 +6,10 @@
 
 
 // example code:
-// 'r'ender 'R'ender'o'bject 
-// renders text via rRoBatch
+// 'R'ender'o'bject 
+// renders text via RoBatch
 static RoText text;
-// stores the last pressed mouse click / touch to render with rRoText text
+// stores the last pressed mouse click / touch to render with RoText text
 static ePointer_s last_click;
 
 
@@ -82,7 +82,7 @@ static void main_loop(float delta_time) {
     char buf[128];
     sprintf(buf, "Hello World\nval=%5.1f\nspace pressed: %i\nid=%i x=%.2f y=%.2f",
             val, e_input.keys.space, last_click.id, last_click.pos.x, last_click.pos.y);
-    // rRoText methods: set text, render
+    // RoText methods: set text, render
     ro_text_set_text(&text, buf);
     ro_text_render(&text);
     //
