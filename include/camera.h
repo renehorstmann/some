@@ -1,10 +1,10 @@
 #ifndef SOME_CAMERA_H
 #define SOME_CAMERA_H
 
-/*
- * PixelPerfect canvas camera with view matrix.
- * To control the camera position and size
- */
+//
+// PixelPerfect canvas camera with view matrix.
+// to control the camera position and size
+//
 
 #include <stdbool.h>
 #include "mathc/types/float.h"
@@ -13,12 +13,12 @@
 #define CAMERA_SIZE 180 // *4=720; *6=1080; *8=1440
 
 typedef struct {
-    mat4 v;
-    mat4 v_inv;
-    mat4 p;
-    mat4 p_inv;
-    mat4 vp;
-    mat4 v_p_inv;   // v @ p_inv
+    mat4 v;         // view / pose of the camera in 3d space
+    mat4 v_inv;     // inv(v)
+    mat4 p;         // projection of the camera (perspective / orthogonal)
+    mat4 p_inv;     // inv(p)
+    mat4 vp;        // p @ v_inv   used for render objects (ro)
+    mat4 v_p_inv;   // v @ p_inv   used for input
 } CameraMatrices_s;
 
 struct CameraGlobals_s {

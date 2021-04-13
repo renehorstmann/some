@@ -41,8 +41,8 @@ int main(int argc, char **argv) {
 
 
     // example code
-    // class init of rRoText
-    // rRoText *self, int max_chars, const float *camera_vp_matrix
+    // class init of RoText
+    // RoText *self, int max_chars, const float *camera_vp_matrix
     ro_text_init_font55(&text, 128, camera.gl);
     // see u/pose.h, sets a mat4 transformation pose
     u_pose_set_xy(&text.pose, camera_left() + 20, 0);
@@ -87,6 +87,8 @@ static void main_loop(float delta_time) {
     ro_text_render(&text);
     //
 
+    // uncomment to clone the current framebuffer into r_render.framebuffer_tex
+    // r_render_blit_framebuffer(e_window.size.x, e_window.size.y);
 
     e_gui_render();
 

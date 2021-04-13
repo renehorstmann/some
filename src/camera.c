@@ -6,11 +6,11 @@
 #include "camera.h"
 
 
-/*
- * Sets up an orthogonal camera for pixel perfect rendering.
- * Coord system has a minimum square of [-90 : +90]
- * render objects can use camera.gl for the transformation matrix
- */
+//
+// sets up an orthogonal camera for pixel perfect rendering.
+// coord system has a minimum square of [-90 : +90].
+// render objects can use camera.gl for the transformation matrix.
+//
 
 struct CameraGlobals_s camera;
 
