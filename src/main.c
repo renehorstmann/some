@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
     r_render.clear_color = (vec4) {0.5, 0.75, 0.5, 1};
     //
     
-    ro_single_init(&ro, camera.gl, r2_texture_new_file("../JumpHare/res/backgrounds/greenhills.png", NULL));
+    ro_single_init(&ro, camera.gl, r2_texture_new_file("res/r/font55.png", NULL));
 
     ro.rect.pose = u_pose_new(64, 0, 32, 32);
 
