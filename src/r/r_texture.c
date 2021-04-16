@@ -65,3 +65,47 @@ void r_texture_filter_nearest(GLuint tex) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
+
+
+
+
+GLuint r2_texture_new(int cols, int rows, const void *buffer) {
+    GLuint tex;
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, tex);
+
+    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, cols, rows/6, 6, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+
+    // GL_REPEAT is already default...
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glBindTexture(GL_TEXTURE_2D_ARRAY, tex);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    return tex;
+}
+
+GLuint r2_texture_new_img(SDL_Surface *img) {
+    SDL_PixelFormat *f = img->format;
+    if (f->BitsPerPixel != 32 || f->Amask == 0) {
+        SDL_Log("Load texture failed, 8bpp and alpha needed");
+        return 0;
+    }
+    return r2_texture_new(img->w, img->h, img->pixels);
+}
+
+GLuint r2_texture_new_file(const char *file, ivec2 *opt_out_size) {
+    SDL_Surface *img = IMG_Load(file);
+    if (!img) {
+        SDL_Log("Load image (%s) failed: %s", file, IMG_GetError());
+        return 0;
+    }
+
+    GLuint tex = r2_texture_new_img(img);
+    if (opt_out_size)
+        *opt_out_size = (ivec2) {{img->w, img->h}};
+
+    SDL_FreeSurface(img);
+    return tex;
+}

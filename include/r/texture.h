@@ -26,5 +26,10 @@ void r_texture_filter_linear(GLuint tex);
 
 void r_texture_filter_nearest(GLuint tex);
 
+GLuint r2_texture_new(int cols, int rows, const void *buffer);
+
+GLuint r2_texture_new_img(SDL_Surface *img);
+
+GLuint r2_texture_new_file(const char *file, ivec2 *opt_out_size);
 
 #endif //R_TEXTURE_H

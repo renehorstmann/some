@@ -12,6 +12,8 @@ static RoText text;
 // stores the last pressed mouse click / touch to render with RoText text
 static ePointer_s last_click;
 
+static RoSingle ro;
+
 
 // will be called on mouse or touch events
 static void on_pointer_callback(ePointer_s pointer, void *ud) {
@@ -48,11 +50,15 @@ int main(int argc, char **argv) {
     u_pose_set_xy(&text.pose, camera_left() + 20, 0);
 
     // setup a pointer listener
-    e_input_register_pointer_event(on_pointer_callback, NULL);
+  e_input_register_pointer_event(on_pointer_callback, NULL);
 
     // set clear color
     r_render.clear_color = (vec4) {0.5, 0.75, 0.5, 1};
     //
+    
+    ro_single_init(&ro, camera.gl, r2_texture_new_file("../JumpHare/res/backgrounds/greenhills.png", NULL));
+
+    ro.rect.pose = u_pose_new(64, 0, 32, 32);
 
     e_window_main_loop(main_loop);
 
@@ -86,6 +92,8 @@ static void main_loop(float delta_time) {
     ro_text_set_text(&text, buf);
     ro_text_render(&text);
     //
+
+    ro_single_render(&ro);
 
     // uncomment to clone the current framebuffer into r_render.framebuffer_tex
     // r_render_blit_framebuffer(e_window.size.x, e_window.size.y);

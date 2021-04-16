@@ -52,7 +52,7 @@ void ro_single_render(RoSingle *self) {
     glUniform4fv(glGetUniformLocation(self->program, "color"), 1, &self->rect.color.v0);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, self->tex);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, self->tex);
 
     {
         glBindVertexArray(self->vao);
