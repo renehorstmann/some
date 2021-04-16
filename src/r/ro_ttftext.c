@@ -1,4 +1,4 @@
-#ifdef USING_TTF
+#ifdef OPTION_TTF
 #include "r/texture.h"
 #include "r/ro_ttftext.h"
 
@@ -74,6 +74,6 @@ void ro_ttftext_set_text(RoTtfText *self, vec4 color, const char *text) {
     self->ratio = (float) w / h;
     ro_ttftext_set_size(self, u_pose_get_h(self->ro.rect.pose));
 }
-#else //USING_TTF
+#else //OPTION_TTF
 typedef int avoid_iso_c_empty_translation_unit_warning_;
 #endif

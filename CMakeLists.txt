@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.0)
 project(some C)
 
 # Optional definitions set:
-# USING_GLES            for OpenGLES3.0 instead of OpenGL3.3
-# USING_GLEW            if GLEW is available
-# USING_GYRO            if gyro sensor is available
-# USING_TTF             to use r_ro_ttftext
+# OPTION_GLES           for OpenGLES3.0 instead of OpenGL3.3
+# OPTION_GLEW           if GLEW is available
+# OPTION_GYRO           if gyro sensor is available
+# OPTION_TTF            to use ro_ttftext
 # NUKLEAR_SCALE=3.0     for small hd screens (smartphones)
 
 set(CMAKE_C_STANDARD 11)
@@ -36,8 +36,8 @@ if (GL_LIB)
     target_link_libraries(some ${GL_LIB})
 elseif (GLES_LIB)
     message("GLES found: Mobile mode")
-    add_definitions(-DUSING_GLES)
-    add_definitions(-DUSING_GYRO)
+    add_definitions(-DOPTION_GLES)
+    add_definitions(-DOPTION_GYRO)
     add_definitions(-DNUKLEAR_SCALE=3.0)
     add_definitions(-DMATHC_NO_PRINT_COLOR)
     target_link_libraries(some ${GLES_LIB})
@@ -47,13 +47,13 @@ endif ()
 
 # GLEW
 find_library(GLEW_LIB GLEW)
-if(GLEW_LIB)
-    add_definitions(-DUSING_GLEW)
+if (GLEW_LIB)
+    add_definitions(-DOPTION_GLEW)
     target_link_libraries(some ${GLEW_LIB})
-endif()
+endif ()
 
 # SDL
-add_definitions(-DUSING_TTF)
+add_definitions(-DOPTION_TTF)
 find_package(SDL2 REQUIRED)
 if (GL_LIB)
     find_library(SDL2_IMAGE_LIBRARIES SDL2_image)

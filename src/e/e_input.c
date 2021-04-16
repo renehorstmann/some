@@ -134,7 +134,7 @@ static void input_handle_keys(SDL_Event *event) {
     }
 }
 
-#ifdef USING_GYRO
+#ifdef OPTION_GYRO
 static void input_handle_sensors(SDL_Event *event) {
     SDL_Sensor *sensor = SDL_SensorFromInstanceID(event->sensor.which);
     if (!sensor
@@ -152,7 +152,7 @@ static void input_handle_sensors(SDL_Event *event) {
 
 
 void e_input_init() {
-#ifdef USING_GYRO
+#ifdef OPTION_GYRO
     int num_sensors = SDL_NumSensors();
     bool accel_opened = false;
     for (int i = 0; i < num_sensors; i++) {
@@ -206,7 +206,7 @@ void e_input_update() {
             case SDL_KEYUP:
                 input_handle_keys(&event);
                 break;
-#ifdef USING_GYRO
+#ifdef OPTION_GYRO
                 case SDL_SENSORUPDATE:
                     input_handle_sensors(&event);
                     break;

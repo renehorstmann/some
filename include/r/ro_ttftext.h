@@ -1,9 +1,9 @@
-#ifdef USING_TTF
+#ifdef OPTION_TTF
 #ifndef R_RO_TTFTEXT_H
 #define R_RO_TTFTEXT_H
 
 //
-// renders text, prerendered by SDL_TTF, only available if USING_TTF is set
+// renders text, prerendered by SDL_TTF, only available if OPTION_TTF is set
 //
 
 #include "SDL_ttf.h"
@@ -36,4 +36,4 @@ void ro_ttftext_set_size(RoTtfText *self, float h);
 void ro_ttftext_set_text(RoTtfText *self, vec4 color, const char *text);
 
 #endif //R_RO_TTFTEXT_H
-#endif //USING_TTF
+#endif //OPTION_TTF
