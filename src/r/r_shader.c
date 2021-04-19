@@ -1,6 +1,6 @@
-#include "utilc/strviu.h"
-#include "r/definitions.h"
+#include "rhc/str.h"
 #include "r/shader.h"
+#include "r/definitions.h"
 
 
 static char *file_read(const char *filename) {
@@ -97,11 +97,11 @@ GLuint r_shader_compile_from_file(const char *file) {
     GLint type;
     const char *shader_begin;
     {
-        strviu viu = ToStrViu(file);
-        if (sv_ends_with_cstring(viu, ".vsh")) {
+        Str_s viu = strc(file);
+        if (str_ends_with(viu, strc(".vsh"))) {
             type = GL_VERTEX_SHADER;
             shader_begin = R_VERTEX_BEGIN;
-        } else if (sv_ends_with_cstring(viu, ".fsh")) {
+        } else if (str_ends_with(viu, strc(".fsh"))) {
             type = GL_FRAGMENT_SHADER;
             shader_begin = R_FRAGMENT_BEGIN;
         } else {

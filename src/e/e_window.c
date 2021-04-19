@@ -5,6 +5,10 @@
 #include "e/window.h"
 #include "e/definitions.h"
 
+// rhc implementation source file, only once in a project
+#include "rhc/rhc_impl.h"
+
+
 struct eWindowGlobals_s e_window;
 
 static struct {

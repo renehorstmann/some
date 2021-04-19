@@ -1,6 +1,7 @@
 #include "e/e.h"
 #include "r/r.h"
 #include "u/u.h"
+#include "rhc/rhc.h"
 
 #include "camera.h"
 
@@ -28,7 +29,7 @@ static void main_loop(float delta_time);
 
 
 int main(int argc, char **argv) {
-    SDL_Log("some");
+    log_info("some");
 
     // init e (environment)
     e_window_init("some");

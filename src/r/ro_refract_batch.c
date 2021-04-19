@@ -1,5 +1,4 @@
 #include "mathc/float.h"
-#include "utilc/alloc.h"
 #include "r/r.h"
 #include "r/ro_refract_batch.h"
 
@@ -27,7 +26,7 @@ static int clamp_range(int i, int begin, int end) {
 void ro_refract_batch_init(RoRefractBatch *self, int num,
         const float *vp, const float *scale_ptr,
         GLuint tex_main_sink, GLuint tex_refraction_sink) {
-    self->rects = New(rRect_s, num);
+    self->rects = malloc(sizeof(rRect_s) * num);
     init_rects(self->rects, num);
 
     self->num = num;

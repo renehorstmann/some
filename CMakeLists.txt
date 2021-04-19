@@ -6,6 +6,7 @@ project(some C)
 # OPTION_GLEW           if GLEW is available
 # OPTION_GYRO           if gyro sensor is available
 # OPTION_TTF            to use ro_ttftext
+# OPTION_SDL            is set to let rhc code use SDL function
 # NUKLEAR_SCALE=3.0     for small hd screens (smartphones)
 
 set(CMAKE_C_STANDARD 11)
@@ -38,6 +39,7 @@ elseif (GLES_LIB)
     message("GLES found: Mobile mode")
     add_definitions(-DOPTION_GLES)
     add_definitions(-DOPTION_GYRO)
+    add_definitions(-DOPTION_SDL)
     add_definitions(-DNUKLEAR_SCALE=3.0)
     add_definitions(-DMATHC_NO_PRINT_COLOR)
     target_link_libraries(some ${GLES_LIB})

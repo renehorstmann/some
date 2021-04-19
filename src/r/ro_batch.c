@@ -1,5 +1,4 @@
 #include "mathc/float.h"
-#include "utilc/alloc.h"
 #include "r/r.h"
 #include "r/ro_batch.h"
 
@@ -22,7 +21,7 @@ static int clamp_range(int i, int begin, int end) {
 }
 
 void ro_batch_init(RoBatch *self, int num, const float *vp, GLuint tex_sink) {
-    self->rects = New(rRect_s, num);
+    self->rects = malloc(sizeof(rRect_s) * num);
     init_rects(self->rects, num);
 
     self->num = num;

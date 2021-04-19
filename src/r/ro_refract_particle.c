@@ -1,7 +1,6 @@
 #include <float.h> // FLT_MAX
 #include "mathc/float.h"
-#include "utilc/alloc.h"
-#include "utilc/assume.h"
+#include "rhc/error.h"
 #include "r/r.h"
 #include "r/ro_refract_particle.h"
 
@@ -37,7 +36,7 @@ static int clamp_range(int i, int begin, int end) {
 void ro_refract_particle_init(RoRefractParticle *self, int num,
         const float *vp, const float *scale_ptr,
         GLuint tex_main_sink, GLuint tex_refraction_sink) {
-    self->rects = New(rParticleRect_s, num);
+    self->rects = malloc(sizeof(rParticleRect_s) * num);
     init_rects(self->rects, num);
 
     self->num = num;
