@@ -14,6 +14,11 @@ Have a look into some header files for some further explanation.
 - [JumpHare](https://github.com/renehorstmann/JumpHare): Platformer game.
 
 
+## Todo
+- shader -> program with single file shaders
+  - currently not working in gles
+- adapt to rhc
+
 ## Naming
 ### Functions
 A function like: `e_window_init` got its name of:
@@ -72,8 +77,8 @@ Physics (may be expanded later)
 ## mathc
 glsl like math library for C, see [Mathc](https://github.com/renehorstmann/Mathc)
 
-## utilc
-C utility functions like dynamic arrays, see [Utilc](https://github.com/renehorstmann/Utilc)
+## rhc
+A C standard library addition, see [rhc](https://github.com/renehorstmann/rhc)
 
 
 ## Compiling for Web
