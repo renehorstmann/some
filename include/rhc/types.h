@@ -64,7 +64,7 @@ static bool allocator_valid(Allocator_s a) {
 
 // returns true if str is valid
 static bool str_valid(Str_s s) {
-    return s.data != NULL && s.size >= 0;
+    return s.data != NULL;
 }
 
 
@@ -75,7 +75,7 @@ static bool str_valid(Str_s s) {
 
 // returns true if str array is valid
 static bool strarray_valid(StrArray self) {
-    return self.array != NULL && self.size >= 0 && allocator_valid(self.allocator);
+    return self.array != NULL && allocator_valid(self.allocator);
 }
 
 // kills the str array
@@ -88,7 +88,7 @@ static void strarray_kill(StrArray *self) {
 
 // returns true if the string is valid
 static bool string_valid(String self) {
-    return str_valid(self.str) && self.capacity >= 0 && allocator_valid(self.allocator);
+    return str_valid(self.str) && allocator_valid(self.allocator);
 }
 
 // kills the string

@@ -37,7 +37,7 @@ GLuint r_program_shader_new(rProgramShaderSource_s source) {
 
     const char *option_gles = "";
 #ifdef OPTION_GLES
-    option_gles = "#define OPTION_GLES\n"
+    option_gles = "#define OPTION_GLES\n";
 #endif
 
     GLint shader = glCreateShader(source.type);
