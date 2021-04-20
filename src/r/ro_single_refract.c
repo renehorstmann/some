@@ -1,15 +1,15 @@
 #include "mathc/float.h"
 #include "r/render.h"
 #include "r/shader.h"
-#include "r/ro_refract_single.h"
+#include "r/ro_single_refract.h"
 
 
 static const vec4 VIEW_AABB_FULLSCREEN = {{0.5, 0.5, 0.5, 0.5}};
 
 
-void ro_refract_single_init(RoRefractSingle *self,
-        const float *vp, const float *scale_ptr,
-        GLuint tex_main_sink, GLuint tex_refraction_sink){
+void ro_single_refract_init(RoSingleRefract *self,
+                            const float *vp, const float *scale_ptr,
+                            GLuint tex_main_sink, GLuint tex_refraction_sink){
     self->rect.pose = mat4_eye();
     self->rect.uv = mat4_eye();
     self->rect.color = vec4_set(1);
@@ -47,18 +47,18 @@ void ro_refract_single_init(RoRefractSingle *self,
     }
 }
 
-void ro_refract_single_kill(RoRefractSingle *self) {
+void ro_single_refract_kill(RoSingleRefract *self) {
     glDeleteProgram(self->program);
     glDeleteVertexArrays(1, &self->vao);
     if (self->owns_tex_main)
         glDeleteTextures(1, &self->tex_main);
     if (self->owns_tex_refraction)
         glDeleteTextures(1, &self->tex_refraction);
-    *self = (RoRefractSingle) {0};
+    *self = (RoSingleRefract) {0};
 }
 
 
-void ro_refract_single_render(RoRefractSingle *self) {
+void ro_single_refract_render(RoSingleRefract *self) {
     glUseProgram(self->program);
 
     glUniformMatrix4fv(glGetUniformLocation(self->program, "pose"), 1, GL_FALSE, &self->rect.pose.m00);
@@ -93,13 +93,13 @@ void ro_refract_single_render(RoRefractSingle *self) {
     glUseProgram(0);
 }
 
-void ro_refract_single_set_texture_main(RoRefractSingle *self, GLuint tex_main_sink) {
+void ro_single_refract_set_texture_main(RoSingleRefract *self, GLuint tex_main_sink) {
     if (self->owns_tex_main)
         glDeleteTextures(1, &self->tex_main);
     self->tex_main = tex_main_sink;
 }
 
-void ro_refract_single_set_texture_refraction(RoRefractSingle *self, GLuint tex_refraction_sink){
+void ro_single_refract_set_texture_refraction(RoSingleRefract *self, GLuint tex_refraction_sink){
     if (self->owns_tex_refraction)
         glDeleteTextures(1, &self->tex_refraction);
     self->tex_refraction = tex_refraction_sink;

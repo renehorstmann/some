@@ -1,9 +1,9 @@
-#ifndef R_RO_REFRACT_SINGLE_H
-#define R_RO_REFRACT_SINGLE_H
+#ifndef R_RO_PARTICLE_REFRACT_H
+#define R_RO_PARTICLE_REFRACT_H
 
 //
-// class to render a single rect with a draw call
-// its like ro_single, but with additional reflection / refraction support.
+// particle system
+// its like ro_particle, but with additional reflection / refraction support.
 //
 //// uses 3 textures in total
 //// 1: default texture
@@ -23,37 +23,52 @@
 //
 
 #include <stdbool.h>
+#include "mathc/types/float.h"
 #include "core.h"
 #include "rect.h"
 
 
 typedef struct {
-    rRect_s rect;
+    rParticleRect_s *rects;
+    int num;
     const float *vp;                    // mat4
     const float *scale;                 // float
     const float *view_aabb;             // vec4
     GLuint program;                     // shader
     GLuint vao;                         // internal vertex array object
+    GLuint vbo;                         // internal vertex buffer object
     GLuint tex_main;                    // used main texture
     GLuint tex_refraction;              // used refraction texture
     const GLuint *tex_framebuffer_ptr;  // init as &r_render.framebuffer_tex
     bool owns_tex_main;                 // if true, the textures will be deleted by this class
     bool owns_tex_refraction;
-} RoRefractSingle;
+} RoParticleRefract;
 
-void ro_refract_single_init(RoRefractSingle *self,
-        const float *vp, const float *scale_ptr,
-        GLuint tex_main_sink, GLuint tex_refraction_sink);
+void ro_particle_refract_init(RoParticleRefract *self, int num,
+                              const float *vp, const float *scale_ptr,
+                              GLuint tex_main_sink, GLuint tex_refraction_sink);
 
-void ro_refract_single_kill(RoRefractSingle *self);
+void ro_particle_refract_kill(RoParticleRefract *self);
 
-void ro_refract_single_render(RoRefractSingle *self);
+// updates a subset of the particles into the gpu
+void ro_particle_refract_update_sub(RoParticleRefract *self, int offset, int size);
+
+// renders a subset of the particles
+void ro_particle_refract_render_sub(RoParticleRefract *self, float time, int num);
 
 // resets the texture, if .owns_tex_main is true, it will delete the old texture
-void ro_refract_single_set_texture_main(RoRefractSingle *self, GLuint tex_main_sink);
+void ro_particle_refract_set_texture_main(RoParticleRefract *self, GLuint tex_main_sink);
 
 // resets the texture, if .owns_tex_refraction is true, it will delete the old texture
-void ro_refract_single_set_texture_refraction(RoRefractSingle *self, GLuint tex_refraction_sink);
+void ro_particle_refract_set_texture_refraction(RoParticleRefract *self, GLuint tex_refraction_sink);
 
 
-#endif //R_RO_REFRACT_SINGLE_H
+static void ro_particle_refract_update(RoParticleRefract *self) {
+    ro_particle_refract_update_sub(self, 0, self->num);
+}
+
+static void ro_particle_refract_render(RoParticleRefract *self, float time) {
+    ro_particle_refract_render_sub(self, time, self->num);
+}
+
+#endif //R_RO_PARTICLE_REFRACT_H

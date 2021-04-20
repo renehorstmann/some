@@ -5,20 +5,25 @@
 // create and compile shader programs
 //
 
-#include <stdbool.h>
+#include "rhc/str.h"
 #include "core.h"
 
 
-typedef struct {
-    GLint type;
-    const char *src_or_file;
-} rProgramShaderSource_s;
+// tests if the shader is valid
+static bool r_program_shader_valid(GLuint shader) {
+    return shader > 0;
+}
+
+// tests if the program is valid
+static bool r_program_valid(GLuint program) {
+    return program > 0;
+}
 
 // compiles a shader
-GLuint r_program_shader_new(rProgramShaderSource_s source);
+GLuint r_program_shader_new(Str_s source, GLint shader_type);
 
 // compiles a shader, src=file
-GLuint r_program_shader_new_file(rProgramShaderSource_s file);
+GLuint r_program_shader_new_file(const char *file, GLint shader_type);
 
 // creates a program from given shaders
 GLuint r_program_new(const GLuint *shaders, int n, bool delete_shaders);

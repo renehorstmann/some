@@ -15,7 +15,7 @@
 #ifdef RHC_IMPL
 #include "impl/error_impl.h"
 #include "impl/log_impl.h"
-#include "impl/alloc_impl.h"
+#include "impl/allocator_impl.h"
 #include "impl/file_impl.h"
 #endif
 

@@ -1,5 +1,5 @@
 #include "mathc/float.h"
-#include "r/shader.h"
+#include "r/program.h"
 #include "r/ro_single.h"
 
 
@@ -10,11 +10,7 @@ void ro_single_init(RoSingle *self, const float *vp, GLuint tex_sink) {
 
     self->vp = vp;
 
-    self->program = r_shader_compile_glsl_from_files((char *[]) {
-            "res/r/single.vsh",
-            "res/r/single.fsh",
-            NULL
-    });
+    self->program = r_program_new_file("res/r/single.glsl");
 
     self->tex = tex_sink;
     self->owns_tex = true;

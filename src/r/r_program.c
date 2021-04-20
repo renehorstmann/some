@@ -1,48 +1,31 @@
 #include "rhc/error.h"
+#include "rhc/file.h"
 #include "r/program.h"
 
 
-static char *file_read(const char *filename) {
-    SDL_RWops *rw = SDL_RWFromFile(filename, "rb");
-    if (rw == NULL) return NULL;
+GLuint r_program_shader_new(Str_s source, GLint shader_type) {
+    // check source available
+    if(str_empty(source))
+        return 0;
 
-    Sint64 res_size = SDL_RWsize(rw);
-    char *res = (char *) malloc(res_size + 1);
-
-    Sint64 nb_read_total = 0, nb_read = 1;
-    char *buf = res;
-    while (nb_read_total < res_size && nb_read != 0) {
-        nb_read = SDL_RWread(rw, buf, 1, (res_size - nb_read_total));
-        nb_read_total += nb_read;
-        buf += nb_read;
-    }
-    SDL_RWclose(rw);
-    if (nb_read_total != res_size) {
-        free(res);
-        return NULL;
-    }
-
-    res[nb_read_total] = '\0';
-    return res;
-}
-
-GLuint r_program_shader_new(rProgramShaderSource_s source) {
     const char *type = NULL;
-    if(source.type == GL_VERTEX_SHADER)
+    if(shader_type == GL_VERTEX_SHADER)
         type = "#define VERTEX\n";
-    if(source.type == GL_FRAGMENT_SHADER)
+    if(shader_type == GL_FRAGMENT_SHADER)
         type = "#define FRAGMENT\n";
 
-    assume(type, "neither vertex nor fragment shader used: %i", source.type);
+    assume(type, "neither vertex nor fragment shader used: %i", shader_type);
 
     const char *option_gles = "";
 #ifdef OPTION_GLES
     option_gles = "#define OPTION_GLES\n";
 #endif
 
-    GLint shader = glCreateShader(source.type);
+    GLint shader = glCreateShader(shader_type);
 
-    glShaderSource(shader, 3, (const char *[]) {type, option_gles, source.src_or_file}, NULL);
+    glShaderSource(shader, 3,
+                   (const char *[]) {type, option_gles, source.data},
+                   (GLint[]) {strlen(type), strlen(option_gles), source.size});
 
     glCompileShader(shader);
 
@@ -52,10 +35,11 @@ GLuint r_program_shader_new(rProgramShaderSource_s source) {
         int log_len;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_len);
 
-        char *buffer = malloc(log_len + 1);
+        Allocator_s a = allocator_new_raising();
+        char *buffer = a.alloc(a, log_len + 1);
         glGetShaderInfoLog(shader, log_len, NULL, buffer);
         SDL_Log("Shader compile failure in %s shader: %s",  type, buffer);
-        free(buffer);
+        a.free(a, buffer);
 
         glDeleteShader(shader);
         return 0;
@@ -63,23 +47,22 @@ GLuint r_program_shader_new(rProgramShaderSource_s source) {
     return shader;
 }
 
-GLuint r_program_shader_new_file(rProgramShaderSource_s file) {
-    char *source = file_read(file.src_or_file);
-    if (!source) {
-        SDL_Log("Load shader file %s failed: %s", file.src_or_file, SDL_GetError());
-        return 0;
-    }
-
-    GLuint shader = r_program_shader_new((rProgramShaderSource_s) {file.type, source});
-    free(source);
+GLuint r_program_shader_new_file(const char *file, GLint shader_type) {
+    String source = file_read(file, true);
+    GLuint shader = r_program_shader_new(source.str, shader_type);
+    string_kill(&source);
     return shader;
 }
 
 GLuint r_program_new(const GLuint *shaders, int n, bool delete_shaders) {
-    GLuint program = 0;
+    // check each shader valid
+    for(int i=0; i<n; i++) {
+        if(!r_program_shader_valid(shaders[i]))
+            return 0;
+    }
 
     // Combine shaders into program
-    program = glCreateProgram();
+    GLuint program = glCreateProgram();
     for (int i = 0; i < n; i++)
         glAttachShader(program, shaders[i]);
     glLinkProgram(program);
@@ -90,10 +73,11 @@ GLuint r_program_new(const GLuint *shaders, int n, bool delete_shaders) {
         int log_len;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_len);
 
-        char *buffer = malloc(log_len + 1);
+        Allocator_s a = allocator_new_raising();
+        char *buffer = a.alloc(a, log_len + 1);
         glGetProgramInfoLog(program, log_len, NULL, buffer);
         SDL_Log("Shader linking failure: %s", buffer);
-        free(buffer);
+        a.free(a, buffer);
 
         glDeleteProgram(program);
         program = 0;
@@ -108,29 +92,24 @@ GLuint r_program_new(const GLuint *shaders, int n, bool delete_shaders) {
 }
 
 GLuint r_program_new_file(const char *file) {
-    char *source = file_read(file);
-    if (!source) {
-        SDL_Log("Load program file %s failed: %s", file, SDL_GetError());
-        return 0;
-    }
+    String source = file_read(file, true);
+    GLuint vertex = r_program_shader_new(source.str, GL_VERTEX_SHADER);
+    GLuint fragment = r_program_shader_new(source.str, GL_FRAGMENT_SHADER);
 
-    GLuint vertex = r_program_shader_new((rProgramShaderSource_s) {GL_VERTEX_SHADER, source});
-    GLuint fragment = r_program_shader_new((rProgramShaderSource_s) {GL_FRAGMENT_SHADER, source});
+    GLuint program = r_program_new((const GLuint[]) {vertex, fragment}, 2, false);
 
-    GLuint program = 0;
-    if(vertex != 0 && fragment != 0) {
-        program = r_program_new((const GLuint[]) {vertex, fragment}, 2, false);
-    }
-
-    // ok to pass 0
+    // safe to pass 0
     glDeleteShader(vertex);
     glDeleteShader(fragment);
+    string_kill(&source);
 
-    free(source);
     return program;
 }
 
 void r_program_validate(GLuint program) {
+    if(!r_program_valid(program))
+        return;
+
     glValidateProgram(program);
 
     GLint status;
@@ -139,9 +118,10 @@ void r_program_validate(GLuint program) {
         int log_len;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_len);
 
-        char *buffer = malloc(log_len + 1);
+        Allocator_s a = allocator_new_raising();
+        char *buffer = a.alloc(a,log_len + 1);
         glGetProgramInfoLog(program, log_len, NULL, buffer);
         SDL_Log("Program validate failure: %s", buffer);
-        free(buffer);
+        a.free(a, buffer);
     }
 }
