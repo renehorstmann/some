@@ -18,6 +18,7 @@ Have a look into some header files for some further explanation.
 - shader -> program with single file shaders
   - currently not working in gles
 - adapt to rhc
+- void *_init(Type *self, *) to Type *_new(*
 
 ## Naming
 ### Functions
