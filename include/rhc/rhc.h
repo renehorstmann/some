@@ -5,7 +5,7 @@
 #include "error.h"
 #include "log.h"
 #include "time.h"
-#include "alloc.h"
+#include "allocator.h"
 #include "file.h"
 #include "str.h"
 #include "string.h"

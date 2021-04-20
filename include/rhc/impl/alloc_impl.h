@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "../error.h"
 #include "../log.h"
-#include "../alloc.h"
+#include "../allocator.h"
 
 void *rhc_allocator_default_alloc_impl_(Allocator_s self, size_t size) {
     void *data = malloc(size);

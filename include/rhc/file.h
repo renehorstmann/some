@@ -2,7 +2,7 @@
 #define RHC_FILE_H
 
 #include "types.h"
-#include "alloc.h"
+#include "allocator.h"
 
 
 

@@ -5,8 +5,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "../allocator.h"
 #include "../log.h"
 
+#define RHC_LOG_SDL_MAX_LENGTH 4096
 
 static struct {
     enum rhc_log_level level;
@@ -70,15 +72,11 @@ void rhc_log_base_(enum rhc_log_level level, const char *file, int line, const c
     char buf[16];
     buf[strftime(buf, sizeof(buf), "%H:%M:%S", lt)] = '\0';
 
-    int pre_format_size = snprintf(NULL, 0, "%s %s:%d: %s", buf, file, line, format);
-    char *pre_format = malloc(pre_format_size + 1);
-    if(pre_format) {
-        sprintf(pre_format, "%s %s:%d: %s", buf, file, line, format);
-        va_start(args, format);
-        SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, rhc_log_sdl_priority(level), pre_format, args);
-        va_end(args);
-        free(pre_format);
-    }
+    char msg_format[RHC_LOG_SDL_MAX_LENGTH];
+    snprintf(msg_format, RHC_LOG_SDL_MAX_LENGTH, "%s %s:%d: %s", buf, file, line, format);
+    va_start(args, format);
+    SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, rhc_log_sdl_priority(level), msg_format, args);
+    va_end(args);
 }
 
 #else

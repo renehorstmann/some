@@ -2,7 +2,7 @@
 // can be used multiple times, with different types
 
 #include <string.h>     // memcpy
-#include "alloc.h"
+#include "allocator.h"
 #include "log.h"
 
 #define RHC_NAME_CONCAT(a, b) a ## b
@@ -46,10 +46,6 @@
 
 #ifndef KEY_HASH_FN
 #error hashmap.h needs a function to hash a key (unsigned key_hash_fn(key k))
-#endif
-
-#ifndef RHC_HASHMAP_DEFAULT_ALLOCATOR
-#define RHC_HASHMAP_DEFAULT_ALLOCATOR allocator_init_raising()
 #endif
 
 
