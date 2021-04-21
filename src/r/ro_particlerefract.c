@@ -1,7 +1,8 @@
 #include <float.h> // FLT_MAX
 #include "mathc/float.h"
 #include "rhc/error.h"
-#include "r/r.h"
+#include "r/render.h"
+#include "r/program.h"
 #include "r/ro_particlerefract.h"
 
 
@@ -44,10 +45,7 @@ void ro_particlerefract_init(RoParticleRefract *self, int num,
     self->scale = scale_ptr;
     self->view_aabb = &VIEW_AABB_FULLSCREEN.v0;
 
-    self->program = r_shader_compile_glsl_from_files((char *[]) {
-            "res/r/refract_particle.vsh",
-            "res/r/refract_particle.fsh",
-            NULL});
+    self->program = r_program_new_file("res/r/particlerefract.glsl");
     const int loc_pose = 0;
     const int loc_uv = 4;
     const int loc_speed = 8;

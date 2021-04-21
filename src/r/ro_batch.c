@@ -1,5 +1,6 @@
 #include "mathc/float.h"
-#include "r/r.h"
+#include "r/render.h"
+#include "r/program.h"
 #include "r/ro_batch.h"
 
 
@@ -27,10 +28,7 @@ void ro_batch_init(RoBatch *self, int num, const float *vp, GLuint tex_sink) {
     self->num = num;
     self->vp = vp;
 
-    self->program = r_shader_compile_glsl_from_files((char *[]) {
-            "res/r/batch.vsh",
-            "res/r/batch.fsh",
-            NULL});
+    self->program = r_program_new_file("res/r/batch.glsl");
     const int loc_pose = 0;
     const int loc_uv = 4;
     const int loc_color = 8;

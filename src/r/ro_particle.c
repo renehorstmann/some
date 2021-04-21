@@ -1,7 +1,8 @@
 #include <float.h> // FLT_MAX
 #include "mathc/float.h"
 #include "rhc/error.h"
-#include "r/r.h"
+#include "r/render.h"
+#include "r/program.h"
 #include "r/ro_particle.h"
 
 
@@ -37,10 +38,7 @@ void ro_particle_init(RoParticle *self, int num, const float *vp, GLuint tex_sin
     self->num = num;
     self->vp = vp;
 
-    self->program = r_shader_compile_glsl_from_files((char *[]) {
-            "res/r/particle.vsh",
-            "res/r/particle.fsh",
-            NULL});
+    self->program = r_program_new_file("res/r/particle.glsl");
     const int loc_pose = 0;
     const int loc_uv = 4;
     const int loc_speed = 8;

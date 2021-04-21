@@ -42,13 +42,13 @@ int main(int argc, char **argv) {
     // init systems
     camera_init();
 
-
+/*
     // example code
     // class init of RoText
     // RoText *self, int max_chars, const float *camera_vp_matrix
     ro_text_init_font55(&text, 128, camera.gl);
     // see u/pose.h, sets a mat4 transformation pose
-    u_pose_set_xy(&text.pose, camera_left() + 20, 0);
+    u_pose_set_xy(&text.pose, camera_left() + 20, 0);*/
 
     // setup a pointer listener
   e_input_register_pointer_event(on_pointer_callback, NULL);
@@ -80,7 +80,7 @@ static void main_loop(float delta_time) {
     // render
     r_render_begin_frame(e_window.size.x, e_window.size.y);
 
-
+/*
     // example code
     static float val = 10;
     //creates a debug window to set val
@@ -93,7 +93,7 @@ static void main_loop(float delta_time) {
     ro_text_set_text(&text, buf);
     ro_text_render(&text);
     //
-
+*/
     ro_single_render(&ro);
 
     // uncomment to clone the current framebuffer into r_render.framebuffer_tex

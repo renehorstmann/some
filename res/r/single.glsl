@@ -1,9 +1,4 @@
 #ifdef VERTEX
-    #ifdef OPTION_GLES
-        #version 300 es
-    #else
-        #version 330 core
-    #endif
 
     out vec2 v_tex_coord;
     out vec4 v_color;
@@ -43,11 +38,8 @@
 
 #ifdef FRAGMENT
     #ifdef OPTION_GLES
-        #version 300 es
         precision mediump float;
         precision lowp sampler2DArray;
-    #else
-        #version 330 core
     #endif
 
     in vec2 v_tex_coord;

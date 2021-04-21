@@ -1,6 +1,6 @@
 #include "mathc/float.h"
 #include "r/render.h"
-#include "r/shader.h"
+#include "r/program.h"
 #include "r/ro_singlerefract.h"
 
 
@@ -18,11 +18,7 @@ void ro_singlerefract_init(RoSingleRefract *self,
     self->scale = scale_ptr;
     self->view_aabb = &VIEW_AABB_FULLSCREEN.v0;
 
-    self->program = r_shader_compile_glsl_from_files((char *[]) {
-            "res/r/refract_single.vsh",
-            "res/r/refract_single.fsh",
-            NULL
-    });
+    self->program = r_program_new_file("res/r/singlerefract.glsl");
 
     self->tex_main = tex_main_sink;
     self->tex_refraction = tex_refraction_sink;

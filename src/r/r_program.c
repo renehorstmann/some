@@ -8,6 +8,12 @@ GLuint r_program_shader_new(Str_s source, GLint shader_type) {
     if(str_empty(source))
         return 0;
 
+#ifdef OPTION_GLES
+    const char *version = "#version 300 es\n";
+#else
+    const char *version = "#version 330 core\n";
+#endif
+
     const char *type = NULL;
     if(shader_type == GL_VERTEX_SHADER)
         type = "#define VERTEX\n";
@@ -23,9 +29,9 @@ GLuint r_program_shader_new(Str_s source, GLint shader_type) {
 
     GLint shader = glCreateShader(shader_type);
 
-    glShaderSource(shader, 3,
-                   (const char *[]) {type, option_gles, source.data},
-                   (GLint[]) {strlen(type), strlen(option_gles), source.size});
+    glShaderSource(shader, 4,
+                   (const char *[]) {version, type, option_gles, source.data},
+                   (GLint[]) {strlen(version), strlen(type), strlen(option_gles), source.size});
 
     glCompileShader(shader);
 

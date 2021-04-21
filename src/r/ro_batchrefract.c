@@ -1,5 +1,6 @@
 #include "mathc/float.h"
-#include "r/r.h"
+#include "r/render.h"
+#include "r/program.h"
 #include "r/ro_batchrefract.h"
 
 
@@ -34,10 +35,7 @@ void ro_batchrefract_init(RoBatchRefract *self, int num,
     self->scale = scale_ptr;
     self->view_aabb = &VIEW_AABB_FULLSCREEN.v0;
 
-    self->program = r_shader_compile_glsl_from_files((char *[]) {
-            "res/r/refract_batch.vsh",
-            "res/r/refract_batch.fsh",
-            NULL});
+    self->program = r_program_new_file("res/r/batchrefract.glsl");
     const int loc_pose = 0;
     const int loc_uv = 4;
     const int loc_color = 8;
