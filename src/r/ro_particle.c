@@ -148,7 +148,7 @@ RoParticle ro_particle_new(int num, const float *vp, rTexture tex_sink) {
 }
 
 void ro_particle_kill(RoParticle *self) {
-    free(self->rects);
+    self->allocator.free(self->allocator, self->rects);
     glDeleteProgram(self->program);
     glDeleteVertexArrays(1, &self->vao);
     glDeleteBuffers(1, &self->vbo);

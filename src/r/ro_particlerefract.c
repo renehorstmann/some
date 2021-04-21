@@ -164,7 +164,7 @@ RoParticleRefract ro_particlerefract_new(int num,
 }
 
 void ro_particlerefract_kill(RoParticleRefract *self) {
-    free(self->rects);
+    self->allocator.free(self->allocator, self->rects);
     glDeleteProgram(self->program);
     glDeleteVertexArrays(1, &self->vao);
     glDeleteBuffers(1, &self->vbo);

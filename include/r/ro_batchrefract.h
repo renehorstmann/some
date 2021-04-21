@@ -22,9 +22,11 @@
 ////    defaults to fullscreen (0.5, 0.5, 0.5, 0.5)
 //
 
-#include <stdbool.h>
+#include "rhc/types.h"
 #include "core.h"
 #include "rect.h"
+#include "texture.h"
+#include "texture2d.h"
 
 typedef struct {
     rRect_s *rects;
@@ -35,16 +37,23 @@ typedef struct {
     GLuint program;                     // shader
     GLuint vao;                         // internal vertex array object
     GLuint vbo;                         // internal vertex buffer object
-    GLuint tex_main;                    // used main texture
-    GLuint tex_refraction;              // used refraction texture
-    const GLuint *tex_framebuffer_ptr;  // init as &r_render.framebuffer_tex
+    rTexture tex_main;                    // used main texture
+    rTexture  tex_refraction;              // used refraction texture
+    const rTexture2D *tex_framebuffer_ptr;  // init as &r_render.framebuffer_tex
     bool owns_tex_main;                 // if true, the textures will be deleted by this class
     bool owns_tex_refraction;
+    
+    Allocator_s allocator;
 } RoBatchRefract;
 
-void ro_batchrefract_init(RoBatchRefract *self, int num,
-                           const float *vp, const float *scale_ptr,
-                           GLuint tex_main_sink, GLuint tex_refraction_sink);
+RoBatchRefract ro_batchrefract_new_a(int num, 
+        const float *vp, const float *scale_ptr,
+        rTexture tex_main_sink, rTexture tex_refraction_sink,
+        Allocator_s alloc);
+
+RoBatchRefract ro_batchrefract_new(int num, 
+        const float *vp, const float *scale_ptr,
+        rTexture tex_main_sink, rTexture tex_refraction_sink);
 
 void ro_batchrefract_kill(RoBatchRefract *self);
 
@@ -55,10 +64,10 @@ void ro_batchrefract_update_sub(RoBatchRefract *self, int offset, int size);
 void ro_batchrefract_render_sub(RoBatchRefract *self, int num);
 
 // resets the texture, if .owns_tex_main is true, it will delete the old texture
-void ro_batchrefract_set_texture_main(RoBatchRefract *self, GLuint tex_main_sink);
+void ro_batchrefract_set_texture_main(RoBatchRefract *self, rTexture tex_main_sink);
 
 // resets the texture, if .owns_tex_refraction is true, it will delete the old texture
-void ro_batchrefract_set_texture_refraction(RoBatchRefract *self, GLuint tex_refraction_sink);
+void ro_batchrefract_set_texture_refraction(RoBatchRefract *self, rTexture tex_refraction_sink);
 
 
 static void ro_batchrefract_update(RoBatchRefract *self) {

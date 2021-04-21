@@ -25,6 +25,8 @@
 #include <stdbool.h>
 #include "core.h"
 #include "rect.h"
+#include "texture.h"
+#include "texture2d.h"
 
 
 typedef struct {
@@ -33,27 +35,26 @@ typedef struct {
     const float *scale;                 // float
     const float *view_aabb;             // vec4
     GLuint program;                     // shader
-    GLuint vao;                         // internal vertex array object
-    GLuint tex_main;                    // used main texture
-    GLuint tex_refraction;              // used refraction texture
-    const GLuint *tex_framebuffer_ptr;  // init as &r_render.framebuffer_tex
+    rTexture tex_main;                    // used main texture
+    rTexture tex_refraction;              // used refraction texture
+    const rTexture2D *tex_framebuffer_ptr;  // init as &r_render.framebuffer_tex
     bool owns_tex_main;                 // if true, the textures will be deleted by this class
     bool owns_tex_refraction;
 } RoSingleRefract;
 
-void ro_singlerefract_init(RoSingleRefract *self,
-                            const float *vp, const float *scale_ptr,
-                            GLuint tex_main_sink, GLuint tex_refraction_sink);
+RoSingleRefract ro_singlerefract_new(
+        const float *vp, const float *scale_ptr,
+        rTexture tex_main_sink, rTexture tex_refraction_sink);
 
 void ro_singlerefract_kill(RoSingleRefract *self);
 
 void ro_singlerefract_render(RoSingleRefract *self);
 
 // resets the texture, if .owns_tex_main is true, it will delete the old texture
-void ro_singlerefract_set_texture_main(RoSingleRefract *self, GLuint tex_main_sink);
+void ro_singlerefract_set_texture_main(RoSingleRefract *self, rTexture tex_main_sink);
 
 // resets the texture, if .owns_tex_refraction is true, it will delete the old texture
-void ro_singlerefract_set_texture_refraction(RoSingleRefract *self, GLuint tex_refraction_sink);
+void ro_singlerefract_set_texture_refraction(RoSingleRefract *self, rTexture tex_refraction_sink);
 
 
 #endif //R_RO_SINGLEREFRACT_H
