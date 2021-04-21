@@ -95,15 +95,14 @@
 
         // framebuffer offset in real pixel coords
         vec2 offset = (refract.xy - 0.5f) * 255.0f;
-        offset = offset + stretch * (v_tex_coord.cy - 0.5f) * tex_refraction_size;
+        offset = offset + stretch * (v_tex_coord.xy - 0.5f) * tex_refraction_size;
         offset = offset * scale;  // intern pixel -> real pixel
 
 
         // grab coords for framebuffer
-        vec3 r_coord;
+        vec2 r_coord;
         r_coord.x = (gl_FragCoord.x + offset.x) / tex_framebuffer_size.x;
         r_coord.y = 1.0f - (gl_FragCoord.y + offset.y) / tex_framebuffer_size.y;
-        r_coord.z = v_tex_coord.z;
 
         // if the coords are near the view space, or out of it, mix alpha to 0
         float alpha = mix(refract.a, 0.0f,
