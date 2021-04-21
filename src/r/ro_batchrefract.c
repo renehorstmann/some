@@ -33,7 +33,7 @@ RoBatchRefract ro_batchrefract_new_a(int num,
     self.allocator = alloc;
     
     assume(num>0, "batch needs atleast 1 rect");
-    self.rects = alloc.malloc(alloc, sizeof(rRect_s) * num);
+    self.rects = alloc.malloc(alloc, num * sizeof(rRect_s));
     assume(self.rects, "allocation failed");
     for(int i=0; i<num; i++) {
         self.rects[i] = r_rect_new();

@@ -26,7 +26,7 @@ RoParticleRefract ro_particlerefract_new_a(int num,
     self.allocator = alloc;
     
     assume(num>0, "particle needs atleast 1 particlerect");
-    self.rects = alloc.malloc(alloc, sizeof(rParticleRect_s) * num);
+    self.rects = alloc.malloc(alloc, num * sizeof(rParticleRect_s));
     assume(self.rects, "allocation failed");
     for(int i=0; i<num; i++) {
         self.rects[i] = r_particlerect_new();

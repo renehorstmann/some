@@ -23,7 +23,9 @@ typedef struct {
 
 RoText ro_text_new_a(int max, ro_text_sprite_fn sprite_fn, const float *vp, rTexture tex_sink, Allocator_s alloc);
 
-RoText ro_text_new(int max, ro_text_sprite_fn sprite_fn, const float *vp, rTexture tex_sink);
+static RoText ro_text_new(int max, ro_text_sprite_fn sprite_fn, const float *vp, rTexture tex_sink) {
+    return ro_text_new_a(max, sprite_fn, vp, tex_sink, allocator_new_default());
+}
 
 // inits text with the r/font55.png sprite sheet
 RoText ro_text_new_font55(int max, const float *vp);

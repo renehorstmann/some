@@ -14,8 +14,6 @@ static RoText text;
 static ePointer_s last_click;
 
 
-static RoSingle ro;
-
 // will be called on mouse or touch events
 static void on_pointer_callback(ePointer_s pointer, void *ud) {
     if (pointer.action != E_POINTER_DOWN)
@@ -42,24 +40,20 @@ int main(int argc, char **argv) {
     // init systems
     camera_init();
 
-/*
+
     // example code
     // class init of RoText
     // RoText *self, int max_chars, const float *camera_vp_matrix
     text = ro_text_new_font55(128, camera.gl);
     // see u/pose.h, sets a mat4 transformation pose
     u_pose_set_xy(&text.pose, camera_left() + 20, 0);
-*/
+
     // setup a pointer listener
     e_input_register_pointer_event(on_pointer_callback, NULL);
 
     // set clear color
     r_render.clear_color = (vec4) {0.5, 0.75, 0.5, 1};
     //
-
-    ro = ro_single_new(camera.gl, r_texture_new_file(12, 5, "res/r/font55.png"));
-    ro.rect.pose = u_pose_new(100, 0, 20, 20);
-    ro.rect.sprite.y = 1;
 
 
     e_window_main_loop(main_loop);
@@ -81,24 +75,20 @@ static void main_loop(float delta_time) {
     // render
     r_render_begin_frame(e_window.size.x, e_window.size.y);
 
-/*
+
     // example code
     static float val = 10;
     //creates a debug window to set val
     // min, max, step
     e_gui_wnd_float_attribute("val", &val, 0, 100, 5);
     char buf[128];
-    sprintf(buf, "Hello World\nval=%5.1f\nspace pressed: %i\nid=%i x=%.2f y=%.2f",
+    snprintf(buf, 128, "Hello World\nval=%5.1f\nspace pressed: %i\nid=%i x=%.2f y=%.2f",
             val, e_input.keys.space, last_click.id, last_click.pos.x, last_click.pos.y);
     // RoText methods: set text, render
     ro_text_set_text(&text, buf);
     ro_text_render(&text);
     //
-*/
 
-    ro.rect.sprite.x += 1.0*delta_time;
-    ro.rect.sprite.y += 0.25*delta_time;
-    ro_single_render(&ro);
 
     // uncomment to clone the current framebuffer into r_render.framebuffer_tex
     // r_render_blit_framebuffer(e_window.size.x, e_window.size.y);
