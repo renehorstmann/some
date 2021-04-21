@@ -9,14 +9,15 @@
 rTexture r_texture_new(int image_cols, int image_rows, int sprites_cols, int sprites_rows, const void *opt_buffer) {
     r_render_error_check("r_texture_newBEGIN");
     
-    assume(
-            image_cols > 0 && image_rows > 0
+    assume(image_cols > 0 && image_rows > 0
             && sprites_cols > 0 && sprites_rows > 0
             && image_cols % sprites_cols == 0
             && image_rows % sprites_rows == 0
             && image_cols / sprites_cols >= 1
             && image_rows / sprites_rows >= 1
-            , "texture size invalid");
+            , "texture size invalid: %i, %i ; %i %i",            image_cols, image_rows,
+            sprites_cols, sprites_rows
+            );
     
     rTexture self = {
         0,

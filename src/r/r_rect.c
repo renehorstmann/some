@@ -7,6 +7,7 @@ rRect_s r_rect_new() {
     self.pose = mat4_eye();
     self.uv = mat4_eye();
     self.color = vec4_set(1);
+    self.sprite = vec2_set(0);
     return self;
 }
 

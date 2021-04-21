@@ -13,6 +13,7 @@ typedef struct {
     mat4 pose;      // 3d pose for the rect position (see u/pose.h)
     mat4 uv;        // 3d pose for the uv texture map (see u/pose.h)
     vec4 color;     // additional color (texture_color * color)
+    vec2 sprite;    // position of the sprite in the grid
 } rRect_s;
 
 // rect with additional values for a particle system
@@ -23,6 +24,7 @@ typedef struct {
             mat4 pose;
             mat4 uv;
             vec4 color;
+            vec2 sprite;
         };
     };
     vec4 speed;         // position += speed * dt
@@ -43,14 +45,14 @@ _Static_assert(offsetof(rParticleRect_s, uv_time)
 // creates a new rect with:
 // pose = uv = eye
 // color = 1
+// sprite = 0
 rRect_s r_rect_new();
 
 // as new, but xy=MAX, alpha=0
 rRect_s r_rect_new_hidden();
 
 // creates a new particle rect with:
-// pose = uv = eye
-// color = 1
+// rect = rect_new
 // speed, acc, color_speed, uv_step = 0
 // axis_angle = 0, 0, 1, 0
 // uv_time = max

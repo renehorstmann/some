@@ -93,15 +93,24 @@ static void main_loop(float delta_time) {
     ro_text_render(&text);
     //
 */
-
+    if(r_render.framebuffer_tex.size.x>1) {  
     ivec2 tex_size = r_render.framebuffer_tex.size;
     void *buffer = rhc_malloc_raising(4 * tex_size.x*tex_size.y);
     r_texture2d_get(r_render.framebuffer_tex, buffer);
-    ro_single_set_texture(&ro, r_texture_new(tex_size.x, tex_size.y, 1, 1, buffer));
+    ro_single_set_texture(&ro, r_texture_new(tex_size.x, tex_size.y, 1, 2, buffer));
     rhc_free(buffer);
     
+    ro.rect.sprite.y = -0.51;
     ro_single_render(&ro);
-    r_render.clear_color.rgb = vec3_random_range(0, 1);
+    }
+    
+    static bool swap = false;
+    if(swap)
+        r_render.clear_color.r = 1;
+    else
+        r_render.clear_color.r = 0;
+        
+    swap = !swap;
 
     // uncomment to clone the current framebuffer into r_render.framebuffer_tex
     r_render_blit_framebuffer(e_window.size.x, e_window.size.y);
