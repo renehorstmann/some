@@ -1,10 +1,5 @@
 #ifdef VERTEX
-    #ifdef OPTION_GLES
-        #version 300 es
-    #else
-        #version 330 core
-    #endif
-
+    
     layout(location = 0) in mat4 in_pose;
     // uses location [0:4] (for each col)
 
@@ -12,22 +7,22 @@
     // uses location [4:7] (for each col)
 
     layout(location = 8) in vec4 in_color;
+    layout(location = 9) in vec4 in_sprite_and_sprite_speed;
     
-    layout(location = 9) in vec4 in_speed;
-    layout(location = 10) in vec4 in_acc;
-    layout(location = 11) in vec4 in_axis_angle;
-    layout(location = 12) in vec4 in_color_speed;
-    
-    layout(location = 13) in vec3 in_uv_step_and_time;
+    layout(location = 10) in vec4 in_speed;
+    layout(location = 11) in vec4 in_acc;
+    layout(location = 12) in vec4 in_axis_angle;
+    layout(location = 13) in vec4 in_color_speed;
 
-    layout(location = 14) in float start_time;
+    layout(location = 14) in float in_start_time;
 
     // on some Browsers (Chrome on Desktop?!?) location = 15 is not valid, even if GL_MAX_VERTEX_ATTRIBS == 16
 
-    out vec2 v_tex_coord;
+    out vec3 v_tex_coord;
     out vec4 v_color;
 
     uniform mat4 vp;
+    uniform vec2 sprites;
     uniform float time;
 
     const vec4 vertices[6] = vec4[](
@@ -69,7 +64,11 @@
 
 
     void main() {
-        float dt = time - start_time;
+        vec2 in_sprite = in_sprite_and_sprite_speed.xy;
+        vec2 in_sprite_speed = in_sprite_and_sprite_speed.zw;
+        
+        
+        float dt = time - in_start_time;
 
         vec4 pos = vertices[gl_VertexID];
 
@@ -81,8 +80,14 @@
         pos += in_acc * (dt * dt);
         gl_Position = vp * pos;
 
-        vec2 uv_step = in_uv_step_and_time.xy * floor(dt / in_uv_step_and_time.z);
-        v_tex_coord = (in_uv * tex_coords[gl_VertexID]).xy + uv_step;
+        v_tex_coord.xy = (in_uv * tex_coords[gl_VertexID]).xy;
+        
+        // glsl: actual_layer = max(0, min(d​ - 1, floor(layer​ + 0.5)) )
+        vec2 sprite = in_sprite + in_sprite_speed * dt;
+        vec2 s_pos = floor(mod(sprite+0.5, sprites));
+        s_pos = clamp(s_pos, vec2(0), sprites-1.0);
+        v_tex_coord.z = s_pos.y * sprites.x + s_pos.x;
+        
 
         v_color = in_color + (in_color_speed * dt);
     }
@@ -92,14 +97,11 @@
 
 #ifdef FRAGMENT
     #ifdef OPTION_GLES
-        #version 300 es
         precision mediump float;
         precision lowp sampler2DArray;
-    #else
-        #version 330 core
     #endif
 
-    in vec2 v_tex_coord;
+    in vec3 v_tex_coord;
     in vec4 v_color;
 
     out vec4 out_frag_color;
@@ -111,8 +113,8 @@
     uniform vec4 view_aabb;
 
 
-    uniform sampler2D tex_main;
-    uniform sampler2D tex_refraction;
+    uniform sampler2DArray tex_main;
+    uniform sampler2DArray tex_refraction;
     uniform sampler2D tex_framebuffer;
 
 
@@ -144,14 +146,15 @@
 
         // framebuffer offset in real pixel coords
         vec2 offset = (refract.xy - 0.5f) * 255.0f;
-        offset = offset + stretch * (v_tex_coord - 0.5f) * tex_refraction_size;
+        offset = offset + stretch * (v_tex_coord.cy - 0.5f) * tex_refraction_size;
         offset = offset * scale;  // intern pixel -> real pixel
 
 
         // grab coords for framebuffer
-        vec2 r_coord;
+        vec3 r_coord;
         r_coord.x = (gl_FragCoord.x + offset.x) / tex_framebuffer_size.x;
         r_coord.y = 1.0f - (gl_FragCoord.y + offset.y) / tex_framebuffer_size.y;
+        r_coord.z = v_tex_coord.z;
 
         // if the coords are near the view space, or out of it, mix alpha to 0
         float alpha = mix(refract.a, 0.0f,

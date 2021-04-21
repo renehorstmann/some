@@ -39,9 +39,9 @@
         v_tex_coord.xy = (in_uv * tex_coords[gl_VertexID]).xy;
         
         // glsl: actual_layer = max(0, min(d​ - 1, floor(layer​ + 0.5)) )
-        vec2 pos = floor(mod(in_sprite+0.5, sprites));
-        pos = clamp(pos, vec2(0), sprites-1.0);
-        v_tex_coord.z = pos.y * sprites.x + pos.x;
+        vec2 s_pos = floor(mod(in_sprite+0.5, sprites));
+        s_pos = clamp(s_pos, vec2(0), sprites-1.0);
+        v_tex_coord.z = s_pos.y * sprites.x + s_pos.x;
         
         v_color = in_color;
     }

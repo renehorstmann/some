@@ -27,20 +27,20 @@ typedef struct {
             vec2 sprite;
         };
     };
+    vec2 sprite_speed;  // sprite += sprite_speed * dt
     vec4 speed;         // position += speed * dt
     vec4 acc;           // position += acc * dt * dt
     vec4 axis_angle;    // orientation += axis_angle * dt   (nx, ny, nz, rad)
     vec4 color_speed;   // color += color_speed * dt
-    vec2 uv_step;       // uv_position += uv_step * floor(dt / uv_time)
-    float uv_time;      // using uv_* may result in artifacts, if dt is too high (float accuracy)
     float start_time;   // dt = current_time - start_time
 } rParticleRect_s;
 
 // checks padding
-_Static_assert(offsetof(rParticleRect_s, uv_time)
-               - offsetof(rParticleRect_s, uv_step)
+_Static_assert(offsetof(rParticleRect_s, sprite_speed)
+               - offsetof(rParticleRect_s, sprite)
                == 2 * sizeof(float),
-               "uv_time must not be padded");
+               "sprite_speed must not be padded");
+              
 
 // creates a new rect with:
 // pose = uv = eye
@@ -53,9 +53,8 @@ rRect_s r_rect_new_hidden();
 
 // creates a new particle rect with:
 // rect = rect_new
-// speed, acc, color_speed, uv_step = 0
+// sprite_speed, speed, acc, color_speed = 0
 // axis_angle = 0, 0, 1, 0
-// uv_time = max
 // start_time = 0
 rParticleRect_s r_particlerect_new();
 

@@ -22,13 +22,12 @@ rRect_s r_rect_new_hidden() {
 rParticleRect_s r_particlerect_new() {
     rParticleRect_s self;
     self.rect = r_rect_new();
-    
+   
+    self.sprite_speed = vec2_set(0); 
     self.speed = vec4_set(0);
     self.acc = vec4_set(0);
     self.axis_angle = (vec4){0, 0, 1, 0};
     self.color_speed = vec4_set(0);
-    self.uv_step = vec2_set(0);
-    self.uv_time = FLT_MAX;
     self.start_time = 0;
     return self;
 }

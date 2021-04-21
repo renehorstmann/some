@@ -14,10 +14,11 @@ static int clamp_range(int i, int begin, int end) {
 }
 
 RoBatch ro_batch_new_a(int num, const float *vp, rTexture tex_sink, Allocator_s alloc) {
-    r_render_error_check("ro_batch_render_newBEGIN");
+    r_render_error_check("ro_batch_newBEGIN");
     RoBatch self;
-    
     self.allocator = alloc;
+    
+    assume(num>0, "batch needs atleast 1 rect");
     self.rects = alloc.malloc(alloc, sizeof(rRect_s) * num);
     assume(self.rects, "allocation failed");
     for(int i=0; i<num; i++) {
