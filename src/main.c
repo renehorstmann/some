@@ -42,13 +42,13 @@ int main(int argc, char **argv) {
     // init systems
     camera_init();
 
-/*
+
     // example code
     // class init of RoText
     // RoText *self, int max_chars, const float *camera_vp_matrix
-    ro_text_init_font55(&text, 128, camera.gl);
+    text = ro_text_new_font55(128, camera.gl);
     // see u/pose.h, sets a mat4 transformation pose
-    u_pose_set_xy(&text.pose, camera_left() + 20, 0);*/
+    u_pose_set_xy(&text.pose, camera_left() + 20, 0);
 
     // setup a pointer listener
   e_input_register_pointer_event(on_pointer_callback, NULL);
@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
     r_render.clear_color = (vec4) {0.5, 0.75, 0.5, 1};
     //
     
-    ro = ro_single_new(camera.gl, r_texture_new_file(4, 2, "../JumpHare/res/flag.png"));
+    ro = ro_single_new(camera.gl, r_texture_new_file(12, 5, "res/r/font55.png"));
     ro.rect.pose = u_pose_new(64, 0, 32, 32);
 
     e_window_main_loop(main_loop);
@@ -79,7 +79,7 @@ static void main_loop(float delta_time) {
     // render
     r_render_begin_frame(e_window.size.x, e_window.size.y);
 
-/*
+
     // example code
     static float val = 10;
     //creates a debug window to set val
@@ -92,7 +92,8 @@ static void main_loop(float delta_time) {
     ro_text_set_text(&text, buf);
     ro_text_render(&text);
     //
-*/
+
+
     ro.rect.sprite.x += 6.0 *delta_time;
     ro.rect.sprite.y += 1.0 * delta_time;
     ro_single_render(&ro);
