@@ -8,6 +8,7 @@
 #include "core.h"
 #include "render.h"
 #include "texture.h"
+#include "texture2d.h"
 #include "program.h"
 #include "rect.h"
 #include "ro_single.h"

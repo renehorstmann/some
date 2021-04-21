@@ -29,7 +29,7 @@ void r_render_init(SDL_Window *window) {
     }
     
     // startup "empty" texture
-    r_render.framebuffer_tex = r_texture_new_white_pixel();
+    r_render.framebuffer_tex = r_texture2d_new_white_pixel();
     glGenFramebuffers(1, &L.framebuffer_tex_fbo);
     
     r_render_error_check("r_render_init");
@@ -61,15 +61,13 @@ void r_render_blit_framebuffer(int cols, int rows) {
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &current_fbo);
 
     // renew texture, if size changed
-    if(r_render.framebuffer_tex.sprite_size.x != cols || r_render.framebuffer_tex.sprite_size.y != rows) {
-        r_texture_kill(&r_render.framebuffer_tex);
-        r_render.framebuffer_tex = r_texture_new_empty(cols, rows, 1, 1);
+    if(r_render.framebuffer_tex.size.x != cols || r_render.framebuffer_tex.size.y != rows) {
+        r_texture2d_kill(&r_render.framebuffer_tex);
+        r_render.framebuffer_tex = r_texture2d_new_empty(cols, rows);
 
         glBindFramebuffer(GL_FRAMEBUFFER, L.framebuffer_tex_fbo);
         
-        //glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_ARRAY, r_render.framebuffer_tex.tex, 0, 0);
-        
-        // ?
+        // 3D not working in WebGL2
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, r_render.framebuffer_tex.tex, 0);
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

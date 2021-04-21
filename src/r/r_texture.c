@@ -10,13 +10,13 @@ rTexture r_texture_new(int image_cols, int image_rows, int sprites_cols, int spr
     r_render_error_check("r_texture_newBEGIN");
     
     assume(
-    image_cols > 0 && image_rows > 0
-    && sprites_cols > 0 && sprites_rows > 0
-    && image_cols % sprites_cols == 0
-    && image_rows % sprites_rows == 0
-    && image_cols / sprites_cols >= 1
-    && image_rows / sprites_rows >= 1
-    , "texture size invalid");
+            image_cols > 0 && image_rows > 0
+            && sprites_cols > 0 && sprites_rows > 0
+            && image_cols % sprites_cols == 0
+            && image_rows % sprites_rows == 0
+            && image_cols / sprites_cols >= 1
+            && image_rows / sprites_rows >= 1
+            , "texture size invalid");
     
     rTexture self = {
         0,
@@ -85,9 +85,9 @@ void r_texture_kill(rTexture *self) {
     *self = r_texture_new_invalid();
 }
 
-void r_texture_update(rTexture self, const void *buffer) {
-    r_render_error_check("r_texture_updateBEGIN");
-    if(!r_texture_valid(self))
+void r_texture_set(rTexture self, const void *buffer) {
+    r_render_error_check("r_texture_setBEGIN");
+    if(!r_texture_valid(self) || !buffer)
         return;
     glBindTexture(GL_TEXTURE_2D_ARRAY, self.tex);
     glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 
@@ -96,8 +96,9 @@ void r_texture_update(rTexture self, const void *buffer) {
             self.sprite_size.y, 
             self.sprites.x * self.sprites.y,
             GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-    r_render_error_check("r_texture_update");
+    r_render_error_check("r_texture_set");
 }
+
 
 void r_texture_filter_linear(rTexture self) {
     r_render_error_check("r_texture_filter_linearBEGIN");

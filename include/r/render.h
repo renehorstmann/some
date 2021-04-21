@@ -8,12 +8,14 @@
 #include "mathc/types/int.h"
 #include "mathc/types/float.h"
 #include "core.h"
-#include "texture.h"
+#include "texture2d.h"
 
 struct rRenderGolabals_s {
     vec4 clear_color;               // used by begin_frame
     SDL_Window *window;             // window, set by init
-    rTexture framebuffer_tex;         // copy of the framebuffer, after blit_framebuffer
+    
+    // 3D (2D_ARRAY) not working in WebGL2
+    rTexture2D framebuffer_tex;         // copy of the framebuffer, after blit_framebuffer
 };
 extern struct rRenderGolabals_s r_render;
 
