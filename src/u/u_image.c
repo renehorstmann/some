@@ -74,19 +74,19 @@ uImage *u_image_new_file_a(int layers, const char *file, Allocator_s a) {
     SDL_Surface *img = IMG_Load(file);
     if (!img) {
         rhc_error = "load image file failed";
-        log_error("load image file (%s) failed: %s", file, IMG_GetError());
+        log_warn("load image file (%s) failed: %s", file, IMG_GetError());
         goto CLEAN_UP;
     }
     SDL_PixelFormat *f = img->format;
     if (f->BitsPerPixel != 32 || f->Amask == 0) {
         rhc_error = "load image file failed";
-        log_error("load image file (%s) failed: 8bpp and alpha needed", file);
+        log_warn("load image file (%s) failed: 8bpp and alpha needed", file);
         goto CLEAN_UP;
     }
 
     if (img->h % layers != 0) {
         rhc_error = "load image file failed";
-        log_error("load image file (%s) failed: rows %% layers != 0", file);
+        log_warn("load image file (%s) failed: rows %% layers != 0", file);
         goto CLEAN_UP;
     }
 
