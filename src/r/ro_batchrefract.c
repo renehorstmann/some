@@ -116,13 +116,6 @@ RoBatchRefract ro_batchrefract_new_a(int num,
     return self;
 }
 
-RoBatchRefract ro_batchrefract_new(int num,
-        const float *vp, const float *scale_ptr,
-        rTexture tex_main_sink, rTexture tex_refraction_sink) {
-    return ro_batchrefract_new_a(num, vp, scale_ptr,             tex_main_sink, tex_refraction_sink,
-            allocator_new_default()
-    );
-}
 
 void ro_batchrefract_kill(RoBatchRefract *self) {
     self->allocator.free(self->allocator, self->rects);

@@ -5,7 +5,7 @@
 // class to render multiple rects with a single draw call
 //
 
-#include "rhc/types.h"
+#include "rhc/allocator.h"
 #include "core.h"
 #include "rect.h"
 #include "texture.h"
@@ -25,7 +25,10 @@ typedef struct {
 
 RoBatch ro_batch_new_a(int num, const float *vp, rTexture tex_sink, Allocator_s alloc);
 
-RoBatch ro_batch_new(int num, const float *vp, rTexture tex_sink);
+static RoBatch ro_batch_new(int num, const float *vp, rTexture tex_sink) {
+    return ro_batch_new_a(num, vp, tex_sink, allocator_new_default());
+}
+
 
 void ro_batch_kill(RoBatch *self);
 

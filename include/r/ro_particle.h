@@ -6,7 +6,7 @@
 //
 
 #include "mathc/types/float.h"
-#include "rhc/types.h"
+#include "rhc/allocator.h"
 #include "core.h"
 #include "rect.h"
 #include "texture.h"
@@ -27,7 +27,9 @@ typedef struct {
 
 RoParticle ro_particle_new_a(int num, const float *vp, rTexture tex_sink, Allocator_s alloc);
 
-RoParticle ro_particle_new(int num, const float *vp, rTexture tex_sink);
+static RoParticle ro_particle_new(int num, const float *vp, rTexture tex_sink) {
+    return ro_particle_new_a(num, vp, tex_sink, allocator_new_default());
+}
 
 void ro_particle_kill(RoParticle *self);
 

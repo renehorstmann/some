@@ -1,7 +1,6 @@
 #include <float.h> // FLT_MAX
 #include "mathc/float.h"
 #include "rhc/error.h"
-#include "rhc/allocator.h"
 #include "r/render.h"
 #include "r/program.h"
 #include "r/ro_particle.h"
@@ -143,9 +142,7 @@ RoParticle ro_particle_new_a(int num, const float *vp, rTexture tex_sink, Alloca
     return self;
 }
 
-RoParticle ro_particle_new(int num, const float *vp, rTexture tex_sink) {
-    return ro_particle_new_a(num, vp, tex_sink, allocator_new_default());
-}
+
 
 void ro_particle_kill(RoParticle *self) {
     self->allocator.free(self->allocator, self->rects);

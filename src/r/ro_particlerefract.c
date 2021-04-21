@@ -154,14 +154,6 @@ RoParticleRefract ro_particlerefract_new_a(int num,
     return self;
 }
 
-RoParticleRefract ro_particlerefract_new(int num,
-        const float *vp, const float *scale_ptr,
-        rTexture tex_main_sink, 
-        rTexture tex_refraction_sink) {
-    return ro_particlerefract_new_a(num, vp, scale_ptr,
-            tex_main_sink, tex_refraction_sink,
-            allocator_new_default());
-}
 
 void ro_particlerefract_kill(RoParticleRefract *self) {
     self->allocator.free(self->allocator, self->rects);

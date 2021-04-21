@@ -13,8 +13,6 @@ static RoText text;
 // stores the last pressed mouse click / touch to render with RoText text
 static ePointer_s last_click;
 
-static RoParticle ro;
-
 
 // will be called on mouse or touch events
 static void on_pointer_callback(ePointer_s pointer, void *ud) {
@@ -57,11 +55,6 @@ int main(int argc, char **argv) {
     r_render.clear_color = (vec4) {0.5, 0.75, 0.5, 1};
     //
     
-    ro = ro_particle_new(1, camera.gl, r_texture_new_file(12, 5, "res/r/font55.png"));
-    ro.rects[0].pose = u_pose_new(64, 0, 32, 32);
-    ro.rects[0].sprite_speed.x = 6.0;
-    ro.rects[0].sprite_speed.y = 1.0;
-    ro_particle_update(&ro);
 
     e_window_main_loop(main_loop);
 
@@ -95,11 +88,7 @@ static void main_loop(float delta_time) {
     ro_text_set_text(&text, buf);
     ro_text_render(&text);
     //
-
-
-    static float t = 0;
-    t+=delta_time;
-    ro_particle_render(&ro, t);
+    
 
     // uncomment to clone the current framebuffer into r_render.framebuffer_tex
     // r_render_blit_framebuffer(e_window.size.x, e_window.size.y);
