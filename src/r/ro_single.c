@@ -1,42 +1,35 @@
-#include "mathc/float.h"
+#include "r/render.h"
 #include "r/program.h"
 #include "r/ro_single.h"
 
 
-void ro_single_init(RoSingle *self, const float *vp, GLuint tex_sink) {
-    self->rect.pose = mat4_eye();
-    self->rect.uv = mat4_eye();
-    self->rect.color = vec4_set(1);
+RoSingle ro_single_new(const float *vp, rTexture tex_sink) {
+    r_render_error_check("ro_single_newBEGIN");
+    RoSingle self;
+    
+    self.rect = r_rect_new();
 
-    self->vp = vp;
+    self.vp = vp;
 
-    self->program = r_program_new_file("res/r/single.glsl");
+    self.program = r_program_new_file("res/r/single.glsl");
+    
+    self.tex = tex_sink;
+    self.owns_tex = true;
 
-    self->tex = tex_sink;
-    self->owns_tex = true;
-
-    // vao scope
-    {
-        glGenVertexArrays(1, &self->vao);
-        glBindVertexArray(self->vao);
-
-        // texture (using only unit 0)
-        glUniform1i(glGetUniformLocation(self->program, "tex"), 0);
-
-        glBindVertexArray(0);
-    }
+    r_render_error_check("ro_single_new");
+    return self;
 }
 
 void ro_single_kill(RoSingle *self) {
     glDeleteProgram(self->program);
-    glDeleteVertexArrays(1, &self->vao);
     if (self->owns_tex)
-        glDeleteTextures(1, &self->tex);
+        r_texture_kill(&self->tex);
     *self = (RoSingle) {0};
 }
 
 
 void ro_single_render(RoSingle *self) {
+    r_render_error_check("ro_single_renderBEGIN");
     glUseProgram(self->program);
 
     glUniformMatrix4fv(glGetUniformLocation(self->program, "pose"), 1, GL_FALSE, &self->rect.pose.m00);
@@ -47,21 +40,22 @@ void ro_single_render(RoSingle *self) {
 
     glUniform4fv(glGetUniformLocation(self->program, "color"), 1, &self->rect.color.v0);
 
+
+    glUniform1i(glGetUniformLocation(self->program, "tex"), 0);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D_ARRAY, self->tex);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, self->tex.tex);
 
     {
-        glBindVertexArray(self->vao);
         // r_shader_validate(self->program); // debug test
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
     }
 
     glUseProgram(0);
+    r_render_error_check("ro_single_render");
 }
 
-void ro_single_set_texture(RoSingle *self, GLuint tex_sink) {
+void ro_single_set_texture(RoSingle *self, rTexture tex_sink) {
     if (self->owns_tex)
-        glDeleteTextures(1, &self->tex);
+        r_texture_kill(&self->tex);
     self->tex = tex_sink;
 }

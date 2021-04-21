@@ -11,11 +11,11 @@
     layout(location = 4) in mat4 in_uv;
     // uses location [4:7] (for each col)
 
-    layout(location = 8) in vec4 in_speed;
-    layout(location = 9) in vec4 in_acc;
-    layout(location = 10) in vec4 in_axis_angle;
-
-    layout(location = 11) in vec4 in_color;
+    layout(location = 8) in vec4 in_color;
+    
+    layout(location = 9) in vec4 in_speed;
+    layout(location = 10) in vec4 in_acc;
+    layout(location = 11) in vec4 in_axis_angle;
     layout(location = 12) in vec4 in_color_speed;
 
     layout(location = 13) in vec3 in_uv_step_and_time;

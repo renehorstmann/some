@@ -48,11 +48,13 @@ void ro_particlerefract_init(RoParticleRefract *self, int num,
     self->program = r_program_new_file("res/r/particlerefract.glsl");
     const int loc_pose = 0;
     const int loc_uv = 4;
-    const int loc_speed = 8;
-    const int loc_acc = 9;
-    const int loc_axis_angle = 10;
-    const int loc_color = 11;
+    const int loc_color = 8;
+    
+    const int loc_speed = 9;
+    const int loc_acc = 10;
+    const int loc_axis_angle = 11;
     const int loc_color_speed = 12;
+    
     const int loc_uv_step_and_time = 13;
     const int loc_start_time = 14;
 
@@ -61,7 +63,7 @@ void ro_particlerefract_init(RoParticleRefract *self, int num,
     self->owns_tex_main = true;
     self->owns_tex_refraction = true;
     
-    self->tex_framebuffer_ptr = &r_render.framebuffer_tex;
+    self->tex_framebuffer_ptr = &r_render.framebuffer_tex.tex;
 
 
     // vao scope
@@ -106,6 +108,14 @@ void ro_particlerefract_init(RoParticleRefract *self, int num,
                 glVertexAttribDivisor(loc, 1);
             }
 
+            // color
+            glEnableVertexAttribArray(loc_color);
+            glVertexAttribPointer(loc_color, 4, GL_FLOAT, GL_FALSE,
+                                  sizeof(rParticleRect_s),
+                                  (void *) offsetof(rParticleRect_s, color));
+            glVertexAttribDivisor(loc_color, 1);
+
+
             // speed
             glEnableVertexAttribArray(loc_speed);
             glVertexAttribPointer(loc_speed, 4, GL_FLOAT, GL_FALSE,
@@ -127,13 +137,7 @@ void ro_particlerefract_init(RoParticleRefract *self, int num,
                                   (void *) offsetof(rParticleRect_s, axis_angle));
             glVertexAttribDivisor(loc_axis_angle, 1);
 
-            // color
-            glEnableVertexAttribArray(loc_color);
-            glVertexAttribPointer(loc_color, 4, GL_FLOAT, GL_FALSE,
-                                  sizeof(rParticleRect_s),
-                                  (void *) offsetof(rParticleRect_s, color));
-            glVertexAttribDivisor(loc_color, 1);
-
+            
             // color_speed
             glEnableVertexAttribArray(loc_color_speed);
             glVertexAttribPointer(loc_color_speed, 4, GL_FLOAT, GL_FALSE,

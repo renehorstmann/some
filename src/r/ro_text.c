@@ -144,5 +144,5 @@ static bool font55_uv_cb(mat4 *uv, char c) {
 }
 
 void ro_text_init_font55(RoText *self, int max, const float *vp) {
-    ro_text_init(self, max, font55_uv_cb, vp, r_texture_new_file("res/r/font55.png", NULL));
+    ro_text_init(self, max, font55_uv_cb, vp, r_texture_new_file(1, 1, "res/r/font55.png").tex);
 }

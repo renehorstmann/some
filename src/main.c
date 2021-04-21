@@ -57,8 +57,8 @@ int main(int argc, char **argv) {
     r_render.clear_color = (vec4) {0.5, 0.75, 0.5, 1};
     //
     
-    ro_single_init(&ro, camera.gl, r2_texture_new_file("res/r/font55.png", NULL));
-
+    rTexture tex = r_texture_new_file(1, 1, "res/r/font55.png");
+    ro = ro_single_new(camera.gl, r_render.framebuffer_tex);
     ro.rect.pose = u_pose_new(64, 0, 32, 32);
 
     e_window_main_loop(main_loop);
@@ -95,9 +95,10 @@ static void main_loop(float delta_time) {
     //
 */
     ro_single_render(&ro);
+    r_render.clear_color.rgb = vec3_random_range(0, 1);
 
     // uncomment to clone the current framebuffer into r_render.framebuffer_tex
-    // r_render_blit_framebuffer(e_window.size.x, e_window.size.y);
+    r_render_blit_framebuffer(e_window.size.x, e_window.size.y);
 
     e_gui_render();
 
@@ -105,7 +106,7 @@ static void main_loop(float delta_time) {
     r_render_end_frame();
 
     // check for opengl errors:
-    r_render_error_check();
+    r_render_error_check("main_loop_end");
 }
 
 

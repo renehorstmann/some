@@ -10,7 +10,7 @@
 
 
 // tests if the shader is valid
-static bool r_program_shader_valid(GLuint shader) {
+static bool r_programshader_valid(GLuint shader) {
     return shader > 0;
 }
 
@@ -20,10 +20,10 @@ static bool r_program_valid(GLuint program) {
 }
 
 // compiles a shader
-GLuint r_program_shader_new(Str_s source, GLint shader_type);
+GLuint r_programshader_new(Str_s source, GLint shader_type);
 
 // compiles a shader, src=file
-GLuint r_program_shader_new_file(const char *file, GLint shader_type);
+GLuint r_programshader_new_file(const char *file, GLint shader_type);
 
 // creates a program from given shaders
 GLuint r_program_new(const GLuint *shaders, int n, bool delete_shaders);

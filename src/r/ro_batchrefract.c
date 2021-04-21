@@ -45,7 +45,7 @@ void ro_batchrefract_init(RoBatchRefract *self, int num,
     self->owns_tex_main = true;
     self->owns_tex_refraction = true;
     
-    self->tex_framebuffer_ptr = &r_render.framebuffer_tex;
+    self->tex_framebuffer_ptr = &r_render.framebuffer_tex.tex;
 
     // vao scope
     {

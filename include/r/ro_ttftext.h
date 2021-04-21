@@ -15,7 +15,7 @@ struct RoTtfTextGlobals_s {
 };
 extern struct RoTtfTextGlobals_s ro_ttftext;
 
-GLuint ro_ttftext_create_texture(TTF_Font *font, vec4 color, const char *text, int *opt_out_w, int *opt_out_h);
+rTexture ro_ttftext_create_texture(TTF_Font *font, vec4 color, const char *text, int *opt_out_w, int *opt_out_h);
 
 
 // Renders ttf text
@@ -25,7 +25,7 @@ typedef struct {
     float ratio;    // width / height
 } RoTtfText;
 
-void ro_ttftext_init(RoTtfText *self, const float *vp, vec4 color, const char *text);
+RoTtfText ro_ttftext_new(const float *vp, vec4 color, const char *text);
 
 void ro_ttftext_kill(RoTtfText *self);
 

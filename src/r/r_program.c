@@ -1,9 +1,11 @@
 #include "rhc/error.h"
 #include "rhc/file.h"
+#include "r/render.h"
 #include "r/program.h"
 
 
-GLuint r_program_shader_new(Str_s source, GLint shader_type) {
+GLuint r_programshader_new(Str_s source, GLint shader_type) {
+    r_render_error_check("r_programshader_new");
     // check source available
     if(str_empty(source))
         return 0;
@@ -47,22 +49,26 @@ GLuint r_program_shader_new(Str_s source, GLint shader_type) {
         rhc_free(buffer);
 
         glDeleteShader(shader);
-        return 0;
+        shader = 0;
     }
+    r_render_error_check("r_programshader_new");
     return shader;
 }
 
-GLuint r_program_shader_new_file(const char *file, GLint shader_type) {
+GLuint r_programshader_new_file(const char *file, GLint shader_type) {
+    r_render_error_check("r_programshader_new_fileBEGIN");
     String source = file_read(file, true);
-    GLuint shader = r_program_shader_new(source.str, shader_type);
+    GLuint shader = r_programshader_new(source.str, shader_type);
     string_kill(&source);
+    r_render_error_check("r_programshader_new_file");
     return shader;
 }
 
 GLuint r_program_new(const GLuint *shaders, int n, bool delete_shaders) {
+    r_render_error_check("r_program_newBEGIN");
     // check each shader valid
     for(int i=0; i<n; i++) {
-        if(!r_program_shader_valid(shaders[i]))
+        if(!r_programshader_valid(shaders[i]))
             return 0;
     }
 
@@ -92,13 +98,15 @@ GLuint r_program_new(const GLuint *shaders, int n, bool delete_shaders) {
             glDeleteShader(shaders[i]);
     }
 
+    r_render_error_check("r_program_new");
     return program;
 }
 
 GLuint r_program_new_file(const char *file) {
+    r_render_error_check("r_program_new_fileBEGIN");
     String source = file_read(file, true);
-    GLuint vertex = r_program_shader_new(source.str, GL_VERTEX_SHADER);
-    GLuint fragment = r_program_shader_new(source.str, GL_FRAGMENT_SHADER);
+    GLuint vertex = r_programshader_new(source.str, GL_VERTEX_SHADER);
+    GLuint fragment = r_programshader_new(source.str, GL_FRAGMENT_SHADER);
 
     GLuint program = r_program_new((const GLuint[]) {vertex, fragment}, 2, false);
 
@@ -107,10 +115,12 @@ GLuint r_program_new_file(const char *file) {
     glDeleteShader(fragment);
     string_kill(&source);
 
+    r_render_error_check("r_program_new_file");
     return program;
 }
 
 void r_program_validate(GLuint program) {
+    r_render_error_check("r_program_validateBEGIN");
     if(!r_program_valid(program))
         return;
 
@@ -127,4 +137,5 @@ void r_program_validate(GLuint program) {
         SDL_Log("Program validate failure: %s", buffer);
         rhc_free(buffer);
     }
+    r_render_error_check("r_program_validate");
 }

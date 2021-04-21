@@ -8,6 +8,7 @@ static struct {
 } L;
 
 void r_render_init(SDL_Window *window) {
+    r_render_error_check("r_render_initBEGIN");
     r_render.window = window;
     r_render.clear_color = (vec4) {{0, 0, 0, 1}};
 
@@ -29,11 +30,14 @@ void r_render_init(SDL_Window *window) {
     
     // startup "empty" texture
     r_render.framebuffer_tex = r_texture_new_white_pixel();
-    r_render.framebuffer_tex_size = (ivec2) {1, 1};
     glGenFramebuffers(1, &L.framebuffer_tex_fbo);
+    
+    r_render_error_check("r_render_init");
 }
 
 void r_render_begin_frame(int cols, int rows) {
+    r_render_error_check("r_render_begin_frameBEGIN");
+    
     glViewport(0, 0, cols, rows);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -41,6 +45,8 @@ void r_render_begin_frame(int cols, int rows) {
     glDisable(GL_SCISSOR_TEST);
     glClearColor(r_render.clear_color.r, r_render.clear_color.g, r_render.clear_color.b, r_render.clear_color.a);
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    r_render_error_check("r_render_begin_frame");
 }
 
 void r_render_end_frame() {
@@ -48,17 +54,24 @@ void r_render_end_frame() {
 }
 
 void r_render_blit_framebuffer(int cols, int rows) {
+    r_render_error_check("r_render_blit_framebufferBEGIN");
+  
+    
     GLint current_fbo;
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &current_fbo);
 
     // renew texture, if size changed
-    if(r_render.framebuffer_tex_size.x != cols || r_render.framebuffer_tex_size.y != rows) {
-        glDeleteTextures(1, &r_render.framebuffer_tex);
-        r_render.framebuffer_tex = r_texture_new_empty(cols, rows);
-        r_render.framebuffer_tex_size = (ivec2) {{cols, rows}};
+    if(r_render.framebuffer_tex.sprite_size.x != cols || r_render.framebuffer_tex.sprite_size.y != rows) {
+        r_texture_kill(&r_render.framebuffer_tex);
+        r_render.framebuffer_tex = r_texture_new_empty(cols, rows, 1, 1);
 
         glBindFramebuffer(GL_FRAMEBUFFER, L.framebuffer_tex_fbo);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, r_render.framebuffer_tex, 0);
+        
+        //glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_ARRAY, r_render.framebuffer_tex.tex, 0, 0);
+        
+        // ?
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, r_render.framebuffer_tex.tex, 0);
+        
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
@@ -70,9 +83,12 @@ void r_render_blit_framebuffer(int cols, int rows) {
 
     // restore
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, current_fbo);
+    
+    r_render_error_check("r_render_blit_framebuffer");
+  
 }
 
-void r_render_error_check() {
+void r_render_error_check(const char *opt_tag) {
     static GLenum errs[32];
     int errs_size = 0;
     GLenum err;
@@ -81,7 +97,47 @@ void r_render_error_check() {
             if (err == errs[i])
                 continue;
         }
-        SDL_Log("OpenGl error in a frame: 0x%04x", err);
+        
+        const char *name;
+        switch(err) {
+            case 0x500:
+                name = "GL_INVALID_ENUM";
+                break;
+            case 0x501:
+                name = "GL_INVALID_VALUE";
+                break;
+            case 0x502:
+                name = "GL_INVALID_OPERATION";
+                break;
+            case 0x503:
+                name = "GL_STACK_OVERFLOW";
+                break;
+            case 0x504:
+                name = "GL_STACK_UNDERFLOW";
+                break;
+            case 0x505:
+                name = "GL_OUT_OF_MEMORY";
+                break;
+            case 0x506:
+                name = "GL_INVALID_FRAMEBUFFER_OPERATION";
+                break;
+            case 0x507:
+                name = "GL_CONTEXT_LOST";
+                break;
+            case 0x8031:
+                name = "GL_TABLE_TOO_LARGE";
+                break;
+            default:
+                name = "UNKNOWN_ERROR?";
+                break;
+        }
+        
+        if(opt_tag) {
+            SDL_Log("OpenGl error: 0x%04x %s @%s", err, name, opt_tag);
+        } else {
+            SDL_Log("OpenGl error: 0x%04x %s", err, name);
+        }
+        
         if (errs_size < 32)
             errs[errs_size++] = err;
     }

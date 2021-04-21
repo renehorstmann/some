@@ -8,12 +8,12 @@
 #include "mathc/types/int.h"
 #include "mathc/types/float.h"
 #include "core.h"
+#include "texture.h"
 
 struct rRenderGolabals_s {
     vec4 clear_color;               // used by begin_frame
     SDL_Window *window;             // window, set by init
-    GLuint framebuffer_tex;         // copy of the framebuffer, after blit_framebuffer
-    ivec2 framebuffer_tex_size;     // size of the last copy
+    rTexture framebuffer_tex;         // copy of the framebuffer, after blit_framebuffer
 };
 extern struct rRenderGolabals_s r_render;
 
@@ -32,6 +32,6 @@ void r_render_end_frame();
 void r_render_blit_framebuffer(int cols, int rows);
 
 // checks for opengl errors and displays them
-void r_render_error_check();
+void r_render_error_check(const char *opt_tag);
 
 #endif //R_RENDER_H
