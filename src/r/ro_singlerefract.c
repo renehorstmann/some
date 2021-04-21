@@ -29,6 +29,8 @@ RoSingleRefract ro_singlerefract_new(
     
     self.tex_framebuffer_ptr = &r_render.framebuffer_tex;
 
+    // needs a vao, even if its empty
+    glGenVertexArrays(1, &self.vao);
 
     r_render_error_check("ro_singlerefract_new");
     return self;
@@ -82,8 +84,10 @@ void ro_singlerefract_render(RoSingleRefract *self) {
     glBindTexture(GL_TEXTURE_2D, self->tex_framebuffer_ptr->tex);
 
     {
-        // r_shader_validate(self->program); // debug test
+        glBindVertexArray(self->vao);
+//        r_program_validate(self->program); // debug test
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
     }
 
     glUseProgram(0);

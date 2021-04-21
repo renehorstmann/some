@@ -230,7 +230,7 @@ void ro_particlerefract_render_sub(RoParticleRefract *self, float time, int num)
 
     {
         glBindVertexArray(self->vao);
-        // r_shader_validate(self->program); // debug test
+        // r_program_validate(self->program); // debug test
         glDrawArraysInstanced(GL_TRIANGLES, 0, 6, num);
         glBindVertexArray(0);
     }

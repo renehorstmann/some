@@ -17,6 +17,9 @@ RoSingle ro_single_new(const float *vp, rTexture tex_sink) {
     self.tex = tex_sink;
     self.owns_tex = true;
 
+    // needs a vao, even if its empty
+    glGenVertexArrays(1, &self.vao);
+
     r_render_error_check("ro_single_new");
     return self;
 }
@@ -53,8 +56,10 @@ void ro_single_render(RoSingle *self) {
     glBindTexture(GL_TEXTURE_2D_ARRAY, self->tex.tex);
 
     {
-        // r_shader_validate(self->program); // debug test
+        glBindVertexArray(self->vao);
+//        r_program_validate(self->program); // debug test
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
     }
 
     glUseProgram(0);

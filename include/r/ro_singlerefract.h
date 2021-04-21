@@ -31,14 +31,15 @@
 
 typedef struct {
     rRect_s rect;
-    const float *vp;                    // mat4
-    const float *scale;                 // float
-    const float *view_aabb;             // vec4
-    GLuint program;                     // shader
-    rTexture tex_main;                    // used main texture
-    rTexture tex_refraction;              // used refraction texture
+    const float *vp;                        // mat4
+    const float *scale;                     // float
+    const float *view_aabb;                 // vec4
+    GLuint program;                         // shader
+    GLuint vao;                             // internal vertex array object
+    rTexture tex_main;                      // used main texture
+    rTexture tex_refraction;                // used refraction texture
     const rTexture2D *tex_framebuffer_ptr;  // init as &r_render.framebuffer_tex
-    bool owns_tex_main;                 // if true, the textures will be deleted by this class
+    bool owns_tex_main;                     // if true, the textures will be deleted by this class
     bool owns_tex_refraction;
 } RoSingleRefract;
 
