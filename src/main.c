@@ -100,7 +100,7 @@ static void main_loop(float delta_time) {
     ro_single_set_texture(&ro, r_texture_new(tex_size.x, tex_size.y, 1, 2, buffer));
     rhc_free(buffer);
     
-    ro.rect.sprite.y = -0.51;
+    ro.rect.sprite.y += 1 * delta_time;
     ro_single_render(&ro);
     }
     
