@@ -1,6 +1,6 @@
 #include "mathc/float.h"
 #include "r/r.h"
-#include "r/ro_batch_refract.h"
+#include "r/ro_batchrefract.h"
 
 
 static const vec4 VIEW_AABB_FULLSCREEN = {{0.5, 0.5, 0.5, 0.5}};
@@ -23,7 +23,7 @@ static int clamp_range(int i, int begin, int end) {
     return i;
 }
 
-void ro_batch_refract_init(RoBatchRefract *self, int num,
+void ro_batchrefract_init(RoBatchRefract *self, int num,
                            const float *vp, const float *scale_ptr,
                            GLuint tex_main_sink, GLuint tex_refraction_sink) {
     self->rects = malloc(sizeof(rRect_s) * num);
@@ -104,7 +104,7 @@ void ro_batch_refract_init(RoBatchRefract *self, int num,
     }
 }
 
-void ro_batch_refract_kill(RoBatchRefract *self) {
+void ro_batchrefract_kill(RoBatchRefract *self) {
     free(self->rects);
     glDeleteProgram(self->program);
     glDeleteVertexArrays(1, &self->vao);
@@ -116,7 +116,7 @@ void ro_batch_refract_kill(RoBatchRefract *self) {
     *self = (RoBatchRefract) {0};
 }
 
-void ro_batch_refract_update_sub(RoBatchRefract *self, int offset, int size) {
+void ro_batchrefract_update_sub(RoBatchRefract *self, int offset, int size) {
     glBindBuffer(GL_ARRAY_BUFFER, self->vbo);
 
     offset = clamp_range(offset, 0, self->num);
@@ -146,7 +146,7 @@ void ro_batch_refract_update_sub(RoBatchRefract *self, int offset, int size) {
 }
 
 
-void ro_batch_refract_render_sub(RoBatchRefract *self, int num) {
+void ro_batchrefract_render_sub(RoBatchRefract *self, int num) {
     glUseProgram(self->program);
 
     glUniformMatrix4fv(glGetUniformLocation(self->program, "vp"),
@@ -176,13 +176,13 @@ void ro_batch_refract_render_sub(RoBatchRefract *self, int num) {
     glUseProgram(0);
 }
 
-void ro_batch_refract_set_texture_main(RoBatchRefract *self, GLuint tex_main_sink) {
+void ro_batchrefract_set_texture_main(RoBatchRefract *self, GLuint tex_main_sink) {
     if (self->owns_tex_main)
         glDeleteTextures(1, &self->tex_main);
     self->tex_main = tex_main_sink;
 }
 
-void ro_batch_refract_set_texture_refraction(RoBatchRefract *self, GLuint tex_refraction_sink){
+void ro_batchrefract_set_texture_refraction(RoBatchRefract *self, GLuint tex_refraction_sink){
     if (self->owns_tex_refraction)
         glDeleteTextures(1, &self->tex_refraction);
     self->tex_refraction = tex_refraction_sink;

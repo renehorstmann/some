@@ -2,7 +2,7 @@
 #include "mathc/float.h"
 #include "rhc/error.h"
 #include "r/r.h"
-#include "r/ro_particle_refract.h"
+#include "r/ro_particlerefract.h"
 
 
 static const vec4 VIEW_AABB_FULLSCREEN = {{0.5, 0.5, 0.5, 0.5}};
@@ -33,7 +33,7 @@ static int clamp_range(int i, int begin, int end) {
 }
 
 
-void ro_particle_refract_init(RoParticleRefract *self, int num,
+void ro_particlerefract_init(RoParticleRefract *self, int num,
                               const float *vp, const float *scale_ptr,
                               GLuint tex_main_sink, GLuint tex_refraction_sink) {
     self->rects = malloc(sizeof(rParticleRect_s) * num);
@@ -164,7 +164,7 @@ void ro_particle_refract_init(RoParticleRefract *self, int num,
     }
 }
 
-void ro_particle_refract_kill(RoParticleRefract *self) {
+void ro_particlerefract_kill(RoParticleRefract *self) {
     free(self->rects);
     glDeleteProgram(self->program);
     glDeleteVertexArrays(1, &self->vao);
@@ -176,7 +176,7 @@ void ro_particle_refract_kill(RoParticleRefract *self) {
     *self = (RoParticleRefract) {0};
 }
 
-void ro_particle_refract_update_sub(RoParticleRefract *self, int offset, int size) {
+void ro_particlerefract_update_sub(RoParticleRefract *self, int offset, int size) {
     glBindBuffer(GL_ARRAY_BUFFER, self->vbo);
 
     offset = clamp_range(offset, 0, self->num);
@@ -205,7 +205,7 @@ void ro_particle_refract_update_sub(RoParticleRefract *self, int offset, int siz
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void ro_particle_refract_render_sub(RoParticleRefract *self, float time, int num) {
+void ro_particlerefract_render_sub(RoParticleRefract *self, float time, int num) {
     glUseProgram(self->program);
 
     glUniformMatrix4fv(glGetUniformLocation(self->program, "vp"),
@@ -237,13 +237,13 @@ void ro_particle_refract_render_sub(RoParticleRefract *self, float time, int num
     glUseProgram(0);
 }
 
-void ro_particle_refract_set_texture_main(RoParticleRefract *self, GLuint tex_main_sink) {
+void ro_particlerefract_set_texture_main(RoParticleRefract *self, GLuint tex_main_sink) {
     if (self->owns_tex_main)
         glDeleteTextures(1, &self->tex_main);
     self->tex_main = tex_main_sink;
 }
 
-void ro_particle_refract_set_texture_refraction(RoParticleRefract *self, GLuint tex_refraction_sink){
+void ro_particlerefract_set_texture_refraction(RoParticleRefract *self, GLuint tex_refraction_sink){
     if (self->owns_tex_refraction)
         glDeleteTextures(1, &self->tex_refraction);
     self->tex_refraction = tex_refraction_sink;

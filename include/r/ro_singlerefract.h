@@ -1,5 +1,5 @@
-#ifndef R_RO_SINGLE_REFRACT_H
-#define R_RO_SINGLE_REFRACT_H
+#ifndef R_RO_SINGLEREFRACT_H
+#define R_RO_SINGLEREFRACT_H
 
 //
 // class to render a single rect with a draw call
@@ -41,19 +41,19 @@ typedef struct {
     bool owns_tex_refraction;
 } RoSingleRefract;
 
-void ro_single_refract_init(RoSingleRefract *self,
+void ro_singlerefract_init(RoSingleRefract *self,
                             const float *vp, const float *scale_ptr,
                             GLuint tex_main_sink, GLuint tex_refraction_sink);
 
-void ro_single_refract_kill(RoSingleRefract *self);
+void ro_singlerefract_kill(RoSingleRefract *self);
 
-void ro_single_refract_render(RoSingleRefract *self);
+void ro_singlerefract_render(RoSingleRefract *self);
 
 // resets the texture, if .owns_tex_main is true, it will delete the old texture
-void ro_single_refract_set_texture_main(RoSingleRefract *self, GLuint tex_main_sink);
+void ro_singlerefract_set_texture_main(RoSingleRefract *self, GLuint tex_main_sink);
 
 // resets the texture, if .owns_tex_refraction is true, it will delete the old texture
-void ro_single_refract_set_texture_refraction(RoSingleRefract *self, GLuint tex_refraction_sink);
+void ro_singlerefract_set_texture_refraction(RoSingleRefract *self, GLuint tex_refraction_sink);
 
 
-#endif //R_RO_SINGLE_REFRACT_H
+#endif //R_RO_SINGLEREFRACT_H

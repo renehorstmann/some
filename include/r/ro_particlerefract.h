@@ -1,9 +1,9 @@
-#ifndef R_RO_BATCH_REFRACT_H
-#define R_RO_BATCH_REFRACT_H
+#ifndef R_RO_PARTICLEREFRACT_H
+#define R_RO_PARTICLEREFRACT_H
 
 //
-// class to render multiple rects with a single draw call.
-// its like ro_batch, but with additional reflection / refraction support.
+// particle system
+// its like ro_particle, but with additional reflection / refraction support.
 //
 //// uses 3 textures in total
 //// 1: default texture
@@ -23,11 +23,13 @@
 //
 
 #include <stdbool.h>
+#include "mathc/types/float.h"
 #include "core.h"
 #include "rect.h"
 
+
 typedef struct {
-    rRect_s *rects;
+    rParticleRect_s *rects;
     int num;
     const float *vp;                    // mat4
     const float *scale;                 // float
@@ -40,34 +42,33 @@ typedef struct {
     const GLuint *tex_framebuffer_ptr;  // init as &r_render.framebuffer_tex
     bool owns_tex_main;                 // if true, the textures will be deleted by this class
     bool owns_tex_refraction;
-} RoBatchRefract;
+} RoParticleRefract;
 
-void ro_batch_refract_init(RoBatchRefract *self, int num,
-                           const float *vp, const float *scale_ptr,
-                           GLuint tex_main_sink, GLuint tex_refraction_sink);
+void ro_particlerefract_init(RoParticleRefract *self, int num,
+                              const float *vp, const float *scale_ptr,
+                              GLuint tex_main_sink, GLuint tex_refraction_sink);
 
-void ro_batch_refract_kill(RoBatchRefract *self);
+void ro_particlerefract_kill(RoParticleRefract *self);
 
-// updates a subset of the batch into the gpu
-void ro_batch_refract_update_sub(RoBatchRefract *self, int offset, int size);
+// updates a subset of the particles into the gpu
+void ro_particlerefract_update_sub(RoParticleRefract *self, int offset, int size);
 
-// renders a subset of the batch
-void ro_batch_refract_render_sub(RoBatchRefract *self, int num);
+// renders a subset of the particles
+void ro_particlerefract_render_sub(RoParticleRefract *self, float time, int num);
 
 // resets the texture, if .owns_tex_main is true, it will delete the old texture
-void ro_batch_refract_set_texture_main(RoBatchRefract *self, GLuint tex_main_sink);
+void ro_particlerefract_set_texture_main(RoParticleRefract *self, GLuint tex_main_sink);
 
 // resets the texture, if .owns_tex_refraction is true, it will delete the old texture
-void ro_batch_refract_set_texture_refraction(RoBatchRefract *self, GLuint tex_refraction_sink);
+void ro_particlerefract_set_texture_refraction(RoParticleRefract *self, GLuint tex_refraction_sink);
 
 
-static void ro_batch_refract_update(RoBatchRefract *self) {
-    ro_batch_refract_update_sub(self, 0, self->num);
+static void ro_particlerefract_update(RoParticleRefract *self) {
+    ro_particlerefract_update_sub(self, 0, self->num);
 }
 
-static void ro_batch_refract_render(RoBatchRefract *self) {
-    ro_batch_refract_render_sub(self, self->num);
+static void ro_particlerefract_render(RoParticleRefract *self, float time) {
+    ro_particlerefract_render_sub(self, time, self->num);
 }
 
-
-#endif //R_RO_BATCH_REFRACT_H
+#endif //R_RO_PARTICLEREFRACT_H
