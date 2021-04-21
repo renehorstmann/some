@@ -84,7 +84,7 @@ static char *str_as_new_c_a(Str_s s, Allocator_s a) {
     assume(allocator_valid(a), "allocator needs to be valid");
     if(!str_valid(s))
         return NULL;
-    char *buffer = a.alloc(a, s.size+1);
+    char *buffer = a.malloc(a, s.size+1);
     if(!buffer)
         return NULL;
     str_as_c(buffer, s);

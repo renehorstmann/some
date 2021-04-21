@@ -35,11 +35,10 @@ GLuint r_program_shader_new(Str_s source, GLint shader_type) {
         int log_len;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_len);
 
-        Allocator_s a = allocator_new_raising();
-        char *buffer = a.alloc(a, log_len + 1);
+        char *buffer = rhc_malloc_raising(log_len + 1);
         glGetShaderInfoLog(shader, log_len, NULL, buffer);
         SDL_Log("Shader compile failure in %s shader: %s",  type, buffer);
-        a.free(a, buffer);
+        rhc_free(buffer);
 
         glDeleteShader(shader);
         return 0;
@@ -73,11 +72,10 @@ GLuint r_program_new(const GLuint *shaders, int n, bool delete_shaders) {
         int log_len;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_len);
 
-        Allocator_s a = allocator_new_raising();
-        char *buffer = a.alloc(a, log_len + 1);
+        char *buffer = rhc_malloc_raising(log_len + 1);
         glGetProgramInfoLog(program, log_len, NULL, buffer);
         SDL_Log("Shader linking failure: %s", buffer);
-        a.free(a, buffer);
+        rhc_free(buffer);
 
         glDeleteProgram(program);
         program = 0;
@@ -118,10 +116,9 @@ void r_program_validate(GLuint program) {
         int log_len;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_len);
 
-        Allocator_s a = allocator_new_raising();
-        char *buffer = a.alloc(a,log_len + 1);
+        char *buffer = rhc_malloc_raising(log_len + 1);
         glGetProgramInfoLog(program, log_len, NULL, buffer);
         SDL_Log("Program validate failure: %s", buffer);
-        a.free(a, buffer);
+        rhc_free(buffer);
     }
 }

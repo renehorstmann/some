@@ -22,36 +22,27 @@
 // Functions
 //
 
-// malloc + rhc_error + log
-void *rhc_allocator_default_alloc_impl_(Allocator_s self, size_t size);
+// malloc
+void *rhc_malloc(size_t size);
 
-// realloc + rhc_error + log
-void *rhc_allocator_default_realloc_impl_(Allocator_s self, void *memory, size_t size);
+// realloc
+void *rhc_realloc(void *memory, size_t size);
 
 // free
-void rhc_allocator_default_free_impl_(Allocator_s self, void *memory);
+void rhc_free(void *memory);
 
 // malloc + assume
-void *rhc_allocator_raising_alloc_impl_(Allocator_s self, size_t size);
+void *rhc_malloc_raising(size_t size);
 
 // realloc + assume
-void *rhc_allocator_raising_realloc_impl_(Allocator_s self, void *memory, size_t size);
+void *rhc_realloc_raising(void *memory, size_t size);
 
 
-static Allocator_s allocator_new_default() {
-    return (Allocator_s) {NULL,
-                          rhc_allocator_default_alloc_impl_,
-                          rhc_allocator_default_realloc_impl_,
-                          rhc_allocator_default_free_impl_};
-}
+// uses rhc_malloc, rhc_realloc, rhc_free
+Allocator_s allocator_new_default();
 
-static Allocator_s allocator_new_raising() {
-    return (Allocator_s) {NULL,
-                          rhc_allocator_raising_alloc_impl_,
-                          rhc_allocator_raising_realloc_impl_,
-                          rhc_allocator_default_free_impl_};
-}
-
+// uses rhc_malloc_raising, rhc_realloc_raising, rhc_free
+Allocator_s allocator_new_raising();
 
 
 #endif //RHC_ALLOCATOR_H

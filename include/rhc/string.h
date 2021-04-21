@@ -16,7 +16,7 @@ static String string_new_a(size_t start_capacity, Allocator_s a) {
     assume(allocator_valid(a), "allocator needs to be valid");
     String self = {
             {
-                a.alloc(a, start_capacity + 1),
+                a.malloc(a, start_capacity + 1),
                 0
             },
             start_capacity,

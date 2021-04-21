@@ -101,7 +101,7 @@ static bool RHC_NAME_CONCAT2(FN_NAME, _valid)(CLASS self) {
 static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_a)(int approx_size, Allocator_s a) {
     assume(allocator_valid(a), "allocator needs to be valid");
     CLASS self = {
-            a.alloc(a, approx_size * sizeof(ITEM *)),
+            a.malloc(a, approx_size * sizeof(ITEM *)),
             approx_size,
             a
     };

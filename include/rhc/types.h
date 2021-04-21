@@ -15,7 +15,7 @@ typedef struct Allocator_s {
     void *user_data;
 
     // virtual functions
-    void *(*alloc)(struct Allocator_s self, size_t size);
+    void *(*malloc)(struct Allocator_s self, size_t size);
     void *(*realloc)(struct Allocator_s self, void *memory, size_t size);
     void (*free)(struct Allocator_s self, void *memory);
 } Allocator_s;
@@ -59,7 +59,7 @@ typedef struct {
 
 // returns true if the allocator seems to be valid
 static bool allocator_valid(Allocator_s a) {
-    return a.alloc && a.realloc && a.free;  // vfunctions available?
+    return a.malloc && a.realloc && a.free;  // vfunctions available?
 }
 
 // returns true if str is valid
