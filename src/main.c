@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
     r_render.clear_color = (vec4) {0.5, 0.75, 0.5, 1};
     //
     
-    ro = ro_single_new(camera.gl, r_texture_new_invalid());
+    ro = ro_single_new(camera.gl, r_texture_new_file(4, 2, "../JumpHare/res/flag.png"));
     ro.rect.pose = u_pose_new(64, 0, 32, 32);
 
     e_window_main_loop(main_loop);
@@ -93,27 +93,12 @@ static void main_loop(float delta_time) {
     ro_text_render(&text);
     //
 */
-    if(r_render.framebuffer_tex.size.x>1) {  
-    ivec2 tex_size = r_render.framebuffer_tex.size;
-    void *buffer = rhc_malloc_raising(4 * tex_size.x*tex_size.y);
-    r_texture2d_get(r_render.framebuffer_tex, buffer);
-    ro_single_set_texture(&ro, r_texture_new(tex_size.x, tex_size.y, 1, 2, buffer));
-    rhc_free(buffer);
-    
-    ro.rect.sprite.y += 1 * delta_time;
+    ro.rect.sprite.x += 6.0 *delta_time;
+    ro.rect.sprite.y += 1.0 * delta_time;
     ro_single_render(&ro);
-    }
-    
-    static bool swap = false;
-    if(swap)
-        r_render.clear_color.r = 1;
-    else
-        r_render.clear_color.r = 0;
-        
-    swap = !swap;
 
     // uncomment to clone the current framebuffer into r_render.framebuffer_tex
-    r_render_blit_framebuffer(e_window.size.x, e_window.size.y);
+    // r_render_blit_framebuffer(e_window.size.x, e_window.size.y);
 
     e_gui_render();
 

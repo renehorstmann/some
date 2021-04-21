@@ -1,9 +1,31 @@
 #include <SDL_image.h>
+#include "mathc/uchar.h"
 #include "rhc/error.h"
 #include "rhc/log.h"
+#include "rhc/allocator.h"
 #include "r/render.h"
 #include "r/texture.h"
 
+
+_Static_assert(sizeof(ucvec4) == 4, "wtf");
+
+// grid to vertical
+static void reorder(ucvec4 *dst, const ucvec4 *src, ivec2 sprite_size, ivec2 sprites) {
+   
+    for(int sr=0; sr<sprites.y; sr++) {
+        for(int sc=0; sc<sprites.x; sc++) {
+            for(int r=0; r<sprite_size.y; r++) {
+                int src_row = sr*sprite_size.y + r;
+                int src_col = sc*sprite_size.x;
+                int src_idx = src_row * sprite_size.x * sprites.x + src_col;
+                int dst_row = sr*sprite_size.y*sprites.x + sc*sprite_size.y + r;
+                int dst_idx = dst_row * sprite_size.x;
+            
+                memcpy(&dst[dst_idx], &src[src_idx], sprite_size.x * sizeof(ucvec4));
+            }
+        }
+    }   
+}
 
 
 rTexture r_texture_new(int image_cols, int image_rows, int sprites_cols, int sprites_rows, const void *opt_buffer) {
@@ -25,9 +47,14 @@ rTexture r_texture_new(int image_cols, int image_rows, int sprites_cols, int spr
         {{sprites_cols, sprites_rows}}
     };
     
-    
-    // todo: redraw buffer (may be NULL!)
-    assume(self.sprites.x == 1, "not implemented yet");
+    // reorder vertical
+    void *tmp_buffer = NULL;
+    if(opt_buffer && self.sprites.x > 1) {
+        tmp_buffer = rhc_malloc_raising(4 * image_cols * image_rows);
+        
+        reorder(tmp_buffer, opt_buffer, self.sprite_size, self.sprites);
+        opt_buffer = tmp_buffer;
+    }
     
     glGenTextures(1, &self.tex);
     glBindTexture(GL_TEXTURE_2D_ARRAY, self.tex);
@@ -43,6 +70,9 @@ rTexture r_texture_new(int image_cols, int image_rows, int sprites_cols, int spr
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     r_texture_filter_nearest(self);
+    
+    // NULL safe free
+    rhc_free(tmp_buffer);
     r_render_error_check("r_texture_new");
     return self;
 }
