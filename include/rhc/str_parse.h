@@ -33,7 +33,7 @@ static Str_s str_eat_int ## x ## _ascii(Str_s s, int ## x ## _t *opt_eaten) {\
     size_t ate_size = end - s.data;\
     if(ate_size <= 0 || ate_size > s.size) {\
         rhc_error = "str_eat_int_ascii failed";\
-        log_warn("str_eat_int" #x "_ascii failed");\
+        log_warn("str_eat_int" #x "_ascii: failed");\
         return (Str_s) {s.data, 0};\
     }\
     if(opt_eaten)\
@@ -57,7 +57,7 @@ static Str_s str_eat_uint ## x ## _ascii(Str_s s, uint ## x ## _t *opt_eaten) {\
     size_t ate_size = end - s.data;\
     if(ate_size <= 0 || ate_size > s.size) {\
         rhc_error = "str_eat_uint_ascii failed";\
-        log_warn("str_eat_uint" #x "_ascii failed");\
+        log_warn("str_eat_uint" #x "_ascii: failed");\
         return (Str_s) {s.data, 0};\
     }\
     if(opt_eaten)\
@@ -80,7 +80,7 @@ static Str_s str_eat_float_ascii(Str_s s, float *opt_eaten) {
     size_t ate_size = end - s.data;
     if(ate_size <= 0 || ate_size > s.size) {
         rhc_error = "str_eat_float_ascii failed";
-        log_warn("str_eat_float_ascii failed");
+        log_warn("str_eat_float_ascii: failed");
         return (Str_s) {s.data, 0};
     }
     if(opt_eaten)
@@ -97,7 +97,7 @@ static Str_s str_eat_double_ascii(Str_s s, double *opt_eaten) {
     size_t ate_size = end - s.data;
     if(ate_size <= 0 || ate_size > s.size) {
         rhc_error = "str_eat_double_ascii failed";
-        log_warn("str_eat_double_ascii failed");
+        log_warn("str_eat_double_ascii: failed");
         return (Str_s) {s.data, 0};
     }
     if(opt_eaten)
@@ -117,7 +117,7 @@ static Str_s str_eat_int ## x ## _binary_le(Str_s s, int ## x ## _t *opt_eaten) 
         return s;\
     if(s.size < (x)/8) {\
         rhc_error = "str_eat_int_binary_le failed";\
-        log_warn("str_eat_int" #x "_binary_le failed");\
+        log_warn("str_eat_int" #x "_binary_le: failed");\
         return (Str_s) {s.data, 0};\
     }\
     if(opt_eaten){\
@@ -142,7 +142,7 @@ static Str_s str_eat_int ## x ## _binary_be(Str_s s, int ## x ## _t *opt_eaten) 
         return s;\
     if(s.size < (x)/8) {\
         rhc_error = "str_eat_int_binary_be failed";\
-        log_warn("str_eat_int" #x "_binary_be failed");\
+        log_warn("str_eat_int" #x "_binary_be: failed");\
         return (Str_s) {s.data, 0};\
     }\
     if(opt_eaten){\
@@ -167,7 +167,7 @@ static Str_s str_eat_uint ## x ## _binary_le(Str_s s, uint ## x ## _t *opt_eaten
         return s;\
     if(s.size < (x)/8) {\
         rhc_error = "str_eat_uint_binary_le failed";\
-        log_warn("str_eat_uint" #x "_binary_le failed");\
+        log_warn("str_eat_uint" #x "_binary_le: failed");\
         return (Str_s) {s.data, 0};\
     }\
     if(opt_eaten){\
@@ -192,7 +192,7 @@ static Str_s str_eat_uint ## x ## _binary_be(Str_s s, uint ## x ## _t *opt_eaten
         return s;\
     if(s.size < (x)/8) {\
         rhc_error = "str_eat_uint_binary_be failed";\
-        log_warn("str_eat_uint" #x "_binary_be failed");\
+        log_warn("str_eat_uint" #x "_binary_be: failed");\
         return (Str_s) {s.data, 0};\
     }\
     if(opt_eaten){\
@@ -217,7 +217,7 @@ static Str_s str_eat_float_binary_le(Str_s s, float *opt_eaten) {
         return s;
     if(s.size < 4) {
         rhc_error = "str_eat_float_binary_le failed";
-        log_warn("str_eat_float_binary_le failed");
+        log_warn("str_eat_float_binary_le: failed");
         return (Str_s) {s.data, 0};
     }
     if(opt_eaten) {
@@ -236,7 +236,7 @@ static Str_s str_eat_float_binary_be(Str_s s, float *opt_eaten) {
         return s;
     if(s.size < 4) {
         rhc_error = "str_eat_float_binary_be failed";
-        log_warn("str_eat_float_binary_be failed");
+        log_warn("str_eat_float_binary_be: failed");
         return (Str_s) {s.data, 0};
     }
     if(opt_eaten) {
@@ -256,7 +256,7 @@ static Str_s str_eat_double_binary_le(Str_s s, double *opt_eaten) {
         return s;
     if(s.size < 8) {
         rhc_error = "str_eat_double_binary_le failed";
-        log_warn("str_eat_double_binary_le failed");
+        log_warn("str_eat_double_binary_le: failed");
         return (Str_s) {s.data, 0};
     }
     if(opt_eaten) {
@@ -275,7 +275,7 @@ static Str_s str_eat_double_binary_be(Str_s s, double *opt_eaten) {
         return s;
     if(s.size < 8) {
         rhc_error = "str_eat_double_binary_be failed";
-        log_warn("str_eat_double_binary_be failed");
+        log_warn("str_eat_double_binary_be: failed");
         return (Str_s) {s.data, 0};
     }
     if(opt_eaten) {

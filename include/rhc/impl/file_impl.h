@@ -18,14 +18,14 @@
 String file_read_a(const char *file, bool ascii, Allocator_s a) {
     if(!allocator_valid(a)) {
         rhc_error = "file read failed, allocator invalid";
-        log_error("file read failed, allocator invalid: %s", file);
+        log_error("file_read_a failed, allocator invalid: %s", file);
         return string_new_invalid_a(a);
     }
 
     SDL_RWops *f = SDL_RWFromFile(file, ascii ? "r" : "rb");
     if (!f) {
         rhc_error = "file read failed";
-        log_warn("file read failed: %s", file);
+        log_warn("file_read_a failed: %s", file);
         return string_new_invalid_a(a);
     }
 
@@ -41,7 +41,7 @@ String file_read_a(const char *file, bool ascii, Allocator_s a) {
             buf += buf_appended;
         }
         if (res.size != length) {
-            log_error("reading file failed: %s %d/%d bytes read", file, res.size, length);
+            log_error("file_read_a failed: %s %d/%d bytes read", file, res.size, length);
             string_kill(&res);
         } else {
             res.data[length] = '\0';  // should have been set in String, just to be sure
@@ -54,14 +54,14 @@ String file_read_a(const char *file, bool ascii, Allocator_s a) {
 bool file_write(const char *file, Str_s content, bool ascii) {
     if(!str_valid(content)) {
         rhc_error = "file write failed, content invalid";
-        log_error("file write failed, content invalid: %s", file);
+        log_error("file_write failed, content invalid: %s", file);
         return false;
     }
 
     SDL_RWops *f = SDL_RWFromFile(file, ascii ? "w" : "wb");
     if (!f) {
         rhc_error = "file write failed";
-        log_warn("file write failed: %s", file);
+        log_warn("file_write failed: %s", file);
         return false;
     }
 
@@ -76,7 +76,7 @@ bool file_write(const char *file, Str_s content, bool ascii) {
     SDL_RWclose(f);
 
     if (chars_written != content.size) {
-        log_error("writing file failed: %s %d/%d bytes written", file, chars_written, content.size);
+        log_error("file_write failed: %s %d/%d bytes written", file, chars_written, content.size);
         return false;
     }
     return true;
@@ -85,14 +85,14 @@ bool file_write(const char *file, Str_s content, bool ascii) {
 bool file_append(const char *file, Str_s content, bool ascii) {
     if(!str_valid(content)) {
         rhc_error = "file append failed, content invalid";
-        log_error("file append failed, content invalid: %s", file);
+        log_error("file_append failed, content invalid: %s", file);
         return false;
     }
 
     SDL_RWops *f = SDL_RWFromFile(file, ascii ? "a" : "ab");
     if (!f) {
         rhc_error = "file append failed";
-        log_warn("file append failed: %s", file);
+        log_warn("file_append failed: %s", file);
         return false;
     }
 
@@ -107,7 +107,7 @@ bool file_append(const char *file, Str_s content, bool ascii) {
     SDL_RWclose(f);
 
     if (chars_written != content.size) {
-        log_error("append file failed: %s %d/%d bytes written", file, chars_written, content.size);
+        log_error("file_append failed: %s %d/%d bytes written", file, chars_written, content.size);
         return false;
     }
     return true;
@@ -120,14 +120,14 @@ bool file_append(const char *file, Str_s content, bool ascii) {
 String file_read_a(const char *file, bool ascii, Allocator_s a) {
     if(!allocator_valid(a)) {
         rhc_error = "file read failed, allocator invalid";
-        log_error("file read failed, allocator invalid: %s", file);
+        log_error("file_read_a failed, allocator invalid: %s", file);
         return string_new_invalid_a(a);
     }
 
     FILE *f = fopen(file, ascii ? "r" : "rb");
     if (!f) {
         rhc_error = "file read failed";
-        log_warn("file read failed: %s", file);
+        log_warn("file_read_a failed: %s", file);
         return string_new_invalid_a(a);
     }
 
@@ -145,7 +145,7 @@ String file_read_a(const char *file, bool ascii, Allocator_s a) {
             buf += buf_appended;
         }
         if (res.size != length) {
-            log_error("reading file failed: %s %d/%d bytes read", file, res.size, length);
+            log_error("file_read_a failed: %s %d/%d bytes read", file, res.size, length);
             string_kill(&res);
         } else {
             res.data[length] = '\0';  // should have been set in String, just to be sure
@@ -158,14 +158,14 @@ String file_read_a(const char *file, bool ascii, Allocator_s a) {
 bool file_write(const char *file, Str_s content, bool ascii) {
     if(!str_valid(content)) {
         rhc_error = "file write failed, content invalid";
-        log_error("file write failed, content invalid: %s", file);
+        log_error("file_write failed, content invalid: %s", file);
         return false;
     }
 
     FILE *f = fopen(file, ascii ? "w" : "wb");
     if (!f) {
         rhc_error = "file write failed";
-        log_warn("file write failed: %s", file);
+        log_warn("file_write failed: %s", file);
         return false;
     }
 
@@ -180,7 +180,7 @@ bool file_write(const char *file, Str_s content, bool ascii) {
     fclose(f);
 
     if (chars_written != content.size) {
-        log_error("writing file failed: %s %d/%d bytes written", file, chars_written, content.size);
+        log_error("file_write failed: %s %d/%d bytes written", file, chars_written, content.size);
         return false;
     }
     return true;
@@ -189,14 +189,14 @@ bool file_write(const char *file, Str_s content, bool ascii) {
 bool file_append(const char *file, Str_s content, bool ascii) {
     if(!str_valid(content)) {
         rhc_error = "file append failed, content invalid";
-        log_error("file append failed, content invalid: %s", file);
+        log_error("file_append failed, content invalid: %s", file);
         return false;
     }
 
     FILE *f = fopen(file, ascii ? "a" : "ab");
     if (!f) {
         rhc_error = "file append failed";
-        log_warn("file append failed: %s", file);
+        log_warn("file_append failed: %s", file);
         return false;
     }
 
@@ -211,7 +211,7 @@ bool file_append(const char *file, Str_s content, bool ascii) {
     fclose(f);
 
     if (chars_written != content.size) {
-        log_error("appending file failed: %s %d/%d bytes written", file, chars_written, content.size);
+        log_error("file_append failed: %s %d/%d bytes written", file, chars_written, content.size);
         return false;
     }
     return true;

@@ -32,7 +32,7 @@ uImage *u_image_new_empty_a(int cols, int rows, int layers, Allocator_s a) {
     
     if(data_size <= 0) {
         rhc_error = "image new failed";
-        log_error("image new failed, wrong data size: %zu", data_size);
+        log_error("u_image_new_empty_a failed: wrong data size: %zu", data_size);
         return u_image_new_invalid();
     }
     
@@ -49,7 +49,7 @@ uImage *u_image_new_zeros_a(int cols, int rows, int layers, Allocator_s a) {
     
     if(data_size <= 0) {
         rhc_error = "image new failed";
-        log_error("image new failed, wrong data size: %zu", data_size);
+        log_error("u_image_new_zeros_a failed: wrong data size: %zu", data_size);
         return u_image_new_invalid();
     }
     
@@ -74,19 +74,19 @@ uImage *u_image_new_file_a(int layers, const char *file, Allocator_s a) {
     SDL_Surface *img = IMG_Load(file);
     if (!img) {
         rhc_error = "load image file failed";
-        log_warn("load image file (%s) failed: %s", file, IMG_GetError());
+        log_warn("u_image_new_file_a failed: failed: %s (%s)", IMG_GetError(), file);
         goto CLEAN_UP;
     }
     SDL_PixelFormat *f = img->format;
     if (f->BitsPerPixel != 32 || f->Amask == 0) {
         rhc_error = "load image file failed";
-        log_warn("load image file (%s) failed: 8bpp and alpha needed", file);
+        log_warn("u_image_new_file_a failed: 8bpp and alpha needed (%s)", file);
         goto CLEAN_UP;
     }
 
     if (img->h % layers != 0) {
         rhc_error = "load image file failed";
-        log_warn("load image file (%s) failed: rows %% layers != 0", file);
+        log_warn("u_image_new_file_a failed: rows %% layers != 0 (%s)", file);
         goto CLEAN_UP;
     }
 
@@ -106,7 +106,7 @@ void u_image_delete(uImage *self) {
 bool u_image_save_file(const uImage *self, const char *file) {
     if(!u_image_valid(self)) {
         rhc_error = "image save file failed";
-        SDL_Log("image save file (%s) failed: invalid", file);
+        log_error("u_image_save_file failed: invalid (%s)", file);
         return false;
     }
     SDL_Surface *img = load_buffer((void *) self->data, self->cols, self->rows * self->layers);
@@ -114,7 +114,7 @@ bool u_image_save_file(const uImage *self, const char *file) {
     SDL_FreeSurface(img);
     if (ret) {
         rhc_error = "image save file failed";
-        SDL_Log("image save file (%s) failed: %s", file, IMG_GetError());
+        log_error("u_image_save_file: failed: %s (%s)", IMG_GetError(), file);
         return false;
     }
     return true;
@@ -127,7 +127,7 @@ bool u_image_copy(uImage *self, const uImage *from) {
             || self->layers != from->layers
             ) {
         rhc_error = "image copy failed";
-        log_error("image copy failed, invalid or different size");
+        log_error("u_image_copy failed: invalid or different size");
         return false;
     }
     
@@ -157,7 +157,7 @@ void u_image_rotate(uImage *self, bool right) {
             for (int c = 0; c < self->rows; c++) {
                 int mc = right ? r : tmp->cols - 1 - r;
                 int mr = right ? tmp->rows - 1 - c : c;
-                *u_image_pixel(self, l, c, r) = *u_image_pixel(tmp, l, mc, mr);
+                *u_image_pixel(self, c, r, l) = *u_image_pixel(tmp, mc, mr, l);
             }
         }
     }
@@ -176,7 +176,7 @@ void u_image_mirror(uImage *self, bool vertical) {
             for (int c = 0; c < self->rows; c++) {
                 int mc = vertical ? self->cols - 1 - c : c;
                 int mr = vertical ? r : self->rows - 1 - r;
-                *u_image_pixel(self, l, c, r) = *u_image_pixel(tmp, l, mc, mr);
+                *u_image_pixel(self, c, r, l) = *u_image_pixel(tmp, mc, mr, l);
             }
         }
     }

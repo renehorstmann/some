@@ -42,7 +42,7 @@ static void sv_print(Str_s s) {
 static void str_cpy(Str_s cpy, Str_s from) {
     if(!str_valid(cpy) || !str_valid(from) || cpy.size != from.size) {
         rhc_error = "str_cpy failed";
-        log_error("str_cpy failed, invalid or wrong sizes");
+        log_error("str_cpy failed: invalid or wrong sizes");
         return;
     }
     memcpy(cpy.data, from.data, cpy.size);
@@ -53,7 +53,7 @@ static void str_cpy(Str_s cpy, Str_s from) {
 static Str_s str_cpy_into(Str_s cpy_buffer, Str_s from) {
     if(!str_valid(cpy_buffer) || !str_valid(from) || cpy_buffer.size < from.size) {
         rhc_error = "str_cpy_info failed";
-        log_error("str_cpy_into failed, invalid or wrong sizes");
+        log_error("str_cpy_into failed: invalid or wrong sizes");
         return (Str_s) {cpy_buffer.data, 0};
     }
     cpy_buffer.size = from.size;
@@ -179,7 +179,7 @@ static int str_split(Str_s *splits, int max, Str_s s, char split) {
         s.size -= item.size;
         splits[n++] = item;
         if (n >= max) {
-            log_warn("str_split reached max: %d/%d", n, max);
+            log_warn("str_split: reached max: %d/%d", n, max);
             return n;
         }
     }
@@ -198,7 +198,7 @@ static StrArray str_split_allocated(Str_s s, char split, Allocator_s a) {
         s.size -= item.size;
         Str_s *array = a.realloc(a, res.array, sizeof(Str_s) * (res.size+1));
         if(!array) {
-            log_warn("str_split_allocated failed to realloc");
+            log_warn("str_split_allocated failed: to realloc");
             return res;
         }
         res.array = array;

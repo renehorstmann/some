@@ -1,5 +1,6 @@
 #include "mathc/float.h"
 #include "rhc/error.h"
+#include "rhc/log.h"
 #include "e/window.h"
 #include "e/gui.h"
 #include "e/input.h"
@@ -139,14 +140,14 @@ static void input_handle_sensors(SDL_Event *event) {
     SDL_Sensor *sensor = SDL_SensorFromInstanceID(event->sensor.which);
     if (!sensor
         || SDL_SensorGetType(sensor) != SDL_SENSOR_ACCEL) {
-        SDL_Log("Couldn't get sensor for sensor event\n");
+        log_warn("e_input_update: Couldn't get sensor for sensor event\n");
         return;
     }
 
     const float *data = event->sensor.data;
     memcpy(e_input.accel.v, data, sizeof(e_input.accel));
 
-    // SDL_Log("Gyro update: %.2f, %.2f, %.2f", data[0], data[1], data[2]);
+    // log_trace("e_input_update: Gyro update: %.2f, %.2f, %.2f", data[0], data[1], data[2]);
 }
 #endif
 
@@ -167,7 +168,7 @@ void e_input_init() {
 
     e_input.accel_active = accel_opened;
     if (accel_opened)
-        SDL_Log("Opened acceleration sensor");
+        log_info("e_input_init: Opened acceleration sensor");
 #endif
 }
 
@@ -233,7 +234,7 @@ void e_input_unregister_pointer_event(ePointerEventFn event_to_unregister) {
         }
     }
     if (idx == -1) {
-        SDL_Log("e_input_unregister_pointer_event failed, event not registered");
+        log_warn("e_input_unregister_pointer_event failed: event not registered");
         return;
     }
 
@@ -258,7 +259,7 @@ void e_input_unregister_wheel_event(eWheelEventFn event_to_unregister) {
         }
     }
     if (idx == -1) {
-        SDL_Log("e_input_unregister_wheel_event failed, event not registered");
+        log_warn("e_input_unregister_wheel_event failed: event not registered");
         return;
     }
 

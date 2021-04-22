@@ -97,9 +97,6 @@ static void main_loop(float delta_time) {
 
     // swap buffers
     r_render_end_frame();
-
-    // check for opengl errors:
-    r_render_error_check("main_loop_end");
 }
 
 

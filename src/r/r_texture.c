@@ -82,7 +82,7 @@ rTexture r_texture_new_sdl_surface(int sprites_cols, int sprites_rows, const SDL
     SDL_PixelFormat *f = img->format;
     if (f->BitsPerPixel != 32 || f->Amask == 0) {
         rhc_error = "load texture failed";
-        log_error("Load texture failed, 8bpp and alpha needed");
+        log_error("r_texture_new_sdl_surface failed: 8bpp and alpha needed");
         return r_texture_new_invalid();
     }
     return r_texture_new(img->w, img->h, sprites_cols, sprites_rows, img->pixels);
@@ -92,7 +92,7 @@ rTexture r_texture_new_file(int sprites_cols, int sprites_rows, const char *file
     SDL_Surface *img = IMG_Load(file);
     if (!img) {
         rhc_error = "load texture failed";
-        log_error("Load image (%s) failed: %s", file, IMG_GetError());
+        log_error("r_texture_new_file failed: %s (%s)", IMG_GetError(), file);
         return r_texture_new_invalid();
     }
 

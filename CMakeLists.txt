@@ -4,9 +4,12 @@ project(some C)
 # Optional definitions set:
 # OPTION_GLES           for OpenGLES3.0 instead of OpenGL3.3
 # OPTION_GLEW           if GLEW is available
-# OPTION_GYRO           if gyro sensor is available
-# OPTION_TTF            to use ro_ttftext
 # OPTION_SDL            is set to let rhc code use SDL function
+# OPTION_TTF            to use ro_ttftext
+# OPTION_GYRO           if gyro sensor is available
+# OPTION_GL_ERROR       if set, functions use r_render_check_error (heavy op, if summed up)
+#
+# MATHC_NO_PRINT_COLOR  disable colored mathc prints
 # NUKLEAR_SCALE=3.0     for small hd screens (smartphones)
 
 set(CMAKE_C_STANDARD 11)
@@ -38,10 +41,10 @@ if (GL_LIB)
 elseif (GLES_LIB)
     message("GLES found: Mobile mode")
     add_definitions(-DOPTION_GLES)
-    add_definitions(-DOPTION_GYRO)
     add_definitions(-DOPTION_SDL)
-    add_definitions(-DNUKLEAR_SCALE=3.0)
+    add_definitions(-DOPTION_GYRO)
     add_definitions(-DMATHC_NO_PRINT_COLOR)
+    add_definitions(-DNUKLEAR_SCALE=3.0)
     target_link_libraries(some ${GLES_LIB})
 else ()
     message(FATAL_ERROR "Neither GL nor GLESv3 found, exiting CMake")

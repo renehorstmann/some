@@ -35,7 +35,7 @@ rTexture2D r_texture2d_new_sdl_surface(const SDL_Surface *img) {
     SDL_PixelFormat *f = img->format;
     if (f->BitsPerPixel != 32 || f->Amask == 0) {
         rhc_error = "load texture failed";
-        log_error("Load texture failed, 8bpp and alpha needed");
+        log_error("r_texture2d_new_sdl_surface failed: 8bpp and alpha needed");
         return r_texture2d_new_invalid();
     }
     return r_texture2d_new(img->w, img->h, img->pixels);
@@ -45,7 +45,7 @@ rTexture2D r_texture2d_new_file(const char *file) {
     SDL_Surface *img = IMG_Load(file);
     if (!img) {
         rhc_error = "load texture failed";
-        log_error("Load image (%s) failed: %s", file, IMG_GetError());
+        log_error("r_texture2d_new_file failed: %s (%s)", IMG_GetError(), file);
         return r_texture2d_new_invalid();
     }
 

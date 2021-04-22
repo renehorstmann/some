@@ -107,7 +107,7 @@ static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_a)(int approx_size, Allocator_s a) {
     };
     if (!self.map) {
         rhc_error = "hashmap_new failed";
-        log_error(RHC_TO_STRING2(FN_NAME) "_new failed for approx_size: %zu", approx_size);
+        log_error(RHC_TO_STRING2(FN_NAME) "_new failed: for approx_size: %zu", approx_size);
         return (CLASS) {.allocator = a};
     } else {
         memset(self.map, 0, approx_size * sizeof(ITEM *));
@@ -159,7 +159,7 @@ static TYPE *RHC_NAME_CONCAT2(FN_NAME, _get)(CLASS *self, KEY key) {
     // if item not found, create a new one
     if(!(*item)) {
         *item = (ITEM *) self->allocator.alloc(self->allocator, sizeof(ITEM));
-        assume(*item, "hashmap failed to allocate a new item");
+        assume(*item, "hashmap failed: to allocate a new item");
         memset(*item, 0, sizeof(ITEM));
         (*item)->key = KEY_CLONE_FN(key, self->allocator);
         (*item)->next = NULL;
@@ -184,7 +184,7 @@ void RHC_NAME_CONCAT2(FN_NAME, _remove)(CLASS *self, KEY key) {
     
     // item for key not found?
     if(!(*item)) {
-        log_warn(RHC_TO_STRING2(FN_NAME), "_remove failed, key not found");
+        log_warn(RHC_TO_STRING2(FN_NAME), "_remove: failed, key not found");
         return;
     }
     

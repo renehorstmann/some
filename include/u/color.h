@@ -51,7 +51,7 @@ static uColor_s u_color_from_hex(const char *hex_string) {
 
     // error
     rhc_error = "color from hex failed";
-    log_error("u_color_from_hex failed for: %s", hex_string);
+    log_error("u_color_from_hex failed: for %s", hex_string);
     return c;
 }
 

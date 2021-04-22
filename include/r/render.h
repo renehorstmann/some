@@ -34,6 +34,13 @@ void r_render_end_frame();
 void r_render_blit_framebuffer(int cols, int rows);
 
 // checks for opengl errors and displays them
-void r_render_error_check(const char *opt_tag);
+void r_render_error_check_impl_(const char *opt_tag);
+
+// checks for opengl errors and displays them
+static void r_render_error_check(const char *opt_tag) {
+#ifdef OPTION_GL_ERROR
+    r_render_error_check_impl_(const char *opt_tag);
+#endif
+}
 
 #endif //R_RENDER_H

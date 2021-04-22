@@ -74,7 +74,7 @@ static CLASS RHC_NAME_CONCAT2(FN_NAME, _new_a)(size_t start_capacity, Allocator_
     };
     if (!self.array) {
         rhc_error = "dynarray_new failed";
-        log_error(RHC_TO_STRING2(FN_NAME) "_new failed for capacity: %zu", start_capacity);
+        log_error(RHC_TO_STRING2(FN_NAME) "_new failed: for capacity: %zu", start_capacity);
         return (CLASS) {.allocator = a};
     }
     return self;
@@ -137,7 +137,7 @@ static void RHC_NAME_CONCAT2(FN_NAME, _set_capacity)(CLASS *self, size_t capacit
     if(!array) {
         // kill
         rhc_error = "dynarray_set_capacity failed";
-        log_error(RHC_TO_STRING2(FN_NAME) "_set_capacity failed for capacity: %zu", capacity);
+        log_error(RHC_TO_STRING2(FN_NAME) "_set_capacity failed: for capacity: %zu", capacity);
         RHC_NAME_CONCAT2(FN_NAME, _kill)(self);
         return;
     }
@@ -189,7 +189,7 @@ static void RHC_NAME_CONCAT2(FN_NAME, _push)(CLASS *self, TYPE push) {
 static TYPE RHC_NAME_CONCAT2(FN_NAME, _pop)(CLASS *self) {
     // !valid || self->size <= 0
     if(!RHC_NAME_CONCAT2(FN_NAME, _valid)(*self) || self->size <= 0) {
-        log_error(RHC_TO_STRING2(FN_NAME) "_pop failed, invalid or size = 0");
+        log_error(RHC_TO_STRING2(FN_NAME) "_pop failed: invalid or size = 0");
         return (TYPE) {0};
     }
     TYPE ret = self->array[self->size-1];
