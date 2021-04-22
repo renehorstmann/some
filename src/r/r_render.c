@@ -90,6 +90,10 @@ void r_render_blit_framebuffer(int cols, int rows) {
 }
 
 void r_render_error_check_impl_(const char *opt_tag) {
+#ifdef NDEBUG
+    return
+#endif
+
     static GLenum errs[32];
     int errs_size = 0;
     GLenum err;
