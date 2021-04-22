@@ -9,6 +9,7 @@ project(some C)
 # OPTION_GYRO           if gyro sensor is available
 # -not used- OPTION_GL_ERROR       if set, functions use r_render_check_error (heavy op, if summed up)
 #
+# NDEBUG                is used at some points, too
 # MATHC_NO_PRINT_COLOR  disable colored mathc prints
 # NUKLEAR_SCALE=3.0     for small hd screens (smartphones)
 

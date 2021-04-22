@@ -30,7 +30,11 @@ static void loop() {
 
 
 void e_window_init(const char *name) {
+#ifdef NDEBUG
+    rhc_log_set_min_level(RHC_LOG_WARN);
+#else
     rhc_log_set_min_level(RHC_LOG_TRACE);
+#endif
 
     if (SDL_Init(E_SDL_INIT_FLAGS) != 0) {
         log_error("e_window_init: SDL_Init failed: %s", SDL_GetError());
