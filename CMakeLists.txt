@@ -7,7 +7,7 @@ project(some C)
 # OPTION_SDL            is set to let rhc code use SDL function
 # OPTION_TTF            to use ro_ttftext
 # OPTION_GYRO           if gyro sensor is available
-# OPTION_GL_ERROR       if set, functions use r_render_check_error (heavy op, if summed up)
+# -not used- OPTION_GL_ERROR       if set, functions use r_render_check_error (heavy op, if summed up)
 #
 # MATHC_NO_PRINT_COLOR  disable colored mathc prints
 # NUKLEAR_SCALE=3.0     for small hd screens (smartphones)
