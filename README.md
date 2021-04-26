@@ -30,7 +30,6 @@ Each component may have some basic function names:
 *_new       // as *_init, but returns the new component
 *_new_*     // special new
 *_kill      // deinialize a comp.
-*_delete    // for components, created with new (may be on heap)
 
 *_update    // update the internals
 *_render    // ...
