@@ -100,4 +100,5 @@ This project is licensed under the MIT License - see the someLICENSE file for de
 
 - Used third party libraries:
   - [SDL2](https://www.libsdl.org/) (zlib License)
+  - [Emscripten](emscripten.org) (MIT License)
   - [nuklear](https://github.com/Immediate-Mode-UI/Nuklear) for debug gui windows (MIT Licence)
