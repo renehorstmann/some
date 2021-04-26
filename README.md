@@ -18,7 +18,7 @@ Have a look into some header files for some further explanation.
 ## Naming
 ### Functions
 A function like: `e_window_init` got its name of:
-- `e`: as namespace for the submodule e
+- `e`: as namespace for the package e
 - `window`: module name
 - `init`: module function name
 
@@ -41,25 +41,28 @@ Globals are packed in a struct with the module name: `e_window.size`.
 Locals are packed in a static struct called `L`.
 
 ### More Style rules
-For more style rules, used in my projects, see [rhc/style](https://github.com/renehorstmann/rhc)
+For more style rules used in my projects, see [rhc/style](https://github.com/renehorstmann/rhc)
 
-## e
+## Packages
+The some framework consists of a few packages, each for specific tasks:
+
+### e
 e_* is for window and environment management, like window, input, sdl stuff...
 - e_gui: [nuklear](https://github.com/Immediate-Mode-UI/Nuklear) based debug gui
-## r
+### r
 r_* is for OpenGL rendering
 ro_* is for render objects
 
-## u
+### u
 Utilities like setting up a 2D pose or loading an image
 
-## p
+### p
 Physics (may be expanded later)
 
-## mathc
+### mathc
 glsl like math library for C, see [Mathc](https://github.com/renehorstmann/Mathc)
 
-## rhc
+### rhc
 A C standard library addition, see [rhc](https://github.com/renehorstmann/rhc)
 
 
