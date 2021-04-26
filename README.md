@@ -40,21 +40,8 @@ Modules may consist of globals and locals.
 Globals are packed in a struct with the module name: `e_window.size`.
 Locals are packed in a static struct called `L`.
 
-### Classes
-Class data names are PascalCase. (with a lowercase submodule name, if its a single letter).
-
-Classes have the same naming as modules, but always take the class data struct as first parameter:
-
-`vec2 ro_text_set_text(RoText *self, const char *text);`
-
-here, `ro` is the special namespace as r(ender)o(bject) within the r submodule.
-Classes should be killed or deleted at some point.
-
-### PlainOldData
-Automatic "pod" struct names are either complete lowercase or PascalCase_s.
-for example: `rRect_s`.
-These automatic structs must not be killed or deleted.
-
+### More Style rules
+For more style rules, used in my projects, see [rhc/style](https://github.com/renehorstmann/rhc)
 
 ## e
 e_* is for window and environment management, like window, input, sdl stuff...
