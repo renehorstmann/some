@@ -2,6 +2,7 @@
 #include "r/r.h"
 #include "u/u.h"
 #include "rhc/rhc.h"
+#include "mathc/mathc.h"
 
 #include "camera.h"
 
