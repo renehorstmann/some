@@ -15,20 +15,16 @@
 void e_window_handle_window_event(const SDL_Event *event);
 
 
-struct eWindowGlobals_s e_window;
-
-
-
-//
-// private 
-//
-
 typedef struct {
     e_window_pause_callback_fn cb;
     void *ud;    
 } RegPause;
-
-static struct {
+ 
+struct eWindow{
+    SDL_Window *window;
+    SDL_GLContext gl_context;
+    ivec2 size;
+    
     bool pause;
     bool running;
 
@@ -37,7 +33,16 @@ static struct {
     
     RegPause reg_pause_e[E_WINDOW_MAX_PAUSE_EVENTS];
     int reg_pause_e_size;
-} L;
+};
+
+//
+// singleton
+//
+static eWindow singleton;
+static bool singleton_created;
+//
+//
+//
 
 static void check_resume() {
     SDL_Event event;
@@ -47,42 +52,42 @@ static void check_resume() {
 }
 
 static void loop() {
-    if(L.pause) {
+    if(singleton.pause) {
         check_resume();
         return;
     }
                 
-    SDL_GetWindowSize(e_window.window, &e_window.size.x, &e_window.size.y);
+    SDL_GetWindowSize(singleton.window, &singleton.size.x, &singleton.size.y);
 
     Uint32 time = SDL_GetTicks();
-    float dtime = (time - L.last_time) / 1000.0f;
-    L.last_time = time;
+    float dtime = (time - singleton.last_time) / 1000.0f;
+    singleton.last_time = time;
 
     if(dtime < MAX_DELTA_TIME)
-        L.main_loop_fn(dtime);
+        singleton.main_loop_fn(dtime);
 }
 
 static void pause() {
-    if(L.pause)
+    if(singleton.pause)
         return;
     log_info("e_window: pause");
-    L.pause = true;
-    for(int i=0; i<L.reg_pause_e_size; i++) {
-        L.reg_pause_e[i].cb(false, L.reg_pause_e[i].ud);
+    singleton.pause = true;
+    for(int i=0; i<singleton.reg_pause_e_size; i++) {
+        singleton.reg_pause_e[i].cb(false, singleton.reg_pause_e[i].ud);
     }
 }
 
 static void resume() {
-    if(!L.pause)
+    if(!singleton.pause)
         return;
     log_info("e_window: resume");
-    for(int i=0; i<L.reg_pause_e_size; i++) {
-        L.reg_pause_e[i].cb(true, L.reg_pause_e[i].ud);
+    for(int i=0; i<singleton.reg_pause_e_size; i++) {
+        singleton.reg_pause_e[i].cb(true, singleton.reg_pause_e[i].ud);
     }
     
     // delta_time should not be near infinity...
-    L.last_time = SDL_GetTicks();
-    L.pause = false;
+    singleton.last_time = SDL_GetTicks();
+    singleton.pause = false;
 }
 
 
@@ -91,7 +96,10 @@ static void resume() {
 // public
 //
 
-void e_window_init(const char *name) {
+eWindow *e_window_new(const char *name) {
+    assume(!singleton_created, "e_window_new should be called only onve");
+    singleton_created = true;
+
 #ifdef NDEBUG
     rhc_log_set_min_level(RHC_LOG_WARN);
 #else
@@ -128,23 +136,23 @@ void e_window_init(const char *name) {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     // create window
-    e_window.window = SDL_CreateWindow(name,
+    singleton.window = SDL_CreateWindow(name,
             SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED,
             640, 480,
             SDL_WINDOW_OPENGL 
             | SDL_WINDOW_RESIZABLE
             );
-    if (!e_window.window) {
+    if (!singleton.window) {
         log_error("e_window_init: SDL_CreateWindow failed: %s", SDL_GetError());
         exit(EXIT_FAILURE);
     }
-    SDL_SetWindowMinimumSize(e_window.window, 480, 320);
+    SDL_SetWindowMinimumSize(singleton.window, 480, 320);
     
 
     // Not necessary, but recommended to create a gl context:
-    e_window.gl_context = SDL_GL_CreateContext(e_window.window);
-    if (!e_window.gl_context) {
+    singleton.gl_context = SDL_GL_CreateContext(singleton.window);
+    if (!singleton.gl_context) {
         log_error("e_window_init: SDL_GL_CreateContext failed: %s", SDL_GetError());
         exit(EXIT_FAILURE);
     }
@@ -160,42 +168,75 @@ void e_window_init(const char *name) {
     log_info("e_window_init: Using GLEW version: %s", glewGetString(GLEW_VERSION));
 #endif
 
-    SDL_GetWindowSize(e_window.window, &e_window.size.x, &e_window.size.y);
+    SDL_GetWindowSize(singleton.window, &singleton.size.x, &singleton.size.y);
+
+    return &singleton;
 }
 
-void e_window_kill() {
+void e_window_kill(eWindow **self_ptr) {
+    // safe to free NULL
+    if(!self_ptr)
+        return;
+
+    assume(*self_ptr == &singleton, "singleton?");
+    if(!singleton.running)
+        return;
+
     log_info("e_window_kill: killing...");
-    L.running = false;
+    singleton.running = false;
     
 #ifdef __EMSCRIPTEN__
     emscripten_cancel_main_loop();
 #endif
+
+    // will be killed in the main loop
+    *self_ptr = NULL;
 }
 
-void e_window_main_loop(e_window_main_loop_fn main_loop) {
-    L.main_loop_fn = main_loop;
-    L.pause = false;
-    L.running = true;
-    L.last_time = SDL_GetTicks();
+SDL_Window *e_window_get_sdl_window(const eWindow *self) {
+    assume(self == &singleton, "singleton?");
+    return singleton.window;
+}
+
+SDL_GLContext e_window_get_sdl_gl_context(const eWindow *self) {
+    assume(self == &singleton, "singleton?");
+    return singleton.gl_context;
+}
+
+ivec2 e_window_get_size(const eWindow *self) {
+    assume(self == &singleton, "singleton?");
+    return singleton.size;
+}
+
+void e_window_main_loop(eWindow *self, e_window_main_loop_fn main_loop) {
+    assume(self == &singleton, "singleton?");
+    singleton.main_loop_fn = main_loop;
+    singleton.pause = false;
+    singleton.running = true;
+    singleton.last_time = SDL_GetTicks();
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(loop, 0, true);
 #else
-    while (L.running)
+    while (singleton.running)
         loop();
 #endif
 
 
-    SDL_DestroyWindow(e_window.window);
+    SDL_DestroyWindow(singleton.window);
 #ifdef OPTION_TTF
     TTF_Quit();
 #endif 
     IMG_Quit();
     SDL_Quit();
+
+    memset(&singleton, 0, sizeof(singleton));
+    singleton_created = false;
     log_info("e_window_kill: killed");
 }
 
-void e_window_set_screen_mode(enum e_window_screen_modes mode) {
+void e_window_set_screen_mode(const eWindow *self, enum e_window_screen_modes mode) {
+    assume(self == &singleton, "singleton?");
     Uint32 sdl_mode = 0;
     
     // emscripten is always fullscreen
@@ -207,25 +248,27 @@ void e_window_set_screen_mode(enum e_window_screen_modes mode) {
         sdl_mode = SDL_WINDOW_FULLSCREEN;
     }
 #endif
-    SDL_SetWindowFullscreen(e_window.window, sdl_mode);
+    SDL_SetWindowFullscreen(singleton.window, sdl_mode);
 }
 
 
-void e_window_register_pause_callback(e_window_pause_callback_fn event, void *user_data) {
-    assume(L.reg_pause_e_size < E_WINDOW_MAX_PAUSE_EVENTS, "too many registered pause events");
-    L.reg_pause_e[L.reg_pause_e_size++] = (RegPause){event, user_data};
+void e_window_register_pause_callback(eWindow *self, e_window_pause_callback_fn event, void *user_data) {
+    assume(self == &singleton, "singleton?");
+    assume(singleton.reg_pause_e_size < E_WINDOW_MAX_PAUSE_EVENTS, "too many registered pause events");
+    singleton.reg_pause_e[singleton.reg_pause_e_size++] = (RegPause){event, user_data};
 }
 
-void e_window_unregister_pause_callback(e_window_pause_callback_fn event_to_unregister) {
+void e_window_unregister_pause_callback(eWindow *self, e_window_pause_callback_fn event_to_unregister) {
+    assume(self == &singleton, "singleton?");
     bool found = false;
-    for (int i = 0; i < L.reg_pause_e_size; i++) {
-        if (L.reg_pause_e[i].cb == event_to_unregister) {
+    for (int i = 0; i < singleton.reg_pause_e_size; i++) {
+        if (singleton.reg_pause_e[i].cb == event_to_unregister) {
             found = true;
             // move to close hole
-            for (int j = i; j < L.reg_pause_e_size - 1; j++) {
-                L.reg_pause_e[j] = L.reg_pause_e[j + 1];
+            for (int j = i; j < singleton.reg_pause_e_size - 1; j++) {
+                singleton.reg_pause_e[j] = singleton.reg_pause_e[j + 1];
             }
-            L.reg_pause_e_size--;
+            singleton.reg_pause_e_size--;
             i--; // check moved
         }
     }
@@ -240,7 +283,8 @@ static void log_window_event(const SDL_Event *event);
 // not in the window.h header, used by e_input.c
 void e_window_handle_window_event(const SDL_Event *event) {
     if (event->type == SDL_QUIT) {
-        e_window_kill();
+        eWindow *tmp = &singleton;
+        e_window_kill(&tmp);
         return;
     }
     if(event->type == SDL_WINDOWEVENT) {
@@ -265,31 +309,31 @@ static void log_window_event(const SDL_Event *event) {
     if (event->type == SDL_WINDOWEVENT){
         switch (event->window.event) {
         case SDL_WINDOWEVENT_SHOWN:
-            log_info("Window %d shown", event->window.windowID);
+            log_info("eWindow %d shown", event->window.windowID);
             break;       
         case SDL_WINDOWEVENT_HIDDEN:
-            log_info("Window %d hidden", event->window.windowID);
+            log_info("eWindow %d hidden", event->window.windowID);
             break;
         case SDL_WINDOWEVENT_EXPOSED:
-            log_info("Window %d exposed", event->window.windowID);
+            log_info("eWindow %d exposed", event->window.windowID);
             break;
         case SDL_WINDOWEVENT_MOVED:
-            log_info("Window %d moved to %d,%d", event->window.windowID, event->window.data1, event->window.data2);
+            log_info("eWindow %d moved to %d,%d", event->window.windowID, event->window.data1, event->window.data2);
             break;
         case SDL_WINDOWEVENT_RESIZED:
-            log_info("Window %d resized to %dx%d", event->window.windowID, event->window.data1, event->window.data2);
+            log_info("eWindow %d resized to %dx%d", event->window.windowID, event->window.data1, event->window.data2);
             break;
         case SDL_WINDOWEVENT_SIZE_CHANGED:
-            log_info("Window %d size changed to %dx%d", event->window.windowID, event->window.data1, event->window.data2);
+            log_info("eWindow %d size changed to %dx%d", event->window.windowID, event->window.data1, event->window.data2);
             break;
         case SDL_WINDOWEVENT_MINIMIZED:
-            log_info("Window %d minimized", event->window.windowID);
+            log_info("eWindow %d minimized", event->window.windowID);
             break;
         case SDL_WINDOWEVENT_MAXIMIZED:
-            log_info("Window %d maximized", event->window.windowID);
+            log_info("eWindow %d maximized", event->window.windowID);
             break;
         case SDL_WINDOWEVENT_RESTORED:
-            log_info("Window %d restored", event->window.windowID);
+            log_info("eWindow %d restored", event->window.windowID);
             break;
         case SDL_WINDOWEVENT_ENTER:
             log_info("Mouse entered window %d", event->window.windowID);
@@ -298,22 +342,22 @@ static void log_window_event(const SDL_Event *event) {
             log_info("Mouse left window %d", event->window.windowID);
             break;
         case SDL_WINDOWEVENT_FOCUS_GAINED:
-            log_info("Window %d gained keyboard focus", event->window.windowID);
+            log_info("eWindow %d gained keyboard focus", event->window.windowID);
             break;
         case SDL_WINDOWEVENT_FOCUS_LOST:
-            log_info("Window %d lost keyboard focus", event->window.windowID);
+            log_info("eWindow %d lost keyboard focus", event->window.windowID);
             break;
         case SDL_WINDOWEVENT_CLOSE:
-            log_info("Window %d closed", event->window.windowID);
+            log_info("eWindow %d closed", event->window.windowID);
             break;
 #if SDL_VERSION_ATLEAST(2, 0, 5) 
-            case SDL_WINDOWEVENT_TAKE_FOCUS : log_info("Window %d is offered a focus", event->window.windowID);
+            case SDL_WINDOWEVENT_TAKE_FOCUS : log_info("eWindow %d is offered a focus", event->window.windowID);
             break;
         case SDL_WINDOWEVENT_HIT_TEST:
-            log_info("Window %d has a special hit test", event->window.windowID);
+            log_info("eWindow %d has a special hit test", event->window.windowID);
             break;
 #endif 
-            default : log_info("Window %d got unknown event %d", event->window.windowID, event->window.event);
+            default : log_info("eWindow %d got unknown event %d", event->window.windowID, event->window.event);
             break;
         }
     }

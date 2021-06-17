@@ -7,20 +7,26 @@
 #include "camera.h"
 
 
-// example code:
-// 'R'ender'o'bject 
-// renders text via RoBatch
-static RoText text;
-// stores the last pressed mouse click / touch to render with RoText text
-static ePointer_s last_click;
+static struct {
+    eWindow *window;
+    eInput *input;
+
+    // example code:
+    // 'R'ender'o'bject
+    // renders text via RoBatch
+    RoText text;
+    // stores the last pressed mouse click / touch to render with RoText text
+    ePointer_s last_click;
+} L;
 
 
 // will be called on mouse or touch events
 static void on_pointer_callback(ePointer_s pointer, void *ud) {
     if (pointer.action != E_POINTER_DOWN)
         return;
-    last_click = pointer;
-    printf("clicked at x=%f, y=%f, id=%i, is touch: %i\n", pointer.pos.x, pointer.pos.y, pointer.id, e_input.is_touch);
+    L.last_click = pointer;
+    printf("clicked at x=%f, y=%f, id=%i, is touch: %i\n",
+           pointer.pos.x, pointer.pos.y, pointer.id, e_input_is_touch(L.input));
 }
 //
 
@@ -31,12 +37,12 @@ int main(int argc, char **argv) {
     log_info("some");
 
     // init e (environment)
-    e_window_init("some");
-    e_input_init();
-    e_gui_init();
+    L.window = e_window_new("some");
+    L.input = e_input_new(L.window);
+    e_gui_init(L.window);
 
     // init r (render)
-    r_render_init(e_window.window);
+    r_render_init(e_window_get_sdl_window(L.window));
 
     // init systems
     camera_init();
@@ -45,20 +51,22 @@ int main(int argc, char **argv) {
     // example code
     // class init of RoText
     // RoText *self, int max_chars, const float *camera_vp_matrix
-    text = ro_text_new_font55(128, camera.gl);
+    L.text = ro_text_new_font55(128, camera.gl);
     // see u/pose.h, sets a mat4 transformation pose
-    u_pose_set_xy(&text.pose, camera_left() + 20, 0);
+    u_pose_set_xy(&L.text.pose, camera_left() + 20, 0);
 
     // setup a pointer listener
-    e_input_register_pointer_event(on_pointer_callback, NULL);
+    e_input_register_pointer_event(L.input, on_pointer_callback, NULL);
 
     // set clear color
     r_render.clear_color = (vec4) {0.5, 0.75, 0.5, 1};
     //
 
 
-    e_window_main_loop(main_loop);
+    e_window_main_loop(L.window, main_loop);
 
+    e_window_kill(&L.window);
+    e_input_kill(&L.input);
     e_gui_kill();
 
     return 0;
@@ -66,15 +74,17 @@ int main(int argc, char **argv) {
 
 
 static void main_loop(float delta_time) {
+    ivec2 window_size = e_window_get_size(L.window);
+
     // e updates
-    e_input_update();
+    e_input_update(L.input);
 
     // simulate
-    camera_update();
+    camera_update(window_size.x, window_size.y);
 
 
     // render
-    r_render_begin_frame(e_window.size.x, e_window.size.y);
+    r_render_begin_frame(window_size.x, window_size.y);
 
 
     // example code
@@ -84,10 +94,10 @@ static void main_loop(float delta_time) {
     e_gui_wnd_float_attribute("val", &val, 0, 100, 5);
     char buf[128];
     snprintf(buf, 128, "Hello World\nval=%5.1f\nspace pressed: %i\nid=%i x=%.2f y=%.2f",
-            val, e_input.keys.space, last_click.id, last_click.pos.x, last_click.pos.y);
+             val, e_input_get_keys(L.input).space, L.last_click.id, L.last_click.pos.x, L.last_click.pos.y);
     // RoText methods: set text, render
-    ro_text_set_text(&text, buf);
-    ro_text_render(&text);
+    ro_text_set_text(&L.text, buf);
+    ro_text_render(&L.text);
     //
 
 

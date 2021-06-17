@@ -30,7 +30,7 @@ extern struct CameraGlobals_s camera;
 
 void camera_init();
 
-void camera_update();
+void camera_update(int wnd_width, int wnd_height);
 
 float camera_real_pixel_per_pixel();
 

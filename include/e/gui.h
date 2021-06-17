@@ -32,7 +32,9 @@ struct eGuiGlobals_s {
 };
 extern struct eGuiGlobals_s e_gui;
 
-void e_gui_init();
+struct eWindow;
+
+void e_gui_init(const struct eWindow *window);
 
 void e_gui_kill();
 

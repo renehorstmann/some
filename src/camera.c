@@ -37,13 +37,9 @@ void camera_init() {
     camera.matrices.p_inv = mat4_eye();
     camera.matrices.vp = mat4_eye();
     camera.matrices.v_p_inv = mat4_eye();
-
-    camera_update();
 }
 
-void camera_update() {
-    int wnd_width = e_window.size.x;
-    int wnd_height = e_window.size.y;
+void camera_update(int wnd_width, int wnd_height) {
 
     float smaller_size = wnd_width < wnd_height ? wnd_width : wnd_height;
     L.real_pixel_per_pixel = floorf(smaller_size / CAMERA_SIZE);

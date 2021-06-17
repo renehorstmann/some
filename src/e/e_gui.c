@@ -31,8 +31,8 @@ static struct nk_rect window_rect(float w, float h) {
 // public
 //
 
-void e_gui_init() {
-    e_gui.ctx = nk_sdl_init(e_window.window);
+void e_gui_init(const struct eWindow *window) {
+    e_gui.ctx = nk_sdl_init(e_window_get_sdl_window(window));
 
     struct nk_font_atlas *atlas;
     nk_sdl_font_stash_begin(&atlas);
