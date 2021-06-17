@@ -10,6 +10,7 @@
 static struct {
     eWindow *window;
     eInput *input;
+    eGui *gui;
 
     // example code:
     // 'R'ender'o'bject
@@ -39,7 +40,7 @@ int main(int argc, char **argv) {
     // init e (environment)
     L.window = e_window_new("some");
     L.input = e_input_new(L.window);
-    e_gui_init(L.window);
+    L.gui = e_gui_new(L.window);
 
     // init r (render)
     r_render_init(e_window_get_sdl_window(L.window));
@@ -67,7 +68,7 @@ int main(int argc, char **argv) {
 
     e_window_kill(&L.window);
     e_input_kill(&L.input);
-    e_gui_kill();
+    e_gui_kill(&L.gui);
 
     return 0;
 }
@@ -77,7 +78,7 @@ static void main_loop(float delta_time) {
     ivec2 window_size = e_window_get_size(L.window);
 
     // e updates
-    e_input_update(L.input);
+    e_input_update(L.input, L.gui);
 
     // simulate
     camera_update(window_size.x, window_size.y);
@@ -91,7 +92,7 @@ static void main_loop(float delta_time) {
     static float val = 10;
     //creates a debug window to set val
     // min, max, step
-    e_gui_wnd_float_attribute("val", &val, 0, 100, 5);
+    e_gui_wnd_float_attribute(L.gui, "val", &val, 0, 100, 5);
     char buf[128];
     snprintf(buf, 128, "Hello World\nval=%5.1f\nspace pressed: %i\nid=%i x=%.2f y=%.2f",
              val, e_input_get_keys(L.input).space, L.last_click.id, L.last_click.pos.x, L.last_click.pos.y);
@@ -104,7 +105,7 @@ static void main_loop(float delta_time) {
     // uncomment to clone the current framebuffer into r_render.framebuffer_tex
     // r_render_blit_framebuffer(e_window.size.x, e_window.size.y);
 
-    e_gui_render();
+    e_gui_render(L.gui);
 
     // swap buffers
     r_render_end_frame();

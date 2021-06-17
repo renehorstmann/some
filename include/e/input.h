@@ -40,15 +40,16 @@ typedef void (*ePointerEventFn)(ePointer_s, void *user_data);
 typedef void (*eWheelEventFn)(bool up, void *user_data);
 
 
-typedef struct eInput eInput;
 struct eWindow;
+struct eGui;
+typedef struct eInput eInput;
 
 eInput *e_input_new(const struct eWindow *window);
 
 void e_input_kill(eInput **self_ptr);
 
 // runs the sdl event loop
-void e_input_update(const eInput *self);
+void e_input_update(const eInput *self, const struct eGui *opt_gui);
 
 eInputKeys e_input_get_keys(const eInput *self);
 

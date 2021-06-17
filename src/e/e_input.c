@@ -6,9 +6,13 @@
 #include "e/gui.h"
 #include "e/input.h"
 
-// not declared in window.h
-void e_window_handle_window_event(const SDL_Event *event);
-
+//
+// protected
+//
+void e_window_handle_window_event_(const SDL_Event *event);
+void e_gui_input_begin_(const eGui *self);
+void e_gui_handle_sdl_event_(const eGui *self, SDL_Event *event);
+void e_gui_input_end_(const eGui *self);
 
 typedef struct {
     ePointerEventFn cb;
@@ -211,25 +215,25 @@ void e_input_kill(eInput **self_ptr) {
         return;
     
     assume(*self_ptr == &singleton, "singleton?");
+    memset(&singleton, 0, sizeof(singleton));
     *self_ptr = NULL;
 }
 
 
-void e_input_update(const eInput *self) {
+void e_input_update(const eInput *self, const eGui *opt_gui) {
     assume(self == &singleton, "singleton?");
     singleton.is_touch = SDL_GetNumTouchDevices() > 0;
 
-    if (e_gui_get_nk_context())
-        nk_input_begin(e_gui_get_nk_context());
+
+    e_gui_input_begin_(opt_gui);    // NULL safe
 
     void (*input_handle_pointer)(SDL_Event * event) = singleton.is_touch ? input_handle_pointer_touch : input_handle_pointer_mouse;
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        e_window_handle_window_event(&event);
-        
-        if (e_gui_get_nk_context())
-            nk_sdl_handle_event(&event);
+        e_window_handle_window_event_(&event);
+
+        e_gui_handle_sdl_event_(opt_gui, &event);   // NULL safe
 
         switch (event.type) {
         case SDL_MOUSEBUTTONDOWN:
@@ -255,8 +259,7 @@ void e_input_update(const eInput *self) {
         }
     }
 
-    if (e_gui_get_nk_context())
-        nk_input_end(e_gui_get_nk_context());
+    e_gui_input_end_(opt_gui);    // NULL safe
 }
 
 

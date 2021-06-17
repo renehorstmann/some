@@ -11,9 +11,16 @@
 
 #define MAX_DELTA_TIME 5.0 // seconds
 
-// not declared in window.h
-void e_window_handle_window_event(const SDL_Event *event);
 
+//
+// protected
+//
+void e_window_handle_window_event_(const SDL_Event *event);
+
+
+//
+// private
+//
 
 typedef struct {
     e_window_pause_callback_fn cb;
@@ -47,7 +54,7 @@ static bool singleton_created;
 static void check_resume() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        e_window_handle_window_event(&event); 
+        e_window_handle_window_event_(&event);
     }
 }
 
@@ -90,7 +97,33 @@ static void resume() {
     singleton.pause = false;
 }
 
+static void log_window_event(const SDL_Event *event);
 
+//
+// protected
+//
+void e_window_handle_window_event_(const SDL_Event *event) {
+    if (event->type == SDL_QUIT) {
+        eWindow *tmp = &singleton;
+        e_window_kill(&tmp);
+        return;
+    }
+    if(event->type == SDL_WINDOWEVENT) {
+        log_window_event(event);
+        switch (event->window.event) {
+//        case SDL_WINDOWEVENT_SHOWN:
+//        case SDL_WINDOWEVENT_RESTORED:
+            case SDL_WINDOWEVENT_FOCUS_GAINED:
+                resume();
+                break;
+//        case SDL_WINDOWEVENT_HIDDEN:
+//        case SDL_WINDOWEVENT_MINIMIZED:
+            case SDL_WINDOWEVENT_FOCUS_LOST:
+                pause();
+                break;
+        }
+    }
+}
 
 //
 // public
@@ -278,31 +311,6 @@ void e_window_unregister_pause_callback(eWindow *self, e_window_pause_callback_f
 }
 
 
-static void log_window_event(const SDL_Event *event);
-
-// not in the window.h header, used by e_input.c
-void e_window_handle_window_event(const SDL_Event *event) {
-    if (event->type == SDL_QUIT) {
-        eWindow *tmp = &singleton;
-        e_window_kill(&tmp);
-        return;
-    }
-    if(event->type == SDL_WINDOWEVENT) {
-        log_window_event(event);
-        switch (event->window.event) {
-//        case SDL_WINDOWEVENT_SHOWN:
-//        case SDL_WINDOWEVENT_RESTORED:
-        case SDL_WINDOWEVENT_FOCUS_GAINED:
-            resume();
-            break;
-//        case SDL_WINDOWEVENT_HIDDEN:
-//        case SDL_WINDOWEVENT_MINIMIZED:
-        case SDL_WINDOWEVENT_FOCUS_LOST:
-            pause();
-            break;
-        }
-    }
-}
 
 
 static void log_window_event(const SDL_Event *event) {

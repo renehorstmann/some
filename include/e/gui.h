@@ -3,26 +3,25 @@
 
 //
 // debug gui, nuklear based
-// module based!
 //
-
 
 struct nk_context;
 struct eWindow;
+typedef struct eGui eGui;
 
-void e_gui_init(const struct eWindow *window);
+eGui *e_gui_new(const struct eWindow *window);
 
-void e_gui_kill();
+void e_gui_kill(eGui **self_ptr);
 
-void e_gui_render();
+void e_gui_render(const eGui *self);
 
-struct nk_context *e_gui_get_nk_context();
+struct nk_context *e_gui_get_nk_context(const eGui *self);
 
 // creates a nuklear window to set the float attribute with a slider
-void e_gui_wnd_float_attribute(const char *title, float *attribute, float min, float max, float step);
+void e_gui_wnd_float_attribute(const eGui *self, const char *title, float *attribute, float min, float max, float step);
 
 // nuklear test window
-void e_gui_test();
+void e_gui_test(const eGui *self);
 
 
 #endif //E_GUI_H
