@@ -16,7 +16,7 @@ static dmat4 dmat4_camera_ortho(double left, double right,
     double tb = 1.0 / (top - bottom);
     double fn = -1.0 / (far - near);
 
-    dmat4 res = MAT4_INIT_ZERO;
+    dmat4 res = {{0}};
     res.m[0][0] = 2.0 * rl;
     res.m[1][1] = 2.0 * tb;
     res.m[2][2] = 2.0 * fn;
@@ -41,7 +41,7 @@ static dmat4 dmat4_camera_frustum(double left, double right,
     double fn = -1.0 / (far - near);
     double nv = 2.0 * near;
 
-    dmat4 res = MAT4_INIT_ZERO;
+    dmat4 res = {{0}};
     res.m[0][0] = nv * rl;
     res.m[1][1] = nv * tb;
     res.m[2][0] = (right + left) * rl;
@@ -64,7 +64,7 @@ static dmat4 dmat4_camera_perspective(double fovy, double aspect, double near, d
     double f = 1.0 / tan(fovy * 0.5);
     double fn = 1.0 / (near - far);
 
-    dmat4 res = MAT4_INIT_ZERO;
+    dmat4 res = {{0}};
     res.m[0][0] = f / aspect;
     res.m[1][1] = f;
     res.m[2][2] = (near + far) * fn;
@@ -89,7 +89,7 @@ static dmat4 dmat4_camera_lookat(dvec3 eye, dvec3 center, dvec3 up) {
 
     dvec3 u = dvec3_cross(s, f);
 
-    dmat4 res = MAT4_INIT_EYE;
+    dmat4 res = dmat4_eye();
     res.col[0].xyz = s;
     res.col[1].xyz = u;
     res.col[2].xyz = dvec3_neg(f);

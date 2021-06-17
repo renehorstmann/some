@@ -16,7 +16,7 @@ static mat4 mat4_camera_ortho(float left, float right,
     float tb = 1.0f / (top - bottom);
     float fn = -1.0f / (far - near);
 
-    mat4 res = MAT4_INIT_ZERO;
+    mat4 res = {{0}};
     res.m[0][0] = 2.0f * rl;
     res.m[1][1] = 2.0f * tb;
     res.m[2][2] = 2.0f * fn;
@@ -41,7 +41,7 @@ static mat4 mat4_camera_frustum(float left, float right,
     float fn =-1.0f / (far - near);
     float nv = 2.0f * near;
 
-    mat4 res = MAT4_INIT_ZERO;
+    mat4 res = {{0}};
     res.m[0][0] = nv * rl;
     res.m[1][1] = nv * tb;
     res.m[2][0] = (right  + left)    * rl;
@@ -64,7 +64,7 @@ static mat4 mat4_camera_perspective(float fovy, float aspect, float near, float 
     float f = 1.0f / tanf(fovy * 0.5f);
     float fn = 1.0f / (near - far);
 
-    mat4 res = MAT4_INIT_ZERO;
+    mat4 res = {{0}};
     res.m[0][0] = f / aspect;
     res.m[1][1] = f;
     res.m[2][2] = (near + far) * fn;
@@ -89,7 +89,7 @@ static mat4 mat4_camera_lookat(vec3 eye, vec3 center, vec3 up) {
     
     vec3 u = vec3_cross(s, f);
 
-    mat4 res = MAT4_INIT_EYE;
+    mat4 res = mat4_eye();
     res.col[0].xyz = s;
     res.col[1].xyz = u;
     res.col[2].xyz = vec3_neg(f);
