@@ -36,6 +36,8 @@ Each component may have some basic function names:
 ```
 
 ### Modules
+>  To be removed...
+
 Modules may consist of globals and locals.
 Globals are packed in a struct with the module name: `e_window.size`.
 Locals are packed in a static struct called `L`.
