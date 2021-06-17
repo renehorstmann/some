@@ -6,23 +6,11 @@
 // based on a font sprite sheet and is monospaced.
 //
 
-#include "ro_batch.h"
+#include "rhc/allocator.h"
+#include "ro_types.h"
 
-// return true for a newline
-typedef bool (*ro_text_sprite_fn)(vec2 *sprite, char c);
 
-typedef struct {
-    RoBatch ro;             // internal batch to render
-    ro_text_sprite_fn sprite_fn;    // conversion function of character to sprite mapping
-    mat4 pose;              // pose (top left) for the text
-    vec2 size;              // character size
-    vec2 offset;            // offset to next character
-    const float *vp;        // mat4 camera view perspective
 
-    struct {
-        mat4 mvp;               // internal mvp as vp for the batch
-    } L;
-} RoText;
 
 RoText ro_text_new_a(int max, ro_text_sprite_fn sprite_fn, const float *vp, rTexture tex_sink, Allocator_s alloc);
 

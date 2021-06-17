@@ -6,24 +6,7 @@
 //
 
 #include "rhc/allocator.h"
-#include "core.h"
-#include "rect.h"
-#include "texture.h"
-
-typedef struct {
-    rRect_s *rects;
-    int num;
-    const float *vp;    // mat4 camera view perspective
-    bool owns_tex;      // if true, the texture will be deleted by this class
-
-    struct {
-        GLuint program;     // shader
-        GLuint vao;         // internal vertex array object
-        GLuint vbo;         // internal vertex buffer object
-        rTexture tex;       // used texture
-        Allocator_s allocator;
-    } L;
-} RoBatch;
+#include "ro_types.h"
 
 RoBatch ro_batch_new_a(int num, const float *vp, rTexture tex_sink, Allocator_s alloc);
 

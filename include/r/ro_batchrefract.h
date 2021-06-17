@@ -23,30 +23,8 @@
 //
 
 #include "rhc/allocator.h"
-#include "core.h"
-#include "rect.h"
-#include "texture.h"
-#include "texture2d.h"
+#include "ro_types.h"
 
-typedef struct {
-    rRect_s *rects;
-    int num;
-    const float *vp;                    // mat4
-    const float *scale;                 // float
-    const float *view_aabb;             // vec4
-    bool owns_tex_main;                 // if true, the textures will be deleted by this class
-    bool owns_tex_refraction;
-    const rTexture2D *tex_framebuffer_ptr;  // init as &r_render.framebuffer_tex
-
-    struct {
-        GLuint program;                     // shader
-        GLuint vao;                         // internal vertex array object
-        GLuint vbo;                         // internal vertex buffer object
-        rTexture tex_main;                  // used main texture
-        rTexture tex_refraction;            // used refraction texture
-        Allocator_s allocator;
-    } L;
-} RoBatchRefract;
 
 RoBatchRefract ro_batchrefract_new_a(int num,
                                      const float *vp, const float *scale_ptr,

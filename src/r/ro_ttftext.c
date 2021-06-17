@@ -1,5 +1,6 @@
 #ifdef OPTION_TTF
 #include "r/texture.h"
+#include "r/ro_single.h"
 #include "r/ro_ttftext.h"
 
 struct RoTtfTextGlobals_s ro_ttftext;

@@ -2,6 +2,8 @@
 #include "mathc/sca/int.h"
 #include "r/render.h"
 #include "r/program.h"
+#include "r/rect.h"
+#include "r/texture.h"
 #include "r/ro_batch.h"
 
 

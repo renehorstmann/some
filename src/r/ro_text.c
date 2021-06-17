@@ -1,8 +1,9 @@
 #include <float.h>    // FLT_MAX
 #include "mathc/float.h"
 #include "rhc/allocator.h"
-#include "r/ro_text.h"
 #include "r/texture.h"
+#include "r/ro_batch.h"
+#include "r/ro_text.h"
 
 //
 // private
