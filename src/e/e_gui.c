@@ -4,18 +4,15 @@
 
 
 #include "e/window.h"
+#include "e/gui_nk.h"
 #include "e/gui.h"
 
 #define MAX_VERTEX_MEMORY 512 * 1024
 #define MAX_ELEMENT_MEMORY 128 * 1024
 
-struct eGuiGlobals_s e_gui;
-
-//
-// private
-//
 
 static struct {
+    struct nk_context *ctx;
     int auto_offset;
 } L;
 
@@ -32,7 +29,7 @@ static struct nk_rect window_rect(float w, float h) {
 //
 
 void e_gui_init(const struct eWindow *window) {
-    e_gui.ctx = nk_sdl_init(e_window_get_sdl_window(window));
+    L.ctx = nk_sdl_init(e_window_get_sdl_window(window));
 
     struct nk_font_atlas *atlas;
     nk_sdl_font_stash_begin(&atlas);
@@ -40,17 +37,26 @@ void e_gui_init(const struct eWindow *window) {
 }
 
 void e_gui_kill() {
+    if(!L.ctx)
+        return;
     nk_sdl_shutdown();
 }
 
 void e_gui_render() {
+    if(!L.ctx)
+        return;
     L.auto_offset = 0;
     nk_sdl_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_MEMORY, MAX_ELEMENT_MEMORY);
 }
 
-void e_gui_wnd_float_attribute(const char *title, float *attribute, float min, float max, float step) {
+struct nk_context *e_gui_get_nk_context() {
+    return L.ctx;
+}
 
-    struct nk_context *ctx = e_gui.ctx;
+void e_gui_wnd_float_attribute(const char *title, float *attribute, float min, float max, float step) {
+    if(!L.ctx)
+        return;
+    struct nk_context *ctx = L.ctx;
     if (nk_begin(ctx, title, window_rect(300, 100),
                  NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
                  NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) {
@@ -62,9 +68,11 @@ void e_gui_wnd_float_attribute(const char *title, float *attribute, float min, f
 }
 
 void e_gui_test() {
+    if(!L.ctx)
+        return;
 
     /* GUI */
-    struct nk_context *ctx = e_gui.ctx;
+    struct nk_context *ctx = L.ctx;
     static struct nk_colorf bg;
     if (nk_begin(ctx, "Demo", window_rect(300, 600),
                  NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |

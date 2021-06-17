@@ -2,6 +2,7 @@
 #include "rhc/error.h"
 #include "rhc/log.h"
 #include "e/window.h"
+#include "e/gui_nk.h"
 #include "e/gui.h"
 #include "e/input.h"
 
@@ -218,8 +219,8 @@ void e_input_update(const eInput *self) {
     assume(self == &singleton, "singleton?");
     singleton.is_touch = SDL_GetNumTouchDevices() > 0;
 
-    if (e_gui.ctx)
-        nk_input_begin(e_gui.ctx);
+    if (e_gui_get_nk_context())
+        nk_input_begin(e_gui_get_nk_context());
 
     void (*input_handle_pointer)(SDL_Event * event) = singleton.is_touch ? input_handle_pointer_touch : input_handle_pointer_mouse;
 
@@ -227,7 +228,7 @@ void e_input_update(const eInput *self) {
     while (SDL_PollEvent(&event)) {
         e_window_handle_window_event(&event);
         
-        if (e_gui.ctx)
+        if (e_gui_get_nk_context())
             nk_sdl_handle_event(&event);
 
         switch (event.type) {
@@ -254,8 +255,8 @@ void e_input_update(const eInput *self) {
         }
     }
 
-    if (e_gui.ctx)
-        nk_input_end(e_gui.ctx);
+    if (e_gui_get_nk_context())
+        nk_input_end(e_gui_get_nk_context());
 }
 
 
