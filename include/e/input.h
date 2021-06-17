@@ -49,7 +49,7 @@ eInput *e_input_new(const struct eWindow *window);
 void e_input_kill(eInput **self_ptr);
 
 // runs the sdl event loop
-void e_input_update(const eInput *self, const struct eGui *opt_gui);
+void e_input_update(const eInput *self);
 
 eInputKeys e_input_get_keys(const eInput *self);
 

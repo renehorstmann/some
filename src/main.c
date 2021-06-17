@@ -11,6 +11,7 @@ static struct {
     eWindow *window;
     eInput *input;
     eGui *gui;
+    rRender *render;
 
     // example code:
     // 'R'ender'o'bject
@@ -43,7 +44,7 @@ int main(int argc, char **argv) {
     L.gui = e_gui_new(L.window);
 
     // init r (render)
-    r_render_init(e_window_get_sdl_window(L.window));
+    L.render = r_render_new(e_window_get_sdl_window(L.window));
 
     // init systems
     camera_init();
@@ -60,15 +61,16 @@ int main(int argc, char **argv) {
     e_input_register_pointer_event(L.input, on_pointer_callback, NULL);
 
     // set clear color
-    r_render.clear_color = (vec4) {0.5, 0.75, 0.5, 1};
+    *r_render_clear_color(L.render) = (vec4) {0.5, 0.75, 0.5, 1};
     //
 
 
     e_window_main_loop(L.window, main_loop);
 
-    e_window_kill(&L.window);
-    e_input_kill(&L.input);
+    r_render_kill(&L.render);
     e_gui_kill(&L.gui);
+    e_input_kill(&L.input);
+    e_window_kill(&L.window);
 
     return 0;
 }
@@ -78,14 +80,14 @@ static void main_loop(float delta_time) {
     ivec2 window_size = e_window_get_size(L.window);
 
     // e updates
-    e_input_update(L.input, L.gui);
+    e_input_update(L.input);
 
     // simulate
     camera_update(window_size.x, window_size.y);
 
 
     // render
-    r_render_begin_frame(window_size.x, window_size.y);
+    r_render_begin_frame(L.render, window_size.x, window_size.y);
 
 
     // example code
@@ -108,7 +110,7 @@ static void main_loop(float delta_time) {
     e_gui_render(L.gui);
 
     // swap buffers
-    r_render_end_frame();
+    r_render_end_frame(L.render);
 }
 
 

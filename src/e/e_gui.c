@@ -26,17 +26,10 @@ static bool singleton_created;
 //
 //
 
-static struct nk_rect window_rect(float w, float h) {
-    int row = singleton.auto_offset / 3;
-    int col = singleton.auto_offset % 3;
-    singleton.auto_offset++;
-    return nk_rect(50 + col * 100, 50 + row * 200, w, h);
-}
-
-
 //
-// protected (not in header)
+// protected
 //
+eGui *e_gui_singleton_;
 
 void e_gui_input_begin_(const eGui *self) {
     if(!self)
@@ -44,7 +37,6 @@ void e_gui_input_begin_(const eGui *self) {
     assume(self == &singleton, "singleton?");
     nk_input_begin(singleton.ctx);
 }
-
 void e_gui_handle_sdl_event_(const eGui *self, SDL_Event *event) {
     if(!self)
         return;
@@ -61,11 +53,23 @@ void e_gui_input_end_(const eGui *self) {
 
 
 //
+// private
+//
+
+static struct nk_rect window_rect(float w, float h) {
+    int row = singleton.auto_offset / 3;
+    int col = singleton.auto_offset % 3;
+    singleton.auto_offset++;
+    return nk_rect(50 + col * 100, 50 + row * 200, w, h);
+}
+
+
+//
 // public
 //
 
 eGui *e_gui_new(const struct eWindow *window) {
-    assume(!singleton_created, "e_window_new should be called only onve");
+    assume(!singleton_created, "e_gui_new should be called only onve");
     singleton_created = true;
 
     singleton.ctx = nk_sdl_init(e_window_get_sdl_window(window));
@@ -74,6 +78,7 @@ eGui *e_gui_new(const struct eWindow *window) {
     nk_sdl_font_stash_begin(&atlas);
     nk_sdl_font_stash_end();
 
+    e_gui_singleton_ = &singleton;
     return &singleton;
 }
 

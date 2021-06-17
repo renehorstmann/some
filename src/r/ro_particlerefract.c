@@ -8,6 +8,11 @@
 #include "r/texture.h"
 #include "r/ro_particlerefract.h"
 
+//
+// protected
+//
+extern rRender *r_render_singleton_;
+
 
 static const vec4 VIEW_AABB_FULLSCREEN = {{0.5, 0.5, 0.5, 0.5}};
 
@@ -49,7 +54,7 @@ RoParticleRefract ro_particlerefract_new_a(int num,
     self.owns_tex_main = true;
     self.owns_tex_refraction = true;
     
-    self.tex_framebuffer_ptr = &r_render.framebuffer_tex;
+    self.tex_framebuffer_ptr = r_render_get_framebuffer_tex(r_render_singleton_);
 
 
     // vao scope

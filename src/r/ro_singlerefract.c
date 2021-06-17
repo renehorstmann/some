@@ -5,6 +5,11 @@
 #include "r/texture.h"
 #include "r/ro_singlerefract.h"
 
+//
+// protected
+//
+extern rRender *r_render_singleton_;
+
 
 static const vec4 VIEW_AABB_FULLSCREEN = {{0.5, 0.5, 0.5, 0.5}};
 
@@ -29,7 +34,7 @@ RoSingleRefract ro_singlerefract_new(
     self.owns_tex_main = true;
     self.owns_tex_refraction = true;
     
-    self.tex_framebuffer_ptr = &r_render.framebuffer_tex;
+    self.tex_framebuffer_ptr = r_render_get_framebuffer_tex(r_render_singleton_);
 
     // needs a vao, even if its empty
     glGenVertexArrays(1, &self.L.vao);

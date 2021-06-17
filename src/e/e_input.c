@@ -9,6 +9,7 @@
 //
 // protected
 //
+extern eGui *e_gui_singleton_;
 void e_window_handle_window_event_(const SDL_Event *event);
 void e_gui_input_begin_(const eGui *self);
 void e_gui_handle_sdl_event_(const eGui *self, SDL_Event *event);
@@ -182,7 +183,7 @@ static void input_handle_sensors(SDL_Event *event) {
 //
 
 eInput *e_input_new(const struct eWindow *window) {
-    assume(!singleton_created, "e_window_new should be called only onve");
+    assume(!singleton_created, "e_input_new should be called only onve");
     singleton_created = true;
     
     assume(window, "needs an sdl window to get its size");
@@ -220,12 +221,12 @@ void e_input_kill(eInput **self_ptr) {
 }
 
 
-void e_input_update(const eInput *self, const eGui *opt_gui) {
+void e_input_update(const eInput *self) {
     assume(self == &singleton, "singleton?");
     singleton.is_touch = SDL_GetNumTouchDevices() > 0;
 
 
-    e_gui_input_begin_(opt_gui);    // NULL safe
+    e_gui_input_begin_(e_gui_singleton_);    // NULL safe
 
     void (*input_handle_pointer)(SDL_Event * event) = singleton.is_touch ? input_handle_pointer_touch : input_handle_pointer_mouse;
 
@@ -233,7 +234,7 @@ void e_input_update(const eInput *self, const eGui *opt_gui) {
     while (SDL_PollEvent(&event)) {
         e_window_handle_window_event_(&event);
 
-        e_gui_handle_sdl_event_(opt_gui, &event);   // NULL safe
+        e_gui_handle_sdl_event_(e_gui_singleton_, &event);   // NULL safe
 
         switch (event.type) {
         case SDL_MOUSEBUTTONDOWN:
@@ -259,7 +260,7 @@ void e_input_update(const eInput *self, const eGui *opt_gui) {
         }
     }
 
-    e_gui_input_end_(opt_gui);    // NULL safe
+    e_gui_input_end_(e_gui_singleton_);    // NULL safe
 }
 
 
