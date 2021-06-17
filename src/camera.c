@@ -1,7 +1,4 @@
-#include "r/rect.h"
 #include "u/pose.h"
-#include "e/window.h"
-#include "mathc/float.h"
 #include "mathc/utils/camera.h"
 #include "camera.h"
 
@@ -12,86 +9,56 @@
 // render objects can use camera.gl for the transformation matrix.
 //
 
-struct CameraGlobals_s camera;
-
-//
-// private
-//
-
-static struct {
-    float real_pixel_per_pixel;
-    float left, right, bottom, top;
-} L;
-
-
 
 //
 // public
 //
 
-void camera_init() {
-    camera.gl = &camera.matrices.vp.m00;
-    camera.matrices.v = mat4_eye();
-    camera.matrices.v_inv = mat4_eye();
-    camera.matrices.p = mat4_eye();
-    camera.matrices.p_inv = mat4_eye();
-    camera.matrices.vp = mat4_eye();
-    camera.matrices.v_p_inv = mat4_eye();
+Camera_s camera_new() {
+    Camera_s self;
+    self.matrices.v = mat4_eye();
+    self.matrices.v_inv = mat4_eye();
+    self.matrices.p = mat4_eye();
+    self.matrices.p_inv = mat4_eye();
+    self.matrices.vp = mat4_eye();
+    self.matrices.v_p_inv = mat4_eye();
+    return self;
 }
 
-void camera_update(int wnd_width, int wnd_height) {
+void camera_update(Camera_s *self, int wnd_width, int wnd_height) {
 
     float smaller_size = wnd_width < wnd_height ? wnd_width : wnd_height;
-    L.real_pixel_per_pixel = floorf(smaller_size / CAMERA_SIZE);
+    self->RO.real_pixel_per_pixel = floorf(smaller_size / CAMERA_SIZE);
 
-    float width_2 = wnd_width / (2 * L.real_pixel_per_pixel);
-    float height_2 = wnd_height / (2 * L.real_pixel_per_pixel);
+    float width_2 = wnd_width / (2 * self->RO.real_pixel_per_pixel);
+    float height_2 = wnd_height / (2 * self->RO.real_pixel_per_pixel);
 
     // begin: (top, left) with a full pixel
     // end: (bottom, right) with a maybe splitted pixel
-    L.left = -floorf(width_2);
-    L.top = floorf(height_2);
-    L.right = width_2 + (width_2 - floorf(width_2));
-    L.bottom = -height_2 - (height_2 - floorf(height_2));
+    self->RO.left = -floorf(width_2);
+    self->RO.top = floorf(height_2);
+    self->RO.right = width_2 + (width_2 - floorf(width_2));
+    self->RO.bottom = -height_2 - (height_2 - floorf(height_2));
 
-    camera.matrices.p = mat4_camera_ortho(L.left, L.right, L.bottom, L.top, -1, 1);
+    self->matrices.p = mat4_camera_ortho(self->RO.left, self->RO.right, self->RO.bottom, self->RO.top, -1, 1);
 
-    camera.matrices.v_inv = mat4_inv(camera.matrices.v);
-    camera.matrices.p_inv = mat4_inv(camera.matrices.p);
+    self->matrices.v_inv = mat4_inv(self->matrices.v);
+    self->matrices.p_inv = mat4_inv(self->matrices.p);
 
-    camera.matrices.vp = mat4_mul_mat(camera.matrices.p, camera.matrices.v_inv);
+    self->matrices.vp = mat4_mul_mat(self->matrices.p, self->matrices.v_inv);
 
-    camera.matrices.v_p_inv = mat4_mul_mat(camera.matrices.v, camera.matrices.p_inv);
+    self->matrices.v_p_inv = mat4_mul_mat(self->matrices.v, self->matrices.p_inv);
 }
 
-float camera_real_pixel_per_pixel() {
-    return L.real_pixel_per_pixel;
+
+void camera_set_pos(Camera_s *self, float x, float y) {
+    u_pose_set_xy(&self->matrices.v, x, y);
 }
 
-float camera_left() {
-    return L.left;
+void camera_set_size(Camera_s *self, float size) {
+    u_pose_set_size(&self->matrices.v, size, size);
 }
 
-float camera_right() {
-    return L.right;
-}
-
-float camera_bottom() {
-    return L.bottom;
-}
-
-float camera_top() {
-    return L.top;
-}
-
-void camera_set_pos(float x, float y) {
-    u_pose_set_xy(&camera.matrices.v, x, y);
-}
-
-void camera_set_size(float size) {
-    u_pose_set_size(&camera.matrices.v, size, size);
-}
-
-void camera_set_angle(float alpha) {
-    u_pose_set_angle(&camera.matrices.v, alpha);
+void camera_set_angle(Camera_s *self, float alpha) {
+    u_pose_set_angle(&self->matrices.v, alpha);
 }

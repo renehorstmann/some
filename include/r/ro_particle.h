@@ -9,10 +9,10 @@
 #include "ro_types.h"
 
 
-RoParticle ro_particle_new_a(int num, const float *vp, rTexture tex_sink, Allocator_s alloc);
+RoParticle ro_particle_new_a(int num, rTexture tex_sink, Allocator_s alloc);
 
-static RoParticle ro_particle_new(int num, const float *vp, rTexture tex_sink) {
-    return ro_particle_new_a(num, vp, tex_sink, allocator_new_default());
+static RoParticle ro_particle_new(int num, rTexture tex_sink) {
+    return ro_particle_new_a(num, tex_sink, allocator_new_default());
 }
 
 void ro_particle_kill(RoParticle *self);
@@ -21,7 +21,7 @@ void ro_particle_kill(RoParticle *self);
 void ro_particle_update_sub(RoParticle *self, int offset, int size);
 
 // renders a subset of the particles
-void ro_particle_render_sub(RoParticle *self, float time, int num);
+void ro_particle_render_sub(RoParticle *self, float time, int num, const mat4 *camera_mat);
 
 // resets the texture, if .owns_tex is true, it will delete the old texture
 void ro_particle_set_texture(RoParticle *self, rTexture tex_sink);
@@ -30,8 +30,8 @@ static void ro_particle_update(RoParticle *self) {
     ro_particle_update_sub(self, 0, self->num);
 }
 
-static void ro_particle_render(RoParticle *self, float time) {
-    ro_particle_render_sub(self, time, self->num);
+static void ro_particle_render(RoParticle *self, float time, const mat4 *camera_mat) {
+    ro_particle_render_sub(self, time, self->num, camera_mat);
 }
 
 #endif //R_RO_PARTICLE_H

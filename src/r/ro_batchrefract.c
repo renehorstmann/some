@@ -17,7 +17,7 @@ static const vec4 VIEW_AABB_FULLSCREEN = {{0.5, 0.5, 0.5, 0.5}};
 
 
 RoBatchRefract ro_batchrefract_new_a(int num,
-        const float *vp, const float *scale_ptr,
+        const float *scale_ptr,
         rTexture tex_main_sink, rTexture tex_refraction_sink,
         Allocator_s alloc) {
     r_render_error_check("ro_batchrefract_newBEGIN");
@@ -32,7 +32,6 @@ RoBatchRefract ro_batchrefract_new_a(int num,
     }
 
     self.num = num;
-    self.vp = vp;
     self.scale = scale_ptr;
     self.view_aabb = &VIEW_AABB_FULLSCREEN.v0;
 
@@ -153,13 +152,13 @@ void ro_batchrefract_update_sub(RoBatchRefract *self, int offset, int size) {
 }
 
 
-void ro_batchrefract_render_sub(RoBatchRefract *self, int num) {
+void ro_batchrefract_render_sub(RoBatchRefract *self, int num, const mat4 *camera_mat) {
     r_render_error_check("ro_batchrefract_renderBEGIN");
     glUseProgram(self->L.program);
 
     // base
     glUniformMatrix4fv(glGetUniformLocation(self->L.program, "vp"),
-                       1, GL_FALSE, self->vp);
+                       1, GL_FALSE, &camera_mat->m00);
                        
     vec2 sprites = vec2_cast_from_int(&self->L.tex_main.sprites.v0);
     glUniform2fv(glGetUniformLocation(self->L.program, "sprites"), 1, &sprites.v0);

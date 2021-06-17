@@ -13,6 +13,8 @@ static struct {
     eGui *gui;
     rRender *render;
 
+    Camera_s camera;
+
     // example code:
     // 'R'ender'o'bject
     // renders text via RoBatch
@@ -47,15 +49,15 @@ int main(int argc, char **argv) {
     L.render = r_render_new(e_window_get_sdl_window(L.window));
 
     // init systems
-    camera_init();
+    L.camera = camera_new();
 
 
     // example code
     // class init of RoText
     // RoText *self, int max_chars, const float *camera_vp_matrix
-    L.text = ro_text_new_font55(128, camera.gl);
+    L.text = ro_text_new_font55(128);
     // see u/pose.h, sets a mat4 transformation pose
-    u_pose_set_xy(&L.text.pose, camera_left() + 20, 0);
+    u_pose_set_xy(&L.text.pose, L.camera.RO.left + 20, 0);
 
     // setup a pointer listener
     e_input_register_pointer_event(L.input, on_pointer_callback, NULL);
@@ -83,7 +85,8 @@ static void main_loop(float delta_time) {
     e_input_update(L.input);
 
     // simulate
-    camera_update(window_size.x, window_size.y);
+    camera_update(&L.camera, window_size.x, window_size.y);
+    mat4 *camera_mat = &L.camera.matrices.vp;
 
 
     // render
@@ -100,7 +103,7 @@ static void main_loop(float delta_time) {
              val, e_input_get_keys(L.input).space, L.last_click.id, L.last_click.pos.x, L.last_click.pos.y);
     // RoText methods: set text, render
     ro_text_set_text(&L.text, buf);
-    ro_text_render(&L.text);
+    ro_text_render(&L.text, camera_mat);
     //
 
 

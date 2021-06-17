@@ -7,7 +7,6 @@
 // Renders a single rect in a draw call
 typedef struct {
     rRect_s rect;
-    const float *vp;    // mat4 camera view perspective
     bool owns_tex;      // if true, the texture will be deleted by this class
 
     struct {
@@ -22,7 +21,6 @@ typedef struct {
 typedef struct {
     rRect_s *rects;
     int num;
-    const float *vp;    // mat4 camera view perspective
     bool owns_tex;      // if true, the texture will be deleted by this class
 
     struct {
@@ -39,7 +37,6 @@ typedef struct {
 typedef struct {
     rParticleRect_s *rects;
     int num;
-    const float *vp;    // mat4 camera view perspective
     bool owns_tex;      // if true, the texture will be deleted by this class
 
     struct {
@@ -55,7 +52,6 @@ typedef struct {
 // Like RoSingle, but with refraction
 typedef struct {
     rRect_s rect;
-    const float *vp;                        // mat4
     const float *scale;                     // float
     const float *view_aabb;                 // vec4
     bool owns_tex_main;                     // if true, the textures will be deleted by this class
@@ -75,7 +71,6 @@ typedef struct {
 typedef struct {
     rRect_s *rects;
     int num;
-    const float *vp;                    // mat4
     const float *scale;                 // float
     const float *view_aabb;             // vec4
     bool owns_tex_main;                 // if true, the textures will be deleted by this class
@@ -97,7 +92,6 @@ typedef struct {
 typedef struct {
     rParticleRect_s *rects;
     int num;
-    const float *vp;                    // mat4
     const float *scale;                 // float
     const float *view_aabb;             // vec4
     bool owns_tex_main;                 // if true, the textures will be deleted by this class
@@ -126,11 +120,6 @@ typedef struct {
     mat4 pose;              // pose (top left) for the text
     vec2 size;              // character size
     vec2 offset;            // offset to next character
-    const float *vp;        // mat4 camera view perspective
-
-    struct {
-        mat4 mvp;               // internal mvp as vp for the batch
-    } L;
 } RoText;
 
 

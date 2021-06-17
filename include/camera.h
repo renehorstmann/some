@@ -21,43 +21,35 @@ typedef struct {
     mat4 v_p_inv;   // v @ p_inv   used for input
 } CameraMatrices_s;
 
-struct CameraGlobals_s {
+typedef struct {
     CameraMatrices_s matrices;
-    const float *gl;
-};
-extern struct CameraGlobals_s camera;
 
+    struct {
+        float real_pixel_per_pixel;
+        float left, right, bottom, top;
+    } RO;   // read only
+} Camera_s;
 
-void camera_init();
+Camera_s camera_new();
 
-void camera_update(int wnd_width, int wnd_height);
+void camera_update(Camera_s *self, int wnd_width, int wnd_height);
 
-float camera_real_pixel_per_pixel();
+void camera_set_pos(Camera_s *self, float x, float y);
 
-float camera_left();
+void camera_set_size(Camera_s *self, float size);
 
-float camera_right();
+void camera_set_angle(Camera_s *self, float alpha);
 
-float camera_bottom();
-
-float camera_top();
-
-static float camera_width() {
-    return -camera_left() + camera_right();
+static float camera_width(const Camera_s *self) {
+    return -self->RO.left + self->RO.right;
 }
 
-static float camera_height() {
-    return -camera_bottom() + camera_top();
+static float camera_height(const Camera_s *self) {
+    return -self->RO.bottom + self->RO.top;
 }
 
-static bool camera_is_portrait_mode() {
-    return camera_height() > camera_width();
+static bool camera_is_portrait_mode(const Camera_s *self) {
+    return camera_height(self) > camera_width(self);
 }
-
-void camera_set_pos(float x, float y);
-
-void camera_set_size(float size);
-
-void camera_set_angle(float alpha);
 
 #endif //SOME_CAMERA_H

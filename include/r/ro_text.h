@@ -12,18 +12,18 @@
 
 
 
-RoText ro_text_new_a(int max, ro_text_sprite_fn sprite_fn, const float *vp, rTexture tex_sink, Allocator_s alloc);
+RoText ro_text_new_a(int max, ro_text_sprite_fn sprite_fn, rTexture tex_sink, Allocator_s alloc);
 
-static RoText ro_text_new(int max, ro_text_sprite_fn sprite_fn, const float *vp, rTexture tex_sink) {
-    return ro_text_new_a(max, sprite_fn, vp, tex_sink, allocator_new_default());
+static RoText ro_text_new(int max, ro_text_sprite_fn sprite_fn, rTexture tex_sink) {
+    return ro_text_new_a(max, sprite_fn, tex_sink, allocator_new_default());
 }
 
 // inits text with the r/font55.png sprite sheet
-RoText ro_text_new_font55(int max, const float *vp);
+RoText ro_text_new_font55(int max);
 
 void ro_text_kill(RoText *self);
 
-void ro_text_render(RoText *self);
+void ro_text_render(RoText *self, const mat4 *camera_mat);
 
 // returns the used size
 vec2 ro_text_set_text(RoText *self, const char *text);
