@@ -140,7 +140,7 @@ eWindow *e_window_new(const char *name) {
 #endif
 
     if (SDL_Init(E_SDL_INIT_FLAGS) != 0) {
-        log_error("e_window_init: SDL_Init failed: %s", SDL_GetError());
+        log_error("e_window_new: SDL_Init failed: %s", SDL_GetError());
         exit(EXIT_FAILURE);
     }
 
@@ -148,20 +148,20 @@ eWindow *e_window_new(const char *name) {
     // initialize IMG
     int imgFlags = IMG_INIT_PNG;
     if (!(IMG_Init(imgFlags) & imgFlags)) {
-        log_error("e_window_init: IMG_Init failed: %s", IMG_GetError());
+        log_error("e_window_new: IMG_Init failed: %s", IMG_GetError());
         exit(EXIT_FAILURE);
     }
 
 #ifdef OPTION_TTF
     // initialize TTF
     if (TTF_Init() == -1) {
-        log_error("e_window_init: TTF_Init failed: %s", TTF_GetError());
+        log_error("e_window_new: TTF_Init failed: %s", TTF_GetError());
         exit(EXIT_FAILURE);
     }
 #endif
 
     // setup OpenGL usage
-    log_info("e_window_init: OpenGL minimal version: %d.%d", E_GL_MAJOR_VERSION, E_GL_MINOR_VERSION);
+    log_info("e_window_new: OpenGL minimal version: %d.%d", E_GL_MAJOR_VERSION, E_GL_MINOR_VERSION);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, E_GL_MAJOR_VERSION);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, E_GL_MINOR_VERSION);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, E_GL_PROFILE);
@@ -177,7 +177,7 @@ eWindow *e_window_new(const char *name) {
             | SDL_WINDOW_RESIZABLE
             );
     if (!singleton.window) {
-        log_error("e_window_init: SDL_CreateWindow failed: %s", SDL_GetError());
+        log_error("e_window_new: SDL_CreateWindow failed: %s", SDL_GetError());
         exit(EXIT_FAILURE);
     }
     SDL_SetWindowMinimumSize(singleton.window, 480, 320);
@@ -186,7 +186,7 @@ eWindow *e_window_new(const char *name) {
     // Not necessary, but recommended to create a gl context:
     singleton.gl_context = SDL_GL_CreateContext(singleton.window);
     if (!singleton.gl_context) {
-        log_error("e_window_init: SDL_GL_CreateContext failed: %s", SDL_GetError());
+        log_error("e_window_new: SDL_GL_CreateContext failed: %s", SDL_GetError());
         exit(EXIT_FAILURE);
     }
     SDL_GL_SetSwapInterval(1);  // (0=off, 1=V-Sync, -1=addaptive V-Sync)
@@ -195,10 +195,10 @@ eWindow *e_window_new(const char *name) {
     GLenum err = glewInit();
     if (GLEW_OK != err) {
         /* Problem: glewInit failed, something is seriously wrong. */
-        log_error( "e_window_init faled: %s", glewGetErrorString(err));
+        log_error( "e_window_new faled: %s", glewGetErrorString(err));
         exit(EXIT_FAILURE);
     }
-    log_info("e_window_init: Using GLEW version: %s", glewGetString(GLEW_VERSION));
+    log_info("e_window_new: Using GLEW version: %s", glewGetString(GLEW_VERSION));
 #endif
 
     SDL_GetWindowSize(singleton.window, &singleton.size.x, &singleton.size.y);

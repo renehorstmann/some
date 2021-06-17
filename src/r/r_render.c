@@ -44,19 +44,19 @@ rRender *r_render_new(SDL_Window *window) {
     singleton.window = window;
     singleton.clear_color = (vec4) {{0, 0, 0, 1}};
 
-    log_info("r_render_init: OpenGL version: %s", glGetString(GL_VERSION));
+    log_info("r_render_new: OpenGL version: %s", glGetString(GL_VERSION));
 
     int max_vertex_attributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &max_vertex_attributes);
     if (max_vertex_attributes < 16) {
-        log_warn("r_render_init: OpenGL failed: only has %d/16 vertex attributes", max_vertex_attributes);
+        log_warn("r_render_new: OpenGL failed: only has %d/16 vertex attributes", max_vertex_attributes);
         //exit(EXIT_FAILURE);
     }
 
     int max_texture_units;
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &max_texture_units);
     if (max_texture_units < 3) {
-        log_warn("r_render_init: OpenGL failed: only has %d/3 framebuffer texture units", max_texture_units);
+        log_warn("r_render_new: OpenGL failed: only has %d/3 framebuffer texture units", max_texture_units);
         //exit(EXIT_FAILURE);
     }
 

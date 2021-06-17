@@ -204,7 +204,7 @@ eInput *e_input_new(const struct eWindow *window) {
 
     singleton.accel_active = accel_opened;
     if (accel_opened)
-        log_info("e_input_init: Opened acceleration sensor");
+        log_info("e_input_new: Opened acceleration sensor");
 #endif
     
     return &singleton;
