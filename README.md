@@ -17,30 +17,21 @@ Have a look into some header files for some further explanation.
 
 ## Naming
 ### Functions
-A function like: `e_window_init` got its name of:
+A function like: `e_window_new` got its name of:
 - `e`: as namespace for the package e
 - `window`: module name
-- `init`: module function name
+- `new`: module function/method name
 
 ### Components
 Each component may have some basic function names:
 ```c
-*_init      // initialize the given component
-*_init_*    // special init
-*_new       // as *_init, but returns the new component
+*_new       // returns a new component
 *_new_*     // special new
 *_kill      // deinialize a comp.
 
 *_update    // update the internals
 *_render    // ...
 ```
-
-### Modules
->  To be removed...
-
-Modules may consist of globals and locals.
-Globals are packed in a struct with the module name: `e_window.size`.
-Locals are packed in a static struct called `L`.
 
 ### More Style rules
 For more style rules used in my projects, see [rhc/style](https://github.com/renehorstmann/rhc)
