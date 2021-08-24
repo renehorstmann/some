@@ -20,6 +20,6 @@
 
 #endif
 
-#include "SDL.h"
+#include <SDL2/SDL.h>
 
 #endif //SOME_GUI_NK_H

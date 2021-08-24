@@ -7,7 +7,7 @@
 #include "../allocator.h"
 
 #ifdef OPTION_SDL
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #endif
 
 void *rhc_malloc(size_t size) {

@@ -124,7 +124,7 @@ typedef struct {
 
 
 #ifdef OPTION_TTF
-#include "SDL_ttf.h"
+#include <SDL2/SDL_ttf.h>
 // Renders ttf text
 typedef struct {
     RoSingle ro;
