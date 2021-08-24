@@ -37,15 +37,16 @@ add_executable(some ${SRCS})
 # check platform
 if (MINGW)
     message("Platform: Windows MinGW")
+    set(PLATFORM_MINGW)
 else()
     find_library(GL_LIB GL)
     find_library(GLES_LIB GLESv3)
     if (GL_LIB)
         message("Platform: Unix")
-        set(UNIX true)
+        set(PLATFORM_UNIX true)
     elseif (GLES_LIB)
         message("Platform: Mobile")
-        set(MOBILE true)
+        set(PLATFORM_MOBILE true)
     else()
         message(FATAL_ERROR "Platform: unknown, neither GL nor GLES found!")
     endif()
@@ -57,7 +58,8 @@ add_definitions(-DOPTION_TTF)
 target_link_libraries(some m)
 
 # windows
-if (MINGW)
+if (PLATFORM_MINGW)
+    message("Setup Windows MinGW")
     # mingw is not shipped with a find_package(SDL2) script
     add_definitions(-Dmain=SDL_main)
     add_definitions(-DOPTION_GLEW)
@@ -83,7 +85,8 @@ endif()
 
 
 # unix
-if (UNIX)
+if (PLATFORM_UNIX)
+    message("Setup Unix")
     find_package(SDL2 REQUIRED)
     find_library(SDL2_IMAGE_LIBRARIES SDL2_image REQUIRED)
     find_library(SDL2_TTF_LIBRARIES SDL2_ttf REQUIRED)
@@ -107,7 +110,8 @@ endif()
 
 
 # mobile
-if (MOBILE)
+if (PLATFORM_MOBILE)
+    message("Setup Mobile")
     add_definitions(-DOPTION_GLES)
     add_definitions(-DOPTION_SDL)
     add_definitions(-DOPTION_GYRO)
