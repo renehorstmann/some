@@ -37,7 +37,7 @@ add_executable(some ${SRCS})
 # check platform
 if (MINGW)
     message("Platform: Windows MinGW")
-    set(PLATFORM_MINGW)
+    set(PLATFORM_MINGW true)
 else()
     find_library(GL_LIB GL)
     find_library(GLES_LIB GLESv3)
