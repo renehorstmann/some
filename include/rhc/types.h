@@ -10,7 +10,7 @@
 // Types
 //
 
-// virtuel allocator, see alloc.h
+// virtual allocator, see alloc.h
 typedef struct Allocator_s {
     void *user_data;
 
