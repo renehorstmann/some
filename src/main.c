@@ -31,9 +31,6 @@ static void on_pointer_callback(ePointer_s pointer, void *ud) {
     L.last_click = pointer;
     printf("clicked at x=%f, y=%f, id=%i, is touch: %i\n",
            pointer.pos.x, pointer.pos.y, pointer.id, e_input_is_touch(L.input));
-           
-    if(pointer.pos.x < -0.75)
-        SDL_StartTextInput();
 }
 //
 
@@ -72,14 +69,6 @@ int main(int argc, char **argv) {
     *r_render_clear_color(L.render) = (vec4) {0.5, 0.75, 0.5, 1};
     //
     
-    SDL_Rect r;
-    r.x = 10;
-    r.y = 50;
-    r.w = 512;
-    r.h = 64;
-    SDL_SetTextInputRect(&r);
-    
-
     e_window_main_loop(L.window, main_loop);
 
     r_render_kill(&L.render);
