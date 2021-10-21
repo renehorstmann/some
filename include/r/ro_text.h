@@ -12,7 +12,7 @@
 
 
 
-RoText ro_text_new_a(int max, ro_text_sprite_fn sprite_fn, rTexture tex_sink, Allocator_s alloc);
+RoText ro_text_new_a(int max, ro_text_sprite_fn sprite_fn, rTexture tex_sink, Allocator_i alloc);
 
 static RoText ro_text_new(int max, ro_text_sprite_fn sprite_fn, rTexture tex_sink) {
     return ro_text_new_a(max, sprite_fn, tex_sink, rhc_allocator_new());

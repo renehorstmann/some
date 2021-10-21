@@ -15,7 +15,7 @@
 
 
 #ifdef OPTION_SDL
-String rhc_file_read_a(const char *file, bool ascii, Allocator_s a) {
+String rhc_file_read_a(const char *file, bool ascii, Allocator_i a) {
     if(!allocator_valid(a)) {
         rhc_error = "file read failed, allocator invalid";
         log_error("rhc_file_read_a failed, allocator invalid: %s", file);
@@ -118,7 +118,7 @@ bool rhc_file_append(const char *file, Str_s content, bool ascii) {
 #else
 // unix file implementation
 
-String rhc_file_read_a(const char *file, bool ascii, Allocator_s a) {
+String rhc_file_read_a(const char *file, bool ascii, Allocator_i a) {
     if(!allocator_valid(a)) {
         rhc_error = "file read failed, allocator invalid";
         log_error("rhc_file_read_a failed, allocator invalid: %s", file);

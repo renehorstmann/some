@@ -46,7 +46,7 @@ static mat4 pose(const RoText *self, int c, int r) {
 // public
 //
 
-RoText ro_text_new_a(int max, ro_text_sprite_fn sprite_fn, rTexture tex_sink, Allocator_s alloc) {
+RoText ro_text_new_a(int max, ro_text_sprite_fn sprite_fn, rTexture tex_sink, Allocator_i alloc) {
     RoText self;
     self.sprite_fn = sprite_fn;
     self.pose = mat4_eye();
