@@ -8,10 +8,251 @@
 
 
 //
-// mingw - windows
+// UNIX
+//
+#ifdef unix
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+
+typedef struct {
+    int so;
+} UnixSocket;
+_Static_assert(sizeof (UnixSocket) <= RHC_SOCKET_STORAGE_SIZE, "storage not big enough");
+
+static size_t socket_recv(Stream_i stream, void *msg, size_t size) {
+    Socket *self = stream.user_data;
+    if(!rhc_socket_valid(self))
+        return 0;
+
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
+
+    ssize_t n = recv(impl->so, msg, size, MSG_NOSIGNAL);
+    if(n <= 0) {
+        log_error("rhc_socket_recv failed, killing socket...");
+        close(impl->so);
+        impl->so = -1;
+        return 0;
+    }
+    assert(n <= size);
+    return (size_t) n;
+}
+
+static size_t socket_send(Stream_i stream, const void *msg, size_t size) {
+    Socket *self = stream.user_data;
+    if(!rhc_socket_valid(self))
+        false;
+
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
+
+    ssize_t n = send(impl->so, msg, size, MSG_NOSIGNAL);
+    if(n <= 0) {
+        log_error("rhc_socket_send failed, killing socket...");
+        close(impl->so);
+        impl->so = -1;
+        return 0;
+    }
+    assert(n <= size);
+    return (size_t) n;
+}
+
+static Stream_i socket_create_stream(Socket *self) {
+    return (Stream_i) {
+        self, socket_recv, socket_send
+    };
+}
+//
+// public
 //
 
-#ifdef WIN32
+bool rhc_socketserver_valid(SocketServer self) {
+    UnixSocket *impl = (UnixSocket *) self.impl_storage;
+    return impl->so >= 0;
+}
+
+SocketServer rhc_socketserver_new_invalid() {
+    SocketServer self = {0};
+    UnixSocket *impl = (UnixSocket *) self.impl_storage;
+    impl->so = -1;
+    return self;
+}
+
+SocketServer rhc_socketserver_new(const char *address, uint16_t port) {
+    SocketServer self = {0};
+    UnixSocket *impl = (UnixSocket *) self.impl_storage;
+    
+    char port_str[8];
+    snprintf(port_str, 8, "%i", port);
+
+    struct addrinfo hints = {
+            .ai_family = AF_UNSPEC,
+            .ai_socktype = SOCK_STREAM
+    };
+//    hints.ai_flags = AI_PASSIVE;     // fill in my IP for me
+
+    // find a valid address and create a socket on it
+    {
+        struct addrinfo *servinfo;
+        int status = getaddrinfo(address, port_str, &hints, &servinfo);
+        if (status != 0) {
+            log_error("rhc_socketserver_new failed: getaddrinfo error: %s\n", gai_strerror(status));
+            rhc_error = "rhc_socketserver_new failed";
+            return rhc_socketserver_new_invalid();
+        }
+
+        for (struct addrinfo *ai = servinfo; ai != NULL; ai = ai->ai_next) {
+            impl->so = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+            if (!rhc_socketserver_valid(self))
+                continue;
+
+            if(bind(impl->so, ai->ai_addr, (int) ai->ai_addrlen) == -1) {
+                rhc_socketserver_kill(&self);
+                continue;
+            }
+
+            // valid socket + bind
+            break;
+        }
+        freeaddrinfo(servinfo); // free the linked-list
+    }
+
+    // no valid address found?
+    if(!rhc_socketserver_valid(self)) {
+        log_error("rhc_socketserver_new failed to create the server socket");
+        rhc_error = "rhc_socketserver_new failed";
+        return rhc_socketserver_new_invalid();
+    }
+
+    // reuse socket port
+    {
+        int yes = 1;
+        setsockopt(impl->so, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes);
+    }
+
+    int backlog = 10;   // queue size of incoming connections
+    if(listen(impl->so, backlog) == -1) {
+        log_error("rhc_socketserver_new failed to listen");
+        rhc_error = "rhc_socketserver_new failed";
+        rhc_socketserver_kill(&self);
+    }
+
+    return self;
+}
+
+void rhc_socketserver_kill(SocketServer *self) {
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
+    close(impl->so);
+    *self = rhc_socketserver_new_invalid();
+}
+
+Socket *rhc_socketserver_accept_a(SocketServer *self, Allocator_i a) {
+    if(!rhc_socketserver_valid(*self))
+        return rhc_socket_new_invalid();
+
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
+
+    Socket *client = a.calloc(a, sizeof *client);
+    client->stream = socket_create_stream(client);
+    client->allocator = a;
+    UnixSocket *client_impl = (UnixSocket *) client->impl_storage;
+
+    struct sockaddr_storage addr;
+    socklen_t addrlen = sizeof addr;
+    client_impl->so = accept(impl->so, (struct sockaddr *) &addr, &addrlen);
+
+    if(!rhc_socket_valid(client)) {
+        log_error("rhc_socketserver_accept failed, killing the server");
+        rhc_socketserver_kill(self);
+        a.free(a, client);
+        return rhc_socket_new_invalid();
+    }
+
+    char *client_ip = inet_ntoa(((struct sockaddr_in *) &addr)->sin_addr);
+    log_info("rhc_socketserver_accept connected with: %s", client_ip);
+
+    return client;
+}
+
+bool rhc_socket_valid(const Socket *self) {
+    if(!self)
+        return false;
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
+    return impl->so >= 0;
+}
+
+Socket *rhc_socket_new_invalid() {
+    return NULL;
+}
+
+Socket *rhc_socket_new_a(const char *address, uint16_t port, Allocator_i a) {
+    Socket *self = a.calloc(a, sizeof *self);
+    self->stream = socket_create_stream(self);
+    self->allocator = a;
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
+    
+    char port_str[8];
+    snprintf(port_str, 8, "%i", port);
+
+    struct addrinfo hints = {
+            .ai_family = AF_UNSPEC,
+            .ai_socktype = SOCK_STREAM
+    };
+
+    // find a valid address and connect to it
+    {
+        struct addrinfo *servinfo;
+        int status = getaddrinfo(address, port_str, &hints, &servinfo);
+        if (status != 0) {
+            log_error("rhc_socket_new failed: getaddrinfo error: %s\n", gai_strerror(status));
+            rhc_error = "rhc_socket_new failed";
+            a.free(a, self);
+            return rhc_socket_new_invalid();
+        }
+
+        for (struct addrinfo *ai = servinfo; ai != NULL; ai = ai->ai_next) {
+            impl->so = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+            if (!rhc_socket_valid(self))
+                continue;
+
+            if(connect(impl->so, ai->ai_addr, (int) ai->ai_addrlen) == -1) {
+                rhc_socket_kill(&self);
+                continue;
+            }
+
+            // valid socket + connect
+            break;
+        }
+        freeaddrinfo(servinfo); // free the linked-list
+    }
+
+    // no valid address found?
+    if(!rhc_socket_valid(self)) {
+        log_error("rhc_socket_new failed to create the connection");
+        rhc_error = "rhc_socket_new failed";
+        a.free(a, self);
+        return rhc_socket_new_invalid();
+    }
+    return self;
+}
+
+void rhc_socket_kill(Socket **self_ptr) {
+    Socket *self = *self_ptr;
+    if(!self)
+        return;
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
+    close(impl->so);
+    self->allocator.free(self->allocator, self);
+    *self_ptr = NULL;
+}
+#endif //unix
+
+
+//
+// mingw - windows
+//
+#ifdef _WIN32
 #include <winsock2.h>
 #include <winsock.h>
 #include <ws2tcpip.h>
@@ -19,79 +260,70 @@
 
 typedef struct {
     SOCKET so;
-} WinSocket;
-_Static_assert(sizeof (WinSocket) <= RHC_SOCKET_STORAGE_SIZE, "storage not big enough");
+} UnixSocket;
+_Static_assert(sizeof (UnixSocket) <= RHC_SOCKET_STORAGE_SIZE, "storage not big enough");
 
-static void socket_set_invalid(Stream stream) {
-    Socket *self = stream.user_data;
-    if(!rhc_socket_valid(self))
-        return;
-    WinSocket *impl = (WinSocket *) self->impl_storage;
-    impl->so = INVALID_SOCKET;
-}
-
-static size_t socket_recv(Stream stream, void *msg, size_t size) {
+static size_t socket_recv(Stream_i stream, void *msg, size_t size) {
     Socket *self = stream.user_data;
     if(!rhc_socket_valid(self))
         return 0;
 
-    WinSocket *impl = (WinSocket *) self->impl_storage;
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
 
     int n = recv(impl->so, msg, (int) size, 0);
     if(n <= 0) {
         log_error("rhc_socket_recv failed, killing socket...");
-        socket_set_invalid(stream);
+        closesocket(impl->so);
+        impl->so = INVALID_SOCKET;
         return 0;
     }
     assert(n <= size);
     return (size_t) n;
 }
 
-static size_t rhc_socket_send(Stream stream, const void *msg, size_t size) {
+static size_t socket_send(Stream_i stream, const void *msg, size_t size) {
     Socket *self = stream.user_data;
     if(!rhc_socket_valid(self))
         false;
 
-    WinSocket *impl = (WinSocket *) self->impl_storage;
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
 
     int n = send(impl->so, msg, (int) size, 0);
     if(n <= 0) {
         log_error("rhc_socket_send failed, killing socket...");
-        socket_set_invalid(stream);
+        closesocket(impl->so);
+        impl->so = INVALID_SOCKET;
         return 0;
     }
     assert(n <= size);
     return (size_t) n;
 }
 
-static Stream socket_create_stream(Socket *self) {
-    return (Stream) {
+static Stream_i socket_create_stream(Socket *self) {
+    return (Stream_i) {
         self, socket_recv, socket_send
     };
 }
-
-
 //
 // public
 //
 
-
 bool rhc_socketserver_valid(SocketServer self) {
-    WinSocket *impl = (WinSocket *) self.impl_storage;
+    UnixSocket *impl = (UnixSocket *) self.impl_storage;
     return impl->so != INVALID_SOCKET;
 }
 
 SocketServer rhc_socketserver_new_invalid() {
     SocketServer self = {0};
-    WinSocket *impl = (WinSocket *) self.impl_storage;
+    UnixSocket *impl = (UnixSocket *) self.impl_storage;
     impl->so = INVALID_SOCKET;
     return self;
 }
 
 SocketServer rhc_socketserver_new(const char *address, uint16_t port) {
     SocketServer self = {0};
-    WinSocket *impl = (WinSocket *) self.impl_storage;
-    
+    UnixSocket *impl = (UnixSocket *) self.impl_storage;
+
     char port_str[8];
     snprintf(port_str, 8, "%i", port);
 
@@ -136,7 +368,6 @@ SocketServer rhc_socketserver_new(const char *address, uint16_t port) {
             // valid socket + bind
             break;
         }
-
         freeaddrinfo(servinfo); // free the linked-list
     }
 
@@ -164,21 +395,21 @@ SocketServer rhc_socketserver_new(const char *address, uint16_t port) {
 }
 
 void rhc_socketserver_kill(SocketServer *self) {
-    WinSocket *impl = (WinSocket *) self->impl_storage;
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
     closesocket(impl->so);
     *self = rhc_socketserver_new_invalid();
 }
 
-Socket *rhc_socketserver_accept(SocketServer *self, Allocator_i a) {
+Socket *rhc_socketserver_accept_a(SocketServer *self, Allocator_i a) {
     if(!rhc_socketserver_valid(*self))
         return rhc_socket_new_invalid();
 
-    WinSocket *impl = (WinSocket *) self->impl_storage;
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
 
     Socket *client = a.calloc(a, sizeof *client);
     client->stream = socket_create_stream(client);
     client->allocator = a;
-    WinSocket *client_impl = (WinSocket *) client->impl_storage;
+    UnixSocket *client_impl = (UnixSocket *) client->impl_storage;
 
     struct sockaddr_storage addr;
     int addrlen = sizeof addr;
@@ -200,7 +431,7 @@ Socket *rhc_socketserver_accept(SocketServer *self, Allocator_i a) {
 bool rhc_socket_valid(const Socket *self) {
     if(!self)
         return false;
-    WinSocket *impl = (WinSocket *) self->impl_storage;
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
     return impl->so != INVALID_SOCKET;
 }
 
@@ -208,12 +439,12 @@ Socket *rhc_socket_new_invalid() {
     return NULL;
 }
 
-Socket *rhc_socket_new_a(const char *address, const char *port, Allocator_i a) {
+Socket *rhc_socket_new_a(const char *address, uint16_t port, Allocator_i a) {
     Socket *self = a.calloc(a, sizeof *self);
     self->stream = socket_create_stream(self);
     self->allocator = a;
-    WinSocket *impl = (WinSocket *) self->impl_storage;
-    
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
+
     char port_str[8];
     snprintf(port_str, 8, "%i", port);
 
@@ -259,7 +490,6 @@ Socket *rhc_socket_new_a(const char *address, const char *port, Allocator_i a) {
             // valid socket + connect
             break;
         }
-
         freeaddrinfo(servinfo); // free the linked-list
     }
 
@@ -270,7 +500,6 @@ Socket *rhc_socket_new_a(const char *address, const char *port, Allocator_i a) {
         a.free(a, self);
         return rhc_socket_new_invalid();
     }
-
     return self;
 }
 
@@ -278,15 +507,12 @@ void rhc_socket_kill(Socket **self_ptr) {
     Socket *self = *self_ptr;
     if(!self)
         return;
-    WinSocket *impl = (WinSocket *) self->impl_storage;
+    UnixSocket *impl = (UnixSocket *) self->impl_storage;
     closesocket(impl->so);
     self->allocator.free(self->allocator, self);
     *self_ptr = NULL;
 }
-
-
-
-#endif
+#endif //WIN32
 
 
 #endif //OPTION_SOCKET

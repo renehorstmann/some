@@ -80,6 +80,14 @@ static bool allocator_valid(Allocator_i a) {
     return a.malloc && a.realloc && a.free;  // vfunctions available?
 }
 
+static bool stream_valid(Stream_i s) {
+    return s.opt_read || s.opt_write;
+}
+
+static Stream_i stream_new_invalid() {
+    return (Stream_i) {0};
+}
+
 // returns true if str is valid
 static bool str_valid(Str_s s) {
     return s.data != NULL;

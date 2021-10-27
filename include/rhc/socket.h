@@ -12,7 +12,7 @@ typedef struct {
     Stream_i stream;
     Allocator_i allocator;
     char impl_storage[RHC_SOCKET_STORAGE_SIZE];
-} Socket
+} Socket;
 
 typedef struct {
     char impl_storage[RHC_SOCKET_STORAGE_SIZE];
@@ -46,6 +46,13 @@ Socket *rhc_socketserver_accept_a(SocketServer *self, Allocator_i a);
 // Socket
 //
 
+// safe way to use the Stream interface
+static Stream_i socket_get_stream(Socket *self) {
+    if(!self)
+        return stream_new_invalid();
+    return self->stream;
+}
+
 // returns true if the Socket is valid to use
 bool rhc_socket_valid(const Socket *self);
 // returns a new invalid Socket
@@ -66,12 +73,12 @@ void rhc_socket_kill(Socket **self_ptr);
 // Accepts a new client for a SocketServer
 // If an error occures, SocketServer will be set invalid and false is returned
 static Socket *socketserver_accept(SocketServer *self) {
-    return rhc_socketserver_accept(self, RHC_DEFAULT_ALLOCATOR);
+    return rhc_socketserver_accept_a(self, RHC_DEFAULT_ALLOCATOR);
 }
 
 // Creates and connects to a server
 static Socket *socket_new(const char *address, uint16_t port) {
-    return rhc_socket_new(address, port, RHC_DEFAULT_ALLOCATOR);
+    return rhc_socket_new_a(address, port, RHC_DEFAULT_ALLOCATOR);
 }
 
 
