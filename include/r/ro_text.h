@@ -21,6 +21,10 @@ static RoText ro_text_new(int max, ro_text_sprite_fn sprite_fn, rTexture tex_sin
 // inits text with the r/font55.png sprite sheet
 RoText ro_text_new_font55(int max);
 
+
+// inits text with the r/font88.png sprite sheet
+RoText ro_text_new_font85(int max);
+
 void ro_text_kill(RoText *self);
 
 void ro_text_render(const RoText *self, const mat4 *camera_mat);

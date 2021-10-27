@@ -19,6 +19,7 @@ static struct {
     // 'R'ender'o'bject
     // renders text via RoBatch
     RoText text;
+    RoText text85;
     // stores the last pressed mouse click / touch to render with RoText text
     ePointer_s last_click;
 } L;
@@ -60,7 +61,11 @@ int main(int argc, char **argv) {
     // RoText *self, int max_chars, const float *camera_vp_matrix
     L.text = ro_text_new_font55(128);
     // see u/pose.h, sets a mat4 transformation pose
-    u_pose_set_xy(&L.text.pose, L.camera.RO.left + 20, 0);
+    u_pose_set_xy(&L.text.pose, L.camera.RO.left + 5, 10);
+    
+    // font 85 contains full ascii chars
+    L.text85 = ro_text_new_font85(128);
+    u_pose_set_xy(&L.text85.pose, L.camera.RO.left + 5, -30);
 
     // setup a pointer listener
     e_input_register_pointer_event(L.input, on_pointer_callback, NULL);
@@ -101,11 +106,23 @@ static void main_loop(float delta_time) {
     // min, max, step
     e_gui_wnd_float_attribute(L.gui, "val", &val, 0, 100, 5);
     char buf[128];
-    snprintf(buf, 128, "Hello World\nval=%5.1f\nspace pressed: %i\nid=%i x=%.2f y=%.2f",
+    snprintf(buf, 128, "Hello World\nval=%5.1f\nspace pressed: %i\nid=%i x=%.2f y=%.2f" ,
              val, e_input_get_keys(L.input).space, L.last_click.id, L.last_click.pos.x, L.last_click.pos.y);
     // RoText methods: set text, render
     ro_text_set_text(&L.text, buf);
     ro_text_render(&L.text, camera_mat);
+    
+    static vec3 hsv = {{0, 1, 1}};
+    hsv.v0 += delta_time*90;
+    
+    snprintf(buf, 128, "#include <stdio.h>\nint main() {\n  puts(\"Hello World\");\n}");
+    for(int i=0; i<128; i++) {
+       vec3 tmp = hsv;
+       tmp.v0 = sca_mod(tmp.v0 + i*3, 360);
+       L.text85.ro.rects[i].color.xyz = vec3_hsv2rgb(tmp);
+    }
+    ro_text_set_text(&L.text85, buf);
+    ro_text_render(&L.text85, camera_mat);
     //
 
 
