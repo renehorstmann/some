@@ -160,6 +160,14 @@ eWindow *e_window_new(const char *name) {
     }
 #endif
 
+#ifdef OPTION_SOCKET
+    // initialize net
+    if (SDLNet_Init() == -1) {
+        log_error("e_window_new: SDLNet_Init failed: %s", SDLNet_GetError());
+        exit(EXIT_FAILURE);
+    }
+#endif
+
     // setup OpenGL usage
     log_info("e_window_new: OpenGL minimal version: %d.%d", E_GL_MAJOR_VERSION, E_GL_MINOR_VERSION);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, E_GL_MAJOR_VERSION);

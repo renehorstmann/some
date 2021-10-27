@@ -137,3 +137,9 @@ endif()
 # res
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+
+add_definitions(-DOPTION_SDL)
+add_definitions(-DOPTION_SOCKET)
+find_library(SDL2_NET_LIBRARIES SDL2_net REQUIRED)
+target_link_libraries(some ${SDL2_NET_LIBRARIES})

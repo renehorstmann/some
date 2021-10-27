@@ -7,6 +7,192 @@
 
 
 
+
+//
+// sdl
+//
+#ifdef OPTION_SDL
+#include <limits.h>
+#include "SDL2/SDL_net.h"
+typedef struct {
+    TCPsocket so;   // is a pointer type
+} SDLSocket;
+_Static_assert(sizeof (SDLSocket) <= RHC_SOCKET_STORAGE_SIZE, "storage not big enough");
+
+
+static size_t socket_recv(Stream_i stream, void *msg, size_t size) {
+    Socket *self = stream.user_data;
+    if(!rhc_socket_valid(self))
+        return 0;
+
+    assume(size < INT_MAX, "sdl socket uses int instead of size_t");
+    SDLSocket *impl = (SDLSocket *) self->impl_storage;
+
+    int n = SDLNet_TCP_Recv(impl->so, msg, size);
+    if(n <= 0) {
+        log_error("rhc_socket_recv failed, killing socket...");
+        SDLNet_TCP_Close(impl->so);
+        impl->so = NULL;
+        return 0;
+    }
+    assert(n <= size);
+    return (size_t) n;
+}
+
+static size_t socket_send(Stream_i stream, const void *msg, size_t size) {
+    Socket *self = stream.user_data;
+    if(!rhc_socket_valid(self))
+        false;
+
+    assume(size < INT_MAX, "sdl socket uses int instead of size_t");
+    SDLSocket *impl = (SDLSocket *) self->impl_storage;
+
+    int n = SDLNet_TCP_Send(impl->so, msg, size);
+    if(n <= 0) {
+        log_error("rhc_socket_send failed, killing socket...");
+        SDLNet_TCP_Close(impl->so);
+        impl->so = NULL;
+        return 0;
+    }
+    assert(n <= size);
+    return (size_t) n;
+}
+
+static Stream_i socket_create_stream(Socket *self) {
+    return (Stream_i) {
+            self, socket_recv, socket_send
+    };
+}
+//
+// public
+//
+
+bool rhc_socketserver_valid(SocketServer self) {
+    SDLSocket *impl = (SDLSocket *) self.impl_storage;
+    return impl->so != NULL;
+}
+
+SocketServer rhc_socketserver_new_invalid() {
+    SocketServer self = {0};
+    SDLSocket *impl = (SDLSocket *) self.impl_storage;
+    impl->so = NULL;
+    return self;
+}
+
+SocketServer rhc_socketserver_new(const char *address, uint16_t port) {
+    SocketServer self = {0};
+    SDLSocket *impl = (SDLSocket *) self.impl_storage;
+
+    if(address && strcmp(address, "0.0.0.0") != 0) {
+        log_warn("rhc_socketserver_new SDLNet uses always a public server (0.0.0.0)");
+    }
+    IPaddress ip;
+    if(SDLNet_ResolveHost(&ip, NULL, port) == -1) {
+        log_error("rhc_socketserver_new failed to resolve host: %s", SDLNet_GetError());
+        rhc_error = "rhc_socketserver_new failed";
+        return rhc_socketserver_new_invalid();
+    }
+
+    impl->so = SDLNet_TCP_Open(&ip);
+    // impl->so will be NULL on error, so _valid check would fail
+
+    if(!rhc_socketserver_valid(self)) {
+        log_error("rhc_socketserver_new failed to create the server socket");
+        rhc_error = "rhc_socketserver_new failed";
+        return rhc_socketserver_new_invalid();
+    }
+
+    return self;
+}
+
+void rhc_socketserver_kill(SocketServer *self) {
+    SDLSocket *impl = (SDLSocket *) self->impl_storage;
+    SDLNet_TCP_Close(impl->so);
+    *self = rhc_socketserver_new_invalid();
+}
+
+Socket *rhc_socketserver_accept_a(SocketServer *self, Allocator_i a) {
+    if(!rhc_socketserver_valid(*self))
+        return rhc_socket_new_invalid();
+
+    SDLSocket *impl = (SDLSocket *) self->impl_storage;
+
+    Socket *client = a.calloc(a, sizeof *client);
+    client->stream = socket_create_stream(client);
+    client->allocator = a;
+    SDLSocket *client_impl = (SDLSocket *) client->impl_storage;
+
+    for(;;) {
+        client_impl->so = SDLNet_TCP_Accept(impl->so);
+        if(client_impl->so)
+            break;
+        SDL_Delay(50); // sleep some millis
+    };
+
+    if(!rhc_socket_valid(client)) {
+        log_error("rhc_socketserver_accept failed, killing the server");
+        rhc_socketserver_kill(self);
+        a.free(a, client);
+        return rhc_socket_new_invalid();
+    }
+
+    IPaddress *client_ip = SDLNet_TCP_GetPeerAddress(client_impl->so);
+    if(!client_ip) {
+        log_warn("rhc_socketserver_accept failed to get client ip address");
+    } else {
+        log_info("rhc_socketserver_accept connected with: %s", SDLNet_ResolveIP(client_ip));
+    }
+
+    return client;
+}
+
+bool rhc_socket_valid(const Socket *self) {
+    if(!self)
+        return false;
+    SDLSocket *impl = (SDLSocket *) self->impl_storage;
+    return impl->so != NULL;
+}
+
+Socket *rhc_socket_new_invalid() {
+    return NULL;
+}
+
+Socket *rhc_socket_new_a(const char *address, uint16_t port, Allocator_i a) {
+    Socket *self = a.calloc(a, sizeof *self);
+    self->stream = socket_create_stream(self);
+    self->allocator = a;
+    SDLSocket *impl = (SDLSocket *) self->impl_storage;
+
+    IPaddress ip;
+    if(SDLNet_ResolveHost(&ip, address, port) == -1) {
+        log_error("rhc_socketserver_new failed to resolve host: %s", SDLNet_GetError());
+        rhc_error = "rhc_socketserver_new failed";
+        return rhc_socket_new_invalid();
+    }
+
+    impl->so = SDLNet_TCP_Open(&ip);
+    // impl->so will be NULL on error, so _valid check would fail
+
+    if(!rhc_socket_valid(self)) {
+        log_error("rhc_socket_new failed to create the connection");
+        rhc_error = "rhc_socket_new failed";
+        a.free(a, self);
+        return rhc_socket_new_invalid();
+    }
+    return self;
+}
+
+void rhc_socket_kill(Socket **self_ptr) {
+    Socket *self = *self_ptr;
+    if(!self)
+        return;
+    SDLSocket *impl = (SDLSocket *) self->impl_storage;
+    SDLNet_TCP_Close(impl->so);
+    self->allocator.free(self->allocator, self);
+    *self_ptr = NULL;
+}
+#else
+
 //
 // UNIX
 //
@@ -514,6 +700,6 @@ void rhc_socket_kill(Socket **self_ptr) {
 }
 #endif //WIN32
 
-
+#endif //OPTION_SDL
 #endif //OPTION_SOCKET
 #endif //RHC_SOCKET_IMPL_H
