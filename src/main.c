@@ -46,6 +46,7 @@ static void client_main() {
     stream_read_msg(s, client_buf, 3);
     
     printf("recv: <%s>\n", client_buf);
+    printf("neterr: <%s>\n", SDLNet_GetError());
 }
 
 int main(int argc, char **argv) {
