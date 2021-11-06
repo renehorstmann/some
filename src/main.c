@@ -39,7 +39,7 @@ static void main_loop(float delta_time);
 
 char client_buf[3];
 static void client_main() {
-    Socket *sock = socket_new("rohl.svenhuis.de", 10000);
+    Socket *sock = socket_new("rohl.svenhuis.de", 10001);
     
     Stream_i s = socket_get_stream(sock);
     
