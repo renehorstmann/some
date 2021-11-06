@@ -37,6 +37,16 @@ static void on_pointer_callback(ePointer_s pointer, void *ud) {
 
 static void main_loop(float delta_time);
 
+char client_buf[3];
+static void client_main() {
+    Socket *sock = socket_new("rohl.svenhuis.de", 10000);
+    
+    Stream_i s = socket_get_stream(sock);
+    
+    stream_read_msg(s, client_buf, 3);
+    
+    printf("recv: <%s>\n", client_buf);
+}
 
 int main(int argc, char **argv) {
     log_info("some");
@@ -53,6 +63,7 @@ int main(int argc, char **argv) {
     L.camera = camera_new();
 
 
+    client_main();
     // example code
     // update camera to  init camera.left, ...
     ivec2 window_size = e_window_get_size(L.window);
@@ -106,8 +117,8 @@ static void main_loop(float delta_time) {
     // min, max, step
     e_gui_wnd_float_attribute(L.gui, "val", &val, 0, 100, 5);
     char buf[128];
-    snprintf(buf, 128, "Hello World\nval=%5.1f\nspace pressed: %i\nid=%i x=%.2f y=%.2f" ,
-             val, e_input_get_keys(L.input).space, L.last_click.id, L.last_click.pos.x, L.last_click.pos.y);
+    snprintf(buf, 128, "Hello World\nval=%5.1f\nspace pressed: %i\nid=%i x=%.2f y=%.2f\nrecv: <%s>" ,
+             val, e_input_get_keys(L.input).space, L.last_click.id, L.last_click.pos.x, L.last_click.pos.y, client_buf);
     // RoText methods: set text, render
     ro_text_set_text(&L.text, buf);
     ro_text_render(&L.text, camera_mat);
