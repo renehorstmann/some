@@ -37,16 +37,23 @@ static void on_pointer_callback(ePointer_s pointer, void *ud) {
 
 static void main_loop(float delta_time);
 
-char client_buf[3];
+char client_buf[256];
 static void client_main() {
-    Socket *sock = socket_new("rohl.svenhuis.de", 10001);
+
+    Socket *sock = socket_new("127.0.0.1", 10001);
+    
+    printf("socket_valid: %i\n", socket_valid(sock));
     
     Stream_i s = socket_get_stream(sock);
     
-    stream_read_msg(s, client_buf, 3);
+    char hello[] = "Hello World";
+    size_t size = stream_write_msg(s, hello, sizeof hello);
     
-    printf("recv: <%s>\n", client_buf);
-    printf("neterr: <%s>\n", SDLNet_GetError());
+    printf("neterr: <%s>, size writte: %zu\n", SDLNet_GetError(), size);
+    printf("socket_valid: %i\n", socket_valid(sock));
+    
+    socket_kill(&sock);
+
 }
 
 int main(int argc, char **argv) {
@@ -64,8 +71,8 @@ int main(int argc, char **argv) {
     L.camera = camera_new();
 
 
-    client_main();
     // example code
+    client_main();
     // update camera to  init camera.left, ...
     ivec2 window_size = e_window_get_size(L.window);
     camera_update(&L.camera, window_size.x, window_size.y);
