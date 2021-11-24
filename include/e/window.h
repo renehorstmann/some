@@ -27,7 +27,7 @@ typedef void (*e_window_pause_callback_fn)(bool resume, void *user_data);
 typedef struct eWindow eWindow;
 
 
-eWindow *e_window_new(const char *name);
+eWindow *e_window_new(const char *title, const char *author);
 
 void e_window_kill(eWindow **self_ptr);
 

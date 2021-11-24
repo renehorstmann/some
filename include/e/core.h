@@ -37,7 +37,9 @@
 static void e_exit_failure() {
 #ifdef __EMSCRIPTEN__
     emscripten_cancel_main_loop();
-    EM_ASM(set_error_img(););
+    EM_ASM(
+            set_error_img();
+            );
 #endif
     exit(EXIT_FAILURE);
 }

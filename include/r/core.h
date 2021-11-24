@@ -20,10 +20,18 @@
 #include "mathc/types/float.h"
 
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+// #include <emscripten/html5.h>
+#endif
+
+
 static void r_exit_failure() {
 #ifdef __EMSCRIPTEN__
     emscripten_cancel_main_loop();
-    EM_ASM(set_error_img(););
+    EM_ASM(
+            set_error_img();
+            );
 #endif
     exit(EXIT_FAILURE);
 }

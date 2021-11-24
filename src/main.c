@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
     log_info("some");
 
     // init e (environment)
-    L.window = e_window_new("some");
+    L.window = e_window_new("some", "Horsimann");
     L.input = e_input_new(L.window);
     L.gui = e_gui_new(L.window);
 

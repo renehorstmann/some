@@ -5,6 +5,7 @@
 // base module of r
 //
 
+#include <stdbool.h>
 #include "types.h"
 
 //struct rRenderGolabals_s {
@@ -39,8 +40,8 @@ void r_render_end_frame(const rRender *self);
 // cols and rows of the current screen, see e_window
 void r_render_blit_framebuffer(const rRender *self, int cols, int rows);
 
-// checks for opengl errors and displays them
-void r_render_error_check_impl_(const char *opt_tag);
+// checks for opengl errors and displays them, returns true on unexpected error
+bool r_render_error_check_impl_(const char *opt_tag);
 
 
 //
@@ -49,6 +50,9 @@ void r_render_error_check_impl_(const char *opt_tag);
 
 // checks for opengl errors and displays them
 static void r_render_error_check(const char *opt_tag) {
+#ifdef NDEBUG
+    return
+#endif
 #ifdef OPTION_GL_ERROR
     r_render_error_check_impl_(const char *opt_tag);
 #endif
