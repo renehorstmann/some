@@ -9,6 +9,7 @@
 #include "mathc/types/float.h"
 #include "core.h"
 
+#define E_MAX_TOUCH_IDS 12
 
 #define E_MAX_POINTER_EVENTS 32
 #define E_MAX_WHEEL_EVENTS 32
