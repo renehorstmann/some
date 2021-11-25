@@ -60,12 +60,20 @@ int main(int argc, char **argv) {
     log_info("some");
 
     // init e (environment)
-    L.window = e_window_new("some", "Horsimann");
+    L.window = e_window_new("some");
     L.input = e_input_new(L.window);
     L.gui = e_gui_new(L.window);
+    
+    ivec2 window_size = e_window_get_size(L.window);
 
     // init r (render)
     L.render = r_render_new(e_window_get_sdl_window(L.window));
+    
+    // the startup screen acts as loading screen and also checks for render errors
+    r_render_show_startup(L.render,
+            window_size.x, window_size.y,
+            1.0, // block time
+            "Horsimann");
 
     // init systems
     L.camera = camera_new();
@@ -74,7 +82,7 @@ int main(int argc, char **argv) {
     // example code
     client_main();
     // update camera to  init camera.left, ...
-    ivec2 window_size = e_window_get_size(L.window);
+    
     camera_update(&L.camera, window_size.x, window_size.y);
     // class init of RoText
     // RoText *self, int max_chars, const float *camera_vp_matrix

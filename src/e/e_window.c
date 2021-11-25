@@ -17,9 +17,6 @@
 //
 void e_window_handle_window_event_(const SDL_Event *event);
 
-typedef void (*on_startup_finished_fun)();
-e_window_main_loop_fn e_r_startup(const char *text, ivec2 wnd_size, on_startup_finished_fun on_startup_finished);
-
 
 //
 // private
@@ -31,8 +28,6 @@ typedef struct {
 } RegPause;
  
 struct eWindow{
-    char author[32];
-
     SDL_Window *window;
     SDL_GLContext gl_context;
     ivec2 size;
@@ -41,7 +36,6 @@ struct eWindow{
     bool running;
 
     e_window_main_loop_fn main_loop_fn;
-    e_window_main_loop_fn main_loop_fn_user;
     Uint32 last_time;
     
     RegPause reg_pause_e[E_WINDOW_MAX_PAUSE_EVENTS];
@@ -103,10 +97,6 @@ static void resume_wnd() {
     singleton.pause = false;
 }
 
-static void on_e_r_startup_finsihed_callback() {
-    log_info("e_window: startup finished");
-    singleton.main_loop_fn = singleton.main_loop_fn_user;
-}
 
 static void log_window_event(const SDL_Event *event);
 
@@ -140,13 +130,10 @@ void e_window_handle_window_event_(const SDL_Event *event) {
 // public
 //
 
-eWindow *e_window_new(const char *title, const char *author) {
+eWindow *e_window_new(const char *title) {
     assume(!singleton_created, "e_window_new should be called only onve");
     singleton_created = true;
-
-    assume(strlen(author) < 32, "e_window_new author to long");
-    strcpy(singleton.author, author);
-
+    
 #ifdef NDEBUG
     rhc_log_set_min_level(RHC_LOG_WARN);
 #else
@@ -266,8 +253,7 @@ ivec2 e_window_get_size(const eWindow *self) {
 
 void e_window_main_loop(eWindow *self, e_window_main_loop_fn main_loop) {
     assume(self == &singleton, "singleton?");
-    singleton.main_loop_fn_user = main_loop;
-    singleton.main_loop_fn = e_r_startup(singleton.author, singleton.size, on_e_r_startup_finsihed_callback);
+    singleton.main_loop_fn = main_loop;
     singleton.pause = false;
     singleton.running = true;
     singleton.last_time = SDL_GetTicks();

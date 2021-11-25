@@ -1,6 +1,9 @@
 #include "rhc/error.h"
 #include "rhc/log.h"
+#include "mathc/utils/camera.h"
+#include "r/texture.h"
 #include "r/texture2d.h"
+#include "r/ro_text.h"
 #include "r/render.h"
 
 
@@ -205,3 +208,70 @@ bool r_render_error_check_impl_(const char *opt_tag) {
 
     return unexpected_error;
 }
+
+
+//
+// r_render_show_startup
+//
+
+#define CAMERA_SIZE 180 // *4=720; *6=1080; *8=1440
+
+#define AUTHOR_SIZE 2.0
+
+// copy from u/pose.h
+static mat4 u_pose_new(float x, float y, float w, float h) {
+    // mat4 has column major order
+    return (mat4) {{
+                           w, 0, 0, 0,
+                           0, h, 0, 0,
+                           0, 0, 1, 0,
+                           x, y, 0, 1
+                   }};
+}
+
+
+static mat4 camera(int wnd_width, int wnd_height) {
+    float smaller_size = wnd_width < wnd_height ? wnd_width : wnd_height;
+    float real_pixel_per_pixel = floorf(smaller_size / CAMERA_SIZE);
+
+    float width_2 = wnd_width / (2 *  real_pixel_per_pixel);
+    float height_2 = wnd_height / (2 * real_pixel_per_pixel);
+
+    // begin: (top, left) with a full pixel
+    // end: (bottom, right) with a maybe splitted pixel
+    float left = -floorf(width_2);
+    float top = floorf(height_2);
+    float right = width_2 + (width_2 - floorf(width_2));
+    float bottom = -height_2 - (height_2 - floorf(height_2));
+    return mat4_camera_ortho(left, right, bottom, top, -1, 1);
+}
+
+void r_render_show_startup(const rRender *self, int cols, int rows, float block_time, const char *author) {
+    RoText author_text = ro_text_new_font85(32);
+    vec2 text_size = ro_text_set_text(&author_text, author);
+    author_text.pose = u_pose_new(-text_size.x * AUTHOR_SIZE / 2, 0, AUTHOR_SIZE, AUTHOR_SIZE);
+    ro_text_set_color(&author_text, R_COLOR_WHITE);
+    
+    // render
+    r_render_begin_frame(self, cols, rows);
+    mat4 cam = camera(cols, rows);
+    ro_text_render(&author_text, &cam);
+    r_render_end_frame(self);
+    
+    // check error and abort
+     if(r_render_error_check_impl_("e_r_startup")) {
+        log_error("Unexpected OpenGL errors occured while checking in startup");
+        r_exit_failure();
+    }
+    
+    // clean up and block
+    ro_text_kill(&author_text);
+    
+    
+#ifdef __EMSCRIPTEN__
+    emscripten_sleep((Uint32) (blocktime*1000));
+#else
+    SDL_Delay((Uint32) (block_time*1000));
+#endif
+}
+

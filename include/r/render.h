@@ -27,6 +27,11 @@ void r_render_kill(rRender **self_ptr);
 
 vec4 *r_render_clear_color(rRender *self);
 
+// renders a startup screen a single time
+// also checks if the rendering got any errors and will exit the app, if so
+// if block_time > 0, it will sleep so many seconds
+void r_render_show_startup(const rRender *self, int cols, int rows, float block_time, const char *author);
+
 const rTexture2D *r_render_get_framebuffer_tex(const rRender *self);
 
 // starts a new frame
