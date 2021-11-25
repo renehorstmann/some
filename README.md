@@ -95,8 +95,6 @@ mkdir web && cd web
 emcc -I../include/ -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s USE_SDL_TTF=2 -s USE_SDL_NET=2 -s FULL_ES3=1 -s SDL2_IMAGE_FORMATS='["png"]' --preload-file ../res -s ALLOW_MEMORY_GROWTH=1 -s ASYNCIFY=1 -s EXIT_RUNTIME=1 -DOPTION_GLES -DOPTION_SDL -DOPTION_TTF -DOPTION_SOCKET ../src/e/*.c ../src/p/*.c ../src/r/*.c ../src/u/*.c ../src/*.c -o index.html
 ```
 
-May / will not work on Apple, because of their poor WebGL2 support.
-
 Add the following changes to the generated index.html:
 ```html
 <style>
@@ -113,7 +111,7 @@ Add the following changes to the generated index.html:
 </style>
 <script>
     function set_error_img() {
-        var newContent = '<!DOCTYPE html><html><body style="background-color:black;"><h1 style="color:white;">Potato Browsers are not supported!</h1><p style="color:silver;">Full WebGL2.0 is needed!</p><p style="color:grey">Sorry Apple Fans...</p></body></html>';
+        var newContent = '<!DOCTYPE html><html><body style="background-color:black;"><h1 style="color:white;">Potato Browsers are not supported!</h1><p style="color:silver;">Full WebGL2.0 is needed!</p></body></html>';
         document.open();
         document.write(newContent);
         document.close();
