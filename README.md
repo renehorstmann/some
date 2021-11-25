@@ -113,15 +113,14 @@ Add the following changes to the generated index.html:
 </style>
 <script>
     function set_error_img() {
-        var newContent = '<html><body"><img src="error.png"></body></html>';
+        var newContent = '<!DOCTYPE html><html><body style="background-color:black;"><h1 style="color:white;">Potato Browsers are not supported!</h1><p style="color:silver;">Full WebGL2.0 is needed!</p><p style="color:grey">Sorry Apple Fans...</p></body></html>';
         document.open();
         document.write(newContent);
         document.close();
     }
 </script>
 ```
-This will let Emscripten run in fullscreen and display the image "error.png" if an error occurs.
-(So create an error.png image for your http server)
+This will let Emscripten run in fullscreen and display an error text, if the app / game is not able to run (WebGL2.0 support missing)
 
 ## Without Cmake
 
