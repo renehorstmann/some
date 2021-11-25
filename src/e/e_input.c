@@ -250,6 +250,12 @@ void e_input_kill(eInput **self_ptr) {
 void e_input_update(const eInput *self) {
     assume(self == &singleton, "singleton?");
     singleton.is_touch = SDL_GetNumTouchDevices() > 0;
+    
+    static int was_touch = -1;
+    if(was_touch != singleton.is_touch) {
+        was_touch = singleton.is_touch;
+        log_info("touch: %i", was_touch);
+    }
 
 
     e_gui_input_begin_(e_gui_singleton_);    // NULL safe
