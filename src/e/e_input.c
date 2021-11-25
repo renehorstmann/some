@@ -111,7 +111,12 @@ static ePointer_s pointer_finger(enum ePointerAction action, float x, float y, S
         
         if(action == E_POINTER_MOVE) {
             action = E_POINTER_DOWN;
-            log_warn("e_input_update: new id but action==move");
+            log_warn("e_input_update: touch got new id but action==move");
+        }
+        if(action == E_POINTER_UP) {
+            log_error("e_input_update: touch got up but unknown id");
+            id--;
+            singleton.touch_ids_size--;
         }
     }
     
