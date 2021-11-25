@@ -269,7 +269,7 @@ void r_render_show_startup(const rRender *self, int cols, int rows, float block_
     
     
 #ifdef __EMSCRIPTEN__
-    emscripten_sleep((Uint32) (blocktime*1000));
+    emscripten_sleep((Uint32) (block_time*1000));
 #else
     SDL_Delay((Uint32) (block_time*1000));
 #endif
