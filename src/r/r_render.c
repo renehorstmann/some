@@ -4,6 +4,7 @@
 #include "r/texture.h"
 #include "r/texture2d.h"
 #include "r/ro_text.h"
+#include "r/ro_particlerefract.h"
 #include "r/render.h"
 
 
@@ -247,15 +248,27 @@ static mat4 camera(int wnd_width, int wnd_height) {
 }
 
 void r_render_show_startup(const rRender *self, int cols, int rows, float block_time, const char *author) {
-    RoText author_text = ro_text_new_font85(32);
+    RoText author_text;
+    RoParticleRefract test;
+    
+    author_text = ro_text_new_font85(32);
     vec2 text_size = ro_text_set_text(&author_text, author);
     author_text.pose = u_pose_new(-text_size.x * AUTHOR_SIZE / 2, 0, AUTHOR_SIZE, AUTHOR_SIZE);
     ro_text_set_color(&author_text, R_COLOR_WHITE);
+    
+    float scale = 1;
+    test = ro_particlerefract_new(1, &scale,
+            r_texture_new_white_pixel(),
+            r_texture_new_white_pixel());
+    test.rects[0].color.a=0;
+    ro_particlerefract_update(&test);
     
     // render
     r_render_begin_frame(self, cols, rows);
     mat4 cam = camera(cols, rows);
     ro_text_render(&author_text, &cam);
+    r_render_blit_framebuffer(self, cols, rows);
+    ro_particlerefract_render(&test, 0, &cam);
     r_render_end_frame(self);
     
     // check error and abort
@@ -266,6 +279,7 @@ void r_render_show_startup(const rRender *self, int cols, int rows, float block_
     
     // clean up and block
     ro_text_kill(&author_text);
+    ro_particlerefract_kill(&test);
     
     
 #ifdef __EMSCRIPTEN__
