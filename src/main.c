@@ -154,7 +154,7 @@ static void main_loop(float delta_time) {
 
 
     // uncomment to clone the current framebuffer into r_render.framebuffer_tex
-    // r_render_blit_framebuffer(e_window.size.x, e_window.size.y);
+    // r_render_blit_framebuffer(L.render, window_size.x, window_size.y);
 
     e_gui_render(L.gui);
 
