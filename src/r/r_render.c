@@ -128,7 +128,7 @@ void r_render_blit_framebuffer(const rRender *self, int cols, int rows) {
     // renew texture, if size changed
     if (singleton.framebuffer_tex.size.x != cols || singleton.framebuffer_tex.size.y != rows) {
         r_texture2d_kill(&singleton.framebuffer_tex);
-        singleton.framebuffer_tex = r_texture2d_new_empty(cols, rows);
+        singleton.framebuffer_tex = r_texture2d_new(cols, rows,  NULL);
 
         glBindFramebuffer(GL_FRAMEBUFFER, singleton.framebuffer_tex_fbo);
 
@@ -256,8 +256,7 @@ void r_render_show_startup(const rRender *self, int cols, int rows, float block_
     author_text.pose = u_pose_new(-text_size.x * AUTHOR_SIZE / 2, 0, AUTHOR_SIZE, AUTHOR_SIZE);
     ro_text_set_color(&author_text, R_COLOR_WHITE);
     
-    float scale = 1;
-    test = ro_particlerefract_new(1, &scale,
+    test = ro_particlerefract_new(1,
             r_texture_new_white_pixel(),
             r_texture_new_white_pixel());
     test.rects[0].color.a=0;
@@ -268,7 +267,7 @@ void r_render_show_startup(const rRender *self, int cols, int rows, float block_
     mat4 cam = camera(cols, rows);
     ro_text_render(&author_text, &cam);
     r_render_blit_framebuffer(self, cols, rows);
-    ro_particlerefract_render(&test, 0, &cam);
+    ro_particlerefract_render(&test, 0, &cam, 1, NULL, NULL);
     r_render_end_frame(self);
     
     // check error and abort

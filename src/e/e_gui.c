@@ -114,7 +114,7 @@ void e_gui_float(const char *title, float *attribute, float min, float max) {
     if(!singleton.ctx)
         return;
     struct nk_context *ctx = singleton.ctx;
-    if (nk_begin(ctx, title, window_rect(300, 80),
+    if (nk_begin(ctx, title, window_rect(300, 90),
                  NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
                  NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) {
         nk_layout_row_dynamic(ctx, 30, 1);

@@ -20,11 +20,12 @@
 
 typedef struct rRender rRender;
 
-
+// creates the opengl context and does some error checks
 rRender *r_render_new(SDL_Window *window);
 
 void r_render_kill(rRender **self_ptr);
 
+// returns a pointer to the clear color, to read and write
 vec4 *r_render_clear_color(rRender *self);
 
 // renders a startup screen a single time
@@ -32,6 +33,8 @@ vec4 *r_render_clear_color(rRender *self);
 // if block_time > 0, it will sleep so many seconds
 void r_render_show_startup(const rRender *self, int cols, int rows, float block_time, const char *author);
 
+// returns the last blitted framebuffer, see r_render_blit_framebuffer
+// the default rTexture (3D texture) does not work on some devices
 const rTexture2D *r_render_get_framebuffer_tex(const rRender *self);
 
 // starts a new frame

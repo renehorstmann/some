@@ -5,6 +5,8 @@
 // as e/core.h, this file includes headers of sdl and opengl and has some color constants
 //
 
+#include <stdbool.h>
+
 #define GL_GLEXT_PROTOTYPES
 
 #ifdef OPTION_GLEW
@@ -26,11 +28,12 @@
 #endif
 
 
+// exit the app, on emscripten an error message will be shown
 static void r_exit_failure() {
 #ifdef __EMSCRIPTEN__
     emscripten_cancel_main_loop();
     EM_ASM(
-            set_error_img();
+            set_exit_failire_error_msg();
             );
 #endif
     exit(EXIT_FAILURE);
