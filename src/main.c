@@ -129,9 +129,15 @@ static void main_loop(float delta_time) {
 
     // example code
     static float val = 10;
-    //creates a debug window to set val
+    // creates a debug window to set val
     // min, max, step
-    e_gui_wnd_float_attribute(L.gui, "val", &val, 0, 100, 5);
+    e_gui_float("val", &val, 0, 100);
+    //
+    // creates a debug window to set the clear color
+    vec4 *clear_color = r_render_clear_color(L.render);
+    e_gui_rgb("background", (vec3*) clear_color);
+    
+    
     char buf[128];
     snprintf(buf, 128, "Hello World\nval=%5.1f\nspace pressed: %i\nid=%i x=%.2f y=%.2f\nrecv: <%s>" ,
              val, e_input_get_keys(L.input).space, L.last_click.id, L.last_click.pos.x, L.last_click.pos.y, client_buf);
@@ -151,8 +157,7 @@ static void main_loop(float delta_time) {
     ro_text_set_text(&L.text85, buf);
     ro_text_render(&L.text85, camera_mat);
     //
-
-
+    
     // uncomment to clone the current framebuffer into r_render.framebuffer_tex
     // r_render_blit_framebuffer(L.render, window_size.x, window_size.y);
 
