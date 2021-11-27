@@ -112,7 +112,7 @@ Add the following changes to the generated index.html:
   }
 </style>
 <script>
-    function set_exit_failire_error_msg() {
+    function set_exit_failure_error_msg() {
         var newContent = '<!DOCTYPE html><html><body style="background-color:black;"><h1 style="color:white;">Potato Browsers are not supported!</h1><p style="color:silver;">Full WebGL2.0 is needed!</p></body></html>';
         document.open();
         document.write(newContent);
