@@ -69,6 +69,7 @@ int main(int argc, char **argv) {
     // RoText *self, int max_chars, const float *camera_vp_matrix
     L.text = ro_text_new_font55(128);
     // see u/pose.h, sets a mat4 transformation pose
+    // most render objects got their xy positions as a center point, but for text its top left
     u_pose_set_xy(&L.text.pose, L.camera.RO.left + 5, -10);
     // font 85 contains full ascii chars
     L.text85 = ro_text_new_font85(128);
