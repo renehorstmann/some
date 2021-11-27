@@ -10,7 +10,7 @@ project(some C)
 # OPTION_GYRO           if gyro sensor is available
 # -not used- OPTION_GL_ERROR       if set, functions use r_render_check_error (heavy op, if summed up)
 #
-# NDEBUG                is used at some points, too
+# NDEBUG                is used at a few points, too
 # MATHC_NO_PRINT_COLOR  disable colored mathc prints
 # NUKLEAR_SCALE=3.0     for small hd screens (smartphones)
 # RHC_LOG_DO_NOT_PRINT_TIME_FILE disable time and file in logs
@@ -68,7 +68,7 @@ if (PLATFORM_MINGW)
     add_definitions(-DOPTION_SDL)
     add_definitions(-DMATHC_NO_PRINT_COLOR)
 
-    # mingw may not find some library, due to missing CMAKE_LIBRARY_PATH lib paths
+    # mingw may not find a few libraries, due to missing CMAKE_LIBRARY_PATH lib paths
     find_library(OPENGL_LIB opengl32 REQUIRED)
     find_library(GLEW_LIB glew32 REQUIRED)
     find_library(GLU_LIB glu32 REQUIRED)
