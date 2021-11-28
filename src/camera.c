@@ -9,6 +9,9 @@
 // render objects can use camera.gl for the transformation matrix.
 //
 
+// comment out to not use a pixel perfect camera
+#define PIXEL_PERFECT
+
 
 //
 // public
@@ -28,7 +31,11 @@ Camera_s camera_new() {
 void camera_update(Camera_s *self, int wnd_width, int wnd_height) {
 
     float smaller_size = wnd_width < wnd_height ? wnd_width : wnd_height;
-    self->RO.real_pixel_per_pixel = floorf(smaller_size / CAMERA_SIZE);
+    self->RO.real_pixel_per_pixel = smaller_size / CAMERA_SIZE;
+    
+#ifdef PIXEL_PERFECT
+        self->RO.real_pixel_per_pixel = floorf(self->RO.real_pixel_per_pixel);
+#endif
 
     float width_2 = wnd_width / (2 * self->RO.real_pixel_per_pixel);
     float height_2 = wnd_height / (2 * self->RO.real_pixel_per_pixel);
