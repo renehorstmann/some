@@ -35,6 +35,8 @@ static ems_fetch_success(emscripten_fetch_t *fetch) {
     emscripten_fetch_close(self->fetch);
     self->fetch = NULL;
     
+    if(self->fetch_completed)
+        log_warn("u_fetch was completed, but overridden");
     self->fetch_completed = true;
 }
 
@@ -50,6 +52,8 @@ static ems_fetch_error(emscripten_fetch_t *fetch) {
     emscripten_fetch_close(self->fetch);
     self->fetch = NULL;
     
+    if(self->fetch_completed)
+        log_warn("u_fetch was completed, but overridden");
     self->fetch_completed = true;
 }
 
@@ -64,7 +68,6 @@ uFetch *u_fetch_new(u_fetch_on_receive_cb callback, void *user_data) {
     self->attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY; 
     self->attr.onsuccess = ems_fetch_success; 
     self->attr.onerror = ems_fetch_error; 
-    
     
     return self;
 }
@@ -125,4 +128,6 @@ void u_fetch_check_response(uFetch *self);
 
 
 #endif
-#endif //OPTION_FETCH
+#else //OPTION_FETCH
+typedef int avoid_iso_c_empty_translation_unit_warning_;
+#endif

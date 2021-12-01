@@ -24,7 +24,7 @@ void u_fetch_get(uFetch *self, const char *url);
 // data should be key=value string with an & as seperator
 void u_fetch_post(uFetch *self, const char *url, const void *data, size_t data_size);
 
-// checks for a conpleted transmission or error and calls the receive callback (on this thread)
+// checks for a completed transmission or error and calls the receive callback (on this thread)
 void u_fetch_check_response(uFetch *self);
 
 
