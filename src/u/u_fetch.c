@@ -164,12 +164,12 @@ static int request_thread(void *ud) {
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, self);
 	
 	String post_data = string_new_invalid();
-	if(string_valid(self->data)) {
+	if(!str_empty(self->data.str)) {
 	    // POST
 	    // move data
 	    post_data = self->data;
 	    self->data = string_new_invalid();
-	    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data);
+	    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data.data);
 	    
 	}
 	self->data = string_new(128);
