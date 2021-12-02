@@ -20,7 +20,7 @@ struct uFetch {
     bool fetch_completed;
 }
 
-static ems_fetch_success(emscripten_fetch_t *fetch) {
+static void ems_fetch_success(emscripten_fetch_t *fetch) {
     log_trace("u_fetch succeded");
     uFetch *self = fetch->userData;
     assume(self->fetch == fetch, "wtf");
@@ -38,7 +38,7 @@ static ems_fetch_success(emscripten_fetch_t *fetch) {
     self->error = 0;
 }
 
-static ems_fetch_error(emscripten_fetch_t *fetch) {
+static void ems_fetch_error(emscripten_fetch_t *fetch) {
     log_warn("u_fetch failed with http code: %i", fetch->status);
     uFetch *self = fetch->userData;
     assume(self->fetch == fetch, "wtf");
@@ -63,13 +63,13 @@ uFetch *u_fetch_new_get(const char *url) {
     emscripten_fetch_attr_t attr;
     
     emscripten_fetch_attr_init(&attr); 
-    atte.userData = self;
+    attr.userData = self;
     attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY; 
     attr.onsuccess = ems_fetch_success; 
     attr.onerror = ems_fetch_error; 
     strcpy(attr.requestMethod, "GET"); 
     
-    self->fetch = emscripten_fetch(&self->attr, url);
+    self->fetch = emscripten_fetch(attr, url);
     assume(self->fetch->userData == self, "should include user_data");
     
     return self;
@@ -79,20 +79,19 @@ uFetch *u_fetch_new_post(const char *url, Str_s data) {
     log_trace("u_fetch_new_post: %s", url);
     
     uFetch *self = rhc_calloc(sizeof *self);
-    self->data = string_new(data_size);
-    string_append(self->data, data);
+    self->data = string_new_clone(data);
    
     emscripten_fetch_attr_t attr;
     
     emscripten_fetch_attr_init(&attr); 
-    atte.userData = self;
+    attr.userData = self;
     attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY; 
     attr.onsuccess = ems_fetch_success; 
     attr.onerror = ems_fetch_error; 
     strcpy(attr.requestMethod, "POST"); 
-    self->attr.requestData = self->data.data;
-    self->attr.requestDataSize = self->data.size;
-    self->fetch = emscripten_fetch(&self->attr, url);
+    attr.requestData = self->data.data;
+    attr.requestDataSize = self->data.size;
+    self->fetch = emscripten_fetch(attr, url);
     assume(self->fetch->userData == self, "should include user_data");
     
     return self;
@@ -106,7 +105,7 @@ void u_fetch_kill(uFetch **self_ptr) {
         log_warn("u_fetch_kill called before fetch was finished?");
         emscripten_fetch_close(self->fetch);
     }
-    rhc_free(self->data);
+    string_kill(&self->data);
     rhc_free(self);
     *self_ptr = NULL;
 }
