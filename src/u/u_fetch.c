@@ -15,7 +15,7 @@ struct uFetch {
     emscripten_fetch_t *fetch;
     
     String data;
-    int error
+    int error;
     
     bool fetch_completed;
 }
