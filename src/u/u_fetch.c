@@ -18,7 +18,7 @@ struct uFetch {
     int error;
     
     bool fetch_completed;
-}
+};
 
 static void ems_fetch_success(emscripten_fetch_t *fetch) {
     log_trace("u_fetch succeded");
@@ -69,7 +69,7 @@ uFetch *u_fetch_new_get(const char *url) {
     attr.onerror = ems_fetch_error; 
     strcpy(attr.requestMethod, "GET"); 
     
-    self->fetch = emscripten_fetch(attr, url);
+    self->fetch = emscripten_fetch(&attr, url);
     assume(self->fetch->userData == self, "should include user_data");
     
     return self;
@@ -91,7 +91,7 @@ uFetch *u_fetch_new_post(const char *url, Str_s data) {
     strcpy(attr.requestMethod, "POST"); 
     attr.requestData = self->data.data;
     attr.requestDataSize = self->data.size;
-    self->fetch = emscripten_fetch(attr, url);
+    self->fetch = emscripten_fetch(&attr, url);
     assume(self->fetch->userData == self, "should include user_data");
     
     return self;
