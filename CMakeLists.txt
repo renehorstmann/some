@@ -82,6 +82,7 @@ if (PLATFORM_MINGW)
             SDL2_image
             SDL2_net
             SDL2_ttf
+            curl
             ${OPENGL_LIB}
             ${GLEW_LIB}
             ${GLU_LIB}
@@ -97,6 +98,8 @@ if (PLATFORM_UNIX)
     find_library(SDL2_NET_LIBRARIES SDL2_net REQUIRED)
     find_library(SDL2_TTF_LIBRARIES SDL2_ttf REQUIRED)
 
+    find_library(CURL_LIBRARIES curl REQUIRED)
+
     find_library(GL_LIB GL REQUIRED)
 
     target_link_libraries(some
@@ -104,6 +107,7 @@ if (PLATFORM_UNIX)
             ${SDL2_IMAGE_LIBRARIES}
             ${SDL2_NET_LIBRARIES}
             ${SDL2_TTF_LIBRARIES}
+            ${CURL_LIBRARIES}
             ${GL_LIB}
     )
 
