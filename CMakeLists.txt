@@ -5,6 +5,7 @@ project(some C)
 # OPTION_GLES           for OpenGLES3.0 instead of OpenGL3.3
 # OPTION_GLEW           if GLEW is available
 # OPTION_SDL            is set to let rhc code use SDL function
+# OPTION_FETCH          to use u_fetch (http rest)
 # OPTION_SOCKET         to use rhc sockets
 # OPTION_TTF            to use ro_ttftext
 # OPTION_GYRO           if gyro sensor is available
@@ -55,6 +56,7 @@ endif()
 
 
 # all platforms:
+add_definitions(-DOPTION_FETCH)
 add_definitions(-DOPTION_SOCKET)
 add_definitions(-DOPTION_TTF)
 target_link_libraries(some m)
@@ -129,6 +131,8 @@ if (PLATFORM_MOBILE)
     find_package(SDL2_net REQUIRED)
     find_package(SDL2_ttf REQUIRED)
 
+    find_package(CURL REQUIRED)
+
     find_library(GLES_LIB GLESv3 REQUIRED)
 
     target_link_libraries(some
@@ -136,6 +140,7 @@ if (PLATFORM_MOBILE)
             ${SDL2_IMAGE_LIBRARIES}
             ${SDL2_NET_LIBRARIES}
             ${SDL2_TTF_LIBRARIES}
+            ${CURL_LIBRARIES}
             ${GLES_LIB}
     )
 endif()

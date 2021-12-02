@@ -23,6 +23,8 @@ static struct {
     // stores the last pressed mouse click / touch to render with RoText text
     ePointer_s last_click;
     ////
+    
+    uFetch *fetch;
 } L;
 
 
@@ -80,6 +82,7 @@ int main(int argc, char **argv) {
     *r_render_clear_color(L.render) = (vec4) {0.5, 0.75, 0.5, 1};
     ////
     
+    L.fetch = u_fetch_new_get("http://rohl.svenhuis.de:10000/test");
     
     // start the main loop, blocking call
     e_window_main_loop(L.window, main_loop);
@@ -152,6 +155,13 @@ static void main_loop(float delta_time) {
     ro_text_render(&L.text85, camera_mat);
     ////
     
+    int status;
+    String data = u_fetch_check_response(&L.fetch, &status);
+    if(status)
+        printf("status: %i\n", status);
+    if(string_valid(data)) {
+        printf("fetched: <%s>\n", data.data);
+    }
     
     // uncomment to clone the current framebuffer into r_render.framebuffer_tex
     // r_render_blit_framebuffer(L.render, window_size.x, window_size.y);
