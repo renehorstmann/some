@@ -13,6 +13,7 @@ typedef struct uFetch uFetch;
 
 
 // does an asynchronous GET call and returns the uFetch class handle
+// if url is not a full http
 uFetch *u_fetch_new_get(const char *url);
 
 // does an asynchronous POST call and returns the uFetch class handle
