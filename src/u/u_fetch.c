@@ -15,7 +15,7 @@ struct uFetch {
     emscripten_fetch_t *fetch;
     
     String data;
-    int error;
+    int status;
     
     bool fetch_completed;
 };
@@ -26,8 +26,8 @@ static void ems_fetch_success(emscripten_fetch_t *fetch) {
     assume(self->fetch == fetch, "wtf");
 
     self->data.size = 0;
-    string_append(&self->data, (Str_s) {fetch->data, fetch->numBytes});
-    self->error = fetch->status;
+    string_append(&self->data, (Str_s) {(char) fetch->data, fetch->numBytes});
+    self->status = fetch->status;
     
     emscripten_fetch_close(self->fetch);
     self->fetch = NULL;
@@ -43,7 +43,7 @@ static void ems_fetch_error(emscripten_fetch_t *fetch) {
     assume(self->fetch == fetch, "wtf");
     
     string_kill(&self->data);
-    self->error = fetch->status;
+    self->status = fetch->status;
     
     emscripten_fetch_close(self->fetch);
     self->fetch = NULL;
@@ -111,23 +111,26 @@ void u_fetch_kill(uFetch **self_ptr) {
 }
 
 
-String u_fetch_check_response(uFetch **self_ptr, int *opt_error_code) {
+String u_fetch_check_response(uFetch **self_ptr, int *opt_status_code) {
     uFetch *self = *self_ptr;
-    if(opt_error_code)
-        *opt_error_code = 0;
+    if(opt_status_code)
+        *opt_status_code = 0;
     if(!self)
         return string_new_invalid();
     
     if(!self->fetch_completed)
         return string_new_invalid();
     
-    if(opt_error_code)
-        *opt_error_code = self->error;
+    if(opt_status_code)
+        *opt_status_code = self->status;
     // move and kill
-    String res = self->data;
+    String ret = self->data;
     self->data = string_new_invalid();
+
+    if(self->status != 200)
+        string_kill(&ret);
     u_fetch_kill(self_ptr);
-    return res;
+    return ret;
 }
 
 #else
@@ -140,7 +143,7 @@ struct uFetch {
     
     String url;
     String data;
-    int error;
+    int status;
     
     bool fetch_completed;
 };
@@ -172,7 +175,10 @@ static int request_thread(void *ud) {
 	self->data = string_new(128);
 	
 	SDL_LockMutex(self->lock);
-	self->error = curl_easy_perform(curl);
+	curl_easy_perform(curl);
+    long http_code = 0;
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+    self->status = http_code;
 	self->fetch_completed = true;
 	if(self->data.size == 0)
 	    string_kill(&self->data);
@@ -227,11 +233,11 @@ void u_fetch_kill(uFetch **self_ptr) {
 }
 
 
-String u_fetch_check_response(uFetch **self_ptr, int *opt_error_code) {
+String u_fetch_check_response(uFetch **self_ptr, int *opt_status_code) {
     String ret = string_new_invalid();
     uFetch *self = *self_ptr;
-    if(opt_error_code)
-        *opt_error_code = 0;
+    if(opt_status_code)
+        *opt_status_code = 0;
     if(!self)
         return ret;
         
@@ -240,13 +246,15 @@ String u_fetch_check_response(uFetch **self_ptr, int *opt_error_code) {
         // move
         ret = self->data;
         self->data = string_new_invalid();
-        if(opt_error_code)
-            *opt_error_code = self->error;
+        if(opt_status_code)
+            *opt_status_code = self->status;
     }
     SDL_UnlockMutex(self->lock);
     // kill on success
     if(self->fetch_completed)
         u_fetch_kill(self_ptr);
+    if(self->status != 200)
+        string_kill(&ret);
     return ret;
 }
 
