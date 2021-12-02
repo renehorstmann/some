@@ -81,9 +81,10 @@ int main(int argc, char **argv) {
     // set clear color = background color
     *r_render_clear_color(L.render) = (vec4) {0.5, 0.75, 0.5, 1};
     ////
-    
-    L.fetch = u_fetch_new_get("https://rohl.svenhuis.de/api/tes");
-    
+
+//    L.fetch = u_fetch_new_get("https://rohl.svenhuis.de/api/test");
+    L.fetch = u_fetch_new_post("https://rohl.svenhuis.de/api/test", strc("10097~Waluigi~39672"));
+
     // start the main loop, blocking call
     e_window_main_loop(L.window, main_loop);
 

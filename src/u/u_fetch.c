@@ -26,7 +26,7 @@ static void ems_fetch_success(emscripten_fetch_t *fetch) {
     assume(self->fetch == fetch, "wtf");
 
     self->data.size = 0;
-    string_append(&self->data, (Str_s) {(char) fetch->data, fetch->numBytes});
+    string_append(&self->data, (Str_s) {(char*) fetch->data, fetch->numBytes});
     self->status = fetch->status;
     
     emscripten_fetch_close(self->fetch);
