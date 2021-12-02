@@ -24,9 +24,9 @@ static void ems_fetch_success(emscripten_fetch_t *fetch) {
     log_trace("u_fetch succeded");
     uFetch *self = fetch->userData;
     assume(self->fetch == fetch, "wtf");
-    
-    string_resize(&self->data, fetch->numBytes);
-    memcpy(self->data.data, fetch->data, fetch->numBytes);
+
+    self->data.size = 0;
+    string_append(&self->data, (Str_s) {fetch->data, fetch->numBytes});
     self->error = fetch->status;
     
     emscripten_fetch_close(self->fetch);
@@ -35,7 +35,6 @@ static void ems_fetch_success(emscripten_fetch_t *fetch) {
     if(self->fetch_completed)
         log_warn("u_fetch was completed, but overridden");
     self->fetch_completed = true;
-    self->error = 0;
 }
 
 static void ems_fetch_error(emscripten_fetch_t *fetch) {
@@ -59,6 +58,7 @@ uFetch *u_fetch_new_get(const char *url) {
     log_trace("u_fetch_new_get: %s", url);
     
     uFetch *self = rhc_calloc(sizeof *self);
+    self->data = string_new(128);
     
     emscripten_fetch_attr_t attr;
     
