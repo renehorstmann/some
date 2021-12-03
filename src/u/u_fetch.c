@@ -91,6 +91,8 @@ uFetch *u_fetch_new_post(const char *url, Str_s data) {
     strcpy(attr.requestMethod, "POST"); 
     attr.requestData = self->data.data;
     attr.requestDataSize = self->data.size;
+    printf("post wC: %i\n", attr.withCredentials);
+    attr.withCredentials = true;
     self->fetch = emscripten_fetch(&attr, url);
     assume(self->fetch->userData == self, "should include user_data");
     
