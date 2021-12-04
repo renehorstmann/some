@@ -27,8 +27,8 @@ static void idbfs_mount() {
     if(L.mounted)
         return;
     EM_ASM( 
-        FS.mkdir('/savestate); 
-        FS.mount(IDBFS, {}, '/savestate); 
+        FS.mkdir('/savestate'); 
+        FS.mount(IDBFS, {}, '/savestate'); 
     );
     L.mounted = true;
     log_info("e_io_idbfs_mount");
