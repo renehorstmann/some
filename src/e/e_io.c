@@ -28,13 +28,14 @@ static void idbfs_mount() {
         return;
     EM_ASM( 
         FS.mkdir('/savestate'); 
-        FS.mount(IDBFS, {}, '/savestate'); 
+        FS.mount(IDBFS, {}, '/savestate');
+        e_io_idbfs_synced = false;
     );
     L.mounted = true;
     log_info("e_io_idbfs_mount");
 }
 
-// protectec, JS may need its name as global
+// protected, JS need its name as global
 void e_io_idbfs_synced() {
     log_trace("e_io_idbfs_synced");
     L.synced = true;
@@ -45,13 +46,17 @@ static void idbfs_load() {
     
     // true = load file system from idbfs
     EM_ASM(
+        e_io_idbfs_synced = false;
         FS.syncfs(true, function (err) { 
-            assert(!err); 
-            ccall('e_io_idbfs_synced', 'v', [], [], { async: true });
+            assert(!err);
+            e_io_idbfs_synced = true;
         });
     );
     // sleep a ms until synced to get a synchronous call
     while(!L.synced) {
+        EM_ASM(
+            if(e_io_idbfs_synced) { ccall('e_io_idbfs_synced', 'v'); }
+        );
         emscripten_sleep(1);
     }
 }
@@ -62,15 +67,19 @@ static void idbfs_save() {
     
     // false = load file system from idbfs
     EM_ASM(
-        FS.syncfs(false, function (err) { 
-            assert(!err); 
-            ccall('e_io_idbfs_synced', 'v', [], [], { async: true });
+        e_io_idbfs_synced = false;
+        FS.syncfs(false, function (err) {
+            assert(!err);
+            e_io_idbfs_synced = true;
         });
     );
     // sleep a ms until synced to get a synchronous call
     while(!L.synced) {
+        EM_ASM(
+            if(e_io_idbfs_synced) { ccall('e_io_idbfs_synced', 'v'); }
+        );
         emscripten_sleep(1);
-    }  
+    }
 }
 
 String e_io_savestate_read(const char *filename, bool ascii) {
