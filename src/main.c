@@ -82,10 +82,10 @@ int main(int argc, char **argv) {
     *r_render_clear_color(L.render) = (vec4) {0.5, 0.75, 0.5, 1};
     ////
 
-//    L.fetch = u_fetch_new_get("https://rohl.svenhuis.de/api/test");
-    String entry = highscore_entry_to_string(highscore_entry_new("Wolfgang", 12345));
-    L.fetch = u_fetch_new_post("https://rohl.svenhuis.de/api/test", entry.str);
-    string_kill(&entry);
+    L.fetch = u_fetch_new_get("https://rohl.svenhuis.de/api/test");
+//    String entry = highscore_entry_to_string(highscore_entry_new("Wolfgang", 12345));
+//    L.fetch = u_fetch_new_post("https://rohl.svenhuis.de/api/test", entry.str);
+//    string_kill(&entry);
     
     String name = e_io_savestate_read("name.txt", true);
     printf("savestate name = <%s>\n", name.data);
@@ -171,7 +171,7 @@ static void main_loop(float delta_time) {
     if(string_valid(data)) {
         printf("fetched: <%s>\n", data.data);
         Highscore h = highscore_new_msg(data.str);
-        printf("rows: %i", h.entries_size);
+        printf("rows: %i\n", h.entries_size);
         highscore_kill(&h);
     }
     
