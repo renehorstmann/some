@@ -83,7 +83,13 @@ int main(int argc, char **argv) {
     ////
 
 //    L.fetch = u_fetch_new_get("https://rohl.svenhuis.de/api/test");
-    L.fetch = u_fetch_new_post("https://rohl.svenhuis.de/api/test", strc("entry=10200~Waluigi4~39672"));
+    //L.fetch = u_fetch_new_post("https://rohl.svenhuis.de/api/test", strc("entry=10200~Waluigi4~39672"));
+    
+    String name = e_io_savestate_read("name.txt", true);
+    printf("savestate name = <%s>\n", name.data);
+    string_kill(&name);
+    bool ok = e_io_savestate_write("name.txt", strc("Horsimann"), true);
+    printf("savestate write: %i\n", ok);
 
     // start the main loop, blocking call
     e_window_main_loop(L.window, main_loop);

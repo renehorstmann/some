@@ -9,5 +9,6 @@
 #include "window.h"
 #include "input.h"
 #include "gui.h"
+#include "io.h"
 
 #endif //E_E_H
