@@ -47,7 +47,7 @@ static void idbfs_load() {
     EM_ASM(
         FS.syncfs(true, function (err) { 
             assert(!err); 
-            ccall('e_io_idbfs_synced', 'v'); 
+            ccall('e_io_idbfs_synced', 'v', async=true);
         });
     );
     // sleep a ms until synced to get a synchronous call
@@ -64,7 +64,7 @@ static void idbfs_save() {
     EM_ASM(
         FS.syncfs(false, function (err) { 
             assert(!err); 
-            ccall('e_io_idbfs_synced', 'v'); 
+            ccall('e_io_idbfs_synced', 'v', async=true);
         });
     );
     // sleep a ms until synced to get a synchronous call
