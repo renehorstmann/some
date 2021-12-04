@@ -57,7 +57,7 @@ static void idbfs_load() {
 }
 
 
-static void idbga_save() {
+static void idbfs_save() {
     L.synced = false;
     
     // false = load file system from idbfs
@@ -80,6 +80,7 @@ String e_io_savestate_read(const char *filename, bool ascii) {
     idbfs_mount();
     idbfs_load();
     snprintf(name, sizeof name, "savestate/%s", filename);
+    return file_read(name, ascii);
 }
 
 
@@ -89,7 +90,9 @@ bool e_io_savestate_write(const char *filename, Str_s content, bool ascii) {
     char name[16 + E_IO_SAVESTATE_MAX_FILENAME_LENGTH];
     idbfs_mount();
     snprintf(name, sizeof name, "savestate/%s", filename);
+    bool ok = file_write(name, content, ascii);
     idbfs_save();
+    return ok;
 }
 
 
@@ -100,7 +103,9 @@ bool e_io_savestate_append(const char *filename, Str_s content, bool ascii) {
     idbfs_mount();
     idbfs_load();
     snprintf(name, sizeof name, "savestate/%s", filename);
+    bool ok = file_append(name, content, ascii);
     idbfs_save();
+    return ok;
 }
 
 #else
