@@ -82,9 +82,9 @@ int main(int argc, char **argv) {
     *r_render_clear_color(L.render) = (vec4) {0.5, 0.75, 0.5, 1};
     ////
 
-//    L.fetch = u_fetch_new_get("rohl.svenhuis.de/api/test");
+//    L.fetch = u_fetch_new_get("https://rohl.svenhuis.de/api/test");
     String entry = highscore_entry_to_string(highscore_entry_new("Wolfgang", 12345));
-    L.fetch = u_fetch_new_post("rohl.svenhuis.de/api/test", entry.str);
+    L.fetch = u_fetch_new_post("https://rohl.svenhuis.de/api/test", entry.str);
     string_kill(&entry);
     
     String name = e_io_savestate_read("name.txt", true);
