@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
     r_render_show_startup(L.render,
             window_size.x, window_size.y,
             1.0, // block time
-            "Horsimann");
+            "HorsimannTest");
 
     // init systems
     L.camera = camera_new();

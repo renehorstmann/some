@@ -91,7 +91,7 @@ uFetch *u_fetch_new_post(const char *url, Str_s data) {
     strcpy(attr.requestMethod, "POST"); 
     attr.requestData = self->data.data;
     attr.requestDataSize = self->data.size;
-    attr.requestHeaders = (const char *[]) {"Content-Type", "plain/text", NULL};
+    attr.requestHeaders = (const char *[]) {"Content-Type", "text/plain", NULL};
     self->fetch = emscripten_fetch(&attr, url);
     assume(self->fetch->userData == self, "should include user_data");
     
@@ -168,7 +168,7 @@ static int request_thread(void *ud) {
 	if(!str_empty(self->data.str)) {
 	    // POST
         struct curl_slist *headers = NULL;
-        headers = curl_slist_append(headers, "Content-Type: plain/text");
+        headers = curl_slist_append(headers, "Content-Type: text/plain");
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
 	    // move data
