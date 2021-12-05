@@ -278,16 +278,6 @@ void r_render_show_startup(rRender *self, float block_time, const char *author) 
             r_texture_new_white_pixel());
     self->start_up->test.rects[0].color.a=0;
     ro_particlerefract_update(&self->start_up->test);
-    
-    
-    
-    
-    
-#ifdef __EMSCRIPTEN__
-    emscripten_sleep((Uint32) (block_time*1000));
-#else
-    SDL_Delay((Uint32) (block_time*1000));
-#endif
 }
 
 bool r_render_startup_update(rRender *self, ivec2 window_size, float delta_time) {
