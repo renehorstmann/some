@@ -9,8 +9,11 @@ to be platform independent.
 
 Fork this repo and have fun. Have a look into some header files for some further explanation.
 
+
+## Tutorial
+
 In the repository [some_examples](https://github.com/renehorstmann/some_examples) are some examples and modules to use for the some framework, like buttons, etc.
-The examples are well documented and easy to follow.
+The examples are well documented and easy to follow (in active work, though...).
 
 ## Example Apps
 
@@ -84,6 +87,7 @@ The following globals are used:
     - e_window
     - e_input
     - e_gui
+    - e_simple
     - r_render
 - Pseudo random value: [static _Thread_local uint32_t x](src/u/u_prandom.c)
 - [rhc](https://github.com/renehorstmann/rhc) globals
@@ -97,7 +101,7 @@ mkdir web && cd web
 ```
 
 ```sh
-emcc -I../include/ -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s USE_SDL_TTF=2 -s FULL_ES3=1 -s SDL2_IMAGE_FORMATS='["png"]' --preload-file ../res -s ALLOW_MEMORY_GROWTH=1 -s ASYNCIFY=1 -s EXIT_RUNTIME=1 -s FETCH=1 -s EXPORTED_FUNCTIONS='["_main", "_e_io_idbfs_synced"]' -lidbfs.js -DOPTION_GLES -DOPTION_SDL -DOPTION_TTF -DOPTION_FETCH ../src/e/*.c ../src/p/*.c ../src/r/*.c ../src/u/*.c ../src/*.c -o index.html
+emcc -I../include/ -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s USE_SDL_TTF=2 -s FULL_ES3=1 -s EXPORTED_FUNCTIONS='["_main", "_e_io_idbfs_synced"]' -s SDL2_IMAGE_FORMATS='["png"]'  --preload-file ../res -s ALLOW_MEMORY_GROWTH=1 -s ASYNCIFY=1 -s EXIT_RUNTIME=1 -s FETCH=1 -lidbfs.js -DOPTION_GLES -DOPTION_SDL -DOPTION_TTF -DOPTION_FETCH ../src/e/*.c ../src/p/*.c ../src/r/*.c ../src/u/*.c ../src/*.c -o index.html
 ```
 
 Add the following changes to the generated index.html:
