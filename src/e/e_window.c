@@ -202,9 +202,6 @@ eWindow *e_window_new(const char *title) {
         log_error("e_window_new: SDL_GL_CreateContext failed: %s", SDL_GetError());
         e_exit_failure();
     }
-    log_trace("e_window_new: set swap interval...");
-    int ret = SDL_GL_SetSwapInterval(1);  // (0=off, 1=V-Sync, -1=addaptive V-Sync)
-    log_trace("e_window_new: set swap interval: %i", ret);
 
 #ifdef OPTION_GLEW
     GLenum err = glewInit();
@@ -252,11 +249,6 @@ SDL_GLContext e_window_get_sdl_gl_context(const eWindow *self) {
     return singleton.gl_context;
 }
 
-ivec2 e_window_get_size(const eWindow *self) {
-    assume(self == &singleton, "singleton?");
-    return singleton.size;
-}
-
 void e_window_main_loop(eWindow *self, e_window_main_loop_fn main_loop) {
     assume(self == &singleton, "singleton?");
     singleton.main_loop_fn = main_loop;
@@ -289,6 +281,36 @@ void e_window_reset_main_loop(eWindow *self, e_window_main_loop_fn main_loop) {
     assume(singleton.main_loop_fn, "main_loop not started yet?");
     log_info("e_window_reset_main_loop");
     singleton.main_loop_fn = main_loop;
+}
+
+ivec2 e_window_get_size(const eWindow *self) {
+    assume(self == &singleton, "singleton?");
+    return singleton.size;
+}
+
+void e_window_set_vsync(const eWindow *self, bool activate) {
+    int ret;
+    if(!activate) {
+        ret = SDL_GL_SetSwapInterval(0);
+        if(ret == 0) {
+            log_info("e_window_set_vsync: turned off", activate);
+            return;
+        }
+        log_error("e_window_set_vsync: failed to turn off vsync");
+        return;
+    }
+    // try adaptive vsync
+    ret = SDL_GL_SetSwapInterval(-1);
+    if(ret == 0) {
+        log_info("e_window_set_vsync: applied adaptive-vsync");
+        return;
+    }
+    ret = SDL_GL_SetSwapInterval(1);
+    if(ret == 0) {
+        log_info("e_window_set_vsync: applied vsync");
+        return;
+    }
+    log_error("e_window_set_vsync: failed to turn on vsync");
 }
 
 void e_window_set_screen_mode(const eWindow *self, enum e_window_screen_modes mode) {

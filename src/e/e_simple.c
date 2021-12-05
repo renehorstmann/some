@@ -66,6 +66,7 @@ static void init_loop(float delta_time) {
     ivec2 window_size = e_window_get_size(L.super.window);
     if(r_render_startup_update(L.super.render, window_size, delta_time)) {
         log_info("e_simple_init");
+        e_window_set_vsync(L.super.window, true);
         e_window_reset_main_loop(L.super.window, main_loop);
         L.init_fn(&L.super, window_size);
     }

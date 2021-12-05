@@ -38,14 +38,20 @@ SDL_Window *e_window_get_sdl_window(const eWindow *self);
 
 SDL_GLContext e_window_get_sdl_gl_context(const eWindow *self);
 
-// returns the windows canvas pixel size
-ivec2 e_window_get_size(const eWindow *self);
-
 // starts the main loop (emscripten needs a main loop function)
 void e_window_main_loop(eWindow *self, e_window_main_loop_fn main_loop);
 
 // resets the main loop functions
+// call this function, if the main loop has been set
 void e_window_reset_main_loop(eWindow *self, e_window_main_loop_fn main_loop);
+
+// returns the windows canvas pixel size
+ivec2 e_window_get_size(const eWindow *self);
+
+// if activate is false, vsync is disables
+// if activate is true, adaptive-vsync is tried and if not available, normal vsync is applied
+// call this function, if the main loop has been set
+void e_window_set_vsync(const eWindow *self, bool activate);
 
 // to set fullscreen, etc.
 void e_window_set_screen_mode(const eWindow *self, enum e_window_screen_modes mode);
