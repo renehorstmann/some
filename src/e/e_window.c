@@ -202,7 +202,9 @@ eWindow *e_window_new(const char *title) {
         log_error("e_window_new: SDL_GL_CreateContext failed: %s", SDL_GetError());
         e_exit_failure();
     }
-    SDL_GL_SetSwapInterval(1);  // (0=off, 1=V-Sync, -1=addaptive V-Sync)
+    log_trace("e_window_new: set swap interval...");
+    int ret = SDL_GL_SetSwapInterval(1);  // (0=off, 1=V-Sync, -1=addaptive V-Sync)
+    log_trace("e_window_new: set swap interval: %i", ret);
 
 #ifdef OPTION_GLEW
     GLenum err = glewInit();
