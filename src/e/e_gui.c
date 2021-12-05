@@ -7,6 +7,7 @@
 #include "e/gui_nk.h"
 #include "e/gui.h"
 #include "rhc/error.h"
+#include "rhc/log.h"
 
 #define MAX_VERTEX_MEMORY 512 * 1024
 #define MAX_ELEMENT_MEMORY 128 * 1024
@@ -69,6 +70,8 @@ static struct nk_rect window_rect(float w, float h) {
 //
 
 eGui *e_gui_new(const struct eWindow *window) {
+    log_info("e_gui_new");
+
     assume(!singleton_created, "e_gui_new should be called only onve");
     singleton_created = true;
 

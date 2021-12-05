@@ -49,6 +49,8 @@ rRender *r_render_singleton_;
 //
 
 rRender *r_render_new(SDL_Window *window) {
+    log_info("r_render_new");
+
     assume(!singleton_created, "r_render_new should be called only onve");
     singleton_created = true;
 

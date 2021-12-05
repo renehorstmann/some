@@ -25,7 +25,8 @@ void e_simple_start(const char *title, const char *author, float updates_per_sec
         e_simple_update_fn update_fn,
         e_simple_render_fn render_fn) {
     log_info(title);
-    
+    log_info("e_simple_start");
+
     assume(!L.started, "e_simple is a singleton and should be started just once in thr main function");
     L.started = true;
     

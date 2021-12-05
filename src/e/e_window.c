@@ -132,8 +132,11 @@ void e_window_handle_window_event_(const SDL_Event *event) {
 //
 
 eWindow *e_window_new(const char *title) {
+    log_info("e_window_new");
+
     assume(!singleton_created, "e_window_new should be called only onve");
     singleton_created = true;
+
     
 #ifdef NDEBUG
     rhc_log_set_min_level(RHC_LOG_WARN);

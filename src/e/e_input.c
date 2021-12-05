@@ -261,8 +261,11 @@ static void input_handle_sensors(SDL_Event *event) {
 //
 
 eInput *e_input_new(const struct eWindow *window) {
+    log_info("e_input_new");
+
     assume(!singleton_created, "e_input_new should be called only onve");
     singleton_created = true;
+
     
     assume(window, "needs an sdl window to get its size");
     singleton.window = window;
