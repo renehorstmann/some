@@ -15,6 +15,7 @@
 //
 // protected
 //
+
 void e_window_handle_window_event_(const SDL_Event *event);
 
 
@@ -276,6 +277,13 @@ void e_window_main_loop(eWindow *self, e_window_main_loop_fn main_loop) {
     memset(&singleton, 0, sizeof(singleton));
     singleton_created = false;
     log_info("e_window_kill: killed");
+}
+
+void e_window_reset_main_loop(eWindow *self, e_window_main_loop_fn main_loop) {
+    assume(self == &singleton, "singleton?");
+    assume(singleton.main_loop_fn, "main_loop not started yet?");
+    log_info("e_window_reset_main_loop");
+    singleton.main_loop_fn = main_loop;
 }
 
 void e_window_set_screen_mode(const eWindow *self, enum e_window_screen_modes mode) {

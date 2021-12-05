@@ -2,7 +2,7 @@
 #define E_IO_H
 
 //
-// write and loaf files under specific directories
+// write and load files under specific directories
 //
 
 #include "rhc/types.h"
@@ -35,4 +35,4 @@ bool e_io_savestate_append(const char *filename, Str_s content, bool ascii);
 
 
 
-#endif //E_SAVESTATE_H
+#endif //E_IO_H

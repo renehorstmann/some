@@ -10,5 +10,6 @@
 #include "input.h"
 #include "gui.h"
 #include "io.h"
+#include "simple.h"
 
 #endif //E_E_H

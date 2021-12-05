@@ -8,6 +8,7 @@
 
 #include <stdbool.h>
 #include "mathc/types/float.h"
+#include "mathc/types/int.h"
 
 
 #define CAMERA_SIZE 180 // *4=720; *6=1080; *8=1440
@@ -34,7 +35,7 @@ typedef struct {
 Camera_s camera_new();
 
 // updates the camera matrices
-void camera_update(Camera_s *self, int wnd_width, int wnd_height);
+void camera_update(Camera_s *self, ivec2 window_size);
 
 // set the position of the camera in the world
 void camera_set_pos(Camera_s *self, float x, float y);

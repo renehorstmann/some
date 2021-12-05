@@ -12,6 +12,12 @@
 // private
 //
 
+typedef struct {
+    RoText author_text;
+    RoParticleRefract test;
+    float remaining_time;
+} StartUp;
+
 struct rRender {
     vec4 clear_color;               // used by begin_frame
     SDL_Window *window;             // window, set by init
@@ -19,6 +25,9 @@ struct rRender {
     // 3D (2D_ARRAY) not working in WebGL2
     rTexture2D framebuffer_tex;         // copy of the framebuffer, after blit_framebuffer
     GLuint framebuffer_tex_fbo;
+    
+    // if not null, startup screen was created
+    StartUp *start_up;
 };
 
 //
@@ -94,11 +103,11 @@ const rTexture2D *r_render_get_framebuffer_tex(const rRender *self) {
     return &singleton.framebuffer_tex;
 }
 
-void r_render_begin_frame(const rRender *self, int cols, int rows) {
+void r_render_begin_frame(const rRender *self, ivec2 window_size) {
     assume(self == &singleton, "singleton?");
     r_render_error_check("r_render_begin_frameBEGIN");
 
-    glViewport(0, 0, cols, rows);
+    glViewport(0, 0, window_size.x, window_size.y);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
@@ -118,12 +127,15 @@ void r_render_end_frame(const rRender *self) {
     r_render_error_check("r_render_end_frame");
 }
 
-void r_render_blit_framebuffer(const rRender *self, int cols, int rows) {
+void r_render_blit_framebuffer(const rRender *self, ivec2 window_size) {
     assume(self == &singleton, "singleton?");
     r_render_error_check("r_render_blit_framebufferBEGIN");
 
     GLint current_fbo;
     glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &current_fbo);
+
+    int cols = window_size.x;
+    int rows = window_size.y;
 
     // renew texture, if size changed
     if (singleton.framebuffer_tex.size.x != cols || singleton.framebuffer_tex.size.y != rows) {
@@ -247,27 +259,45 @@ static mat4 camera(int wnd_width, int wnd_height) {
     return mat4_camera_ortho(left, right, bottom, top, -1, 1);
 }
 
-void r_render_show_startup(const rRender *self, int cols, int rows, float block_time, const char *author) {
-    RoText author_text;
-    RoParticleRefract test;
+void r_render_show_startup(rRender *self, float block_time, const char *author) {
+    log_info("r_render_show_startup");
     
-    author_text = ro_text_new_font85(32);
-    vec2 text_size = ro_text_set_text(&author_text, author);
-    author_text.pose = u_pose_new(-text_size.x * AUTHOR_SIZE / 2, 0, AUTHOR_SIZE, AUTHOR_SIZE);
-    ro_text_set_color(&author_text, R_COLOR_WHITE);
+    self->start_up = rhc_calloc(sizeof *self->start_up);
     
-    test = ro_particlerefract_new(1,
+    self->start_up->remaining_time = block_time;
+    
+    self->start_up->author_text = ro_text_new_font85(32);
+    vec2 text_size = ro_text_set_text(&self->start_up->author_text, author);
+    self->start_up->author_text.pose = u_pose_new(-text_size.x * AUTHOR_SIZE / 2, 0, AUTHOR_SIZE, AUTHOR_SIZE);
+    ro_text_set_color(&self->start_up->author_text, R_COLOR_WHITE);
+    
+    self->start_up->test = ro_particlerefract_new(1,
             r_texture_new_white_pixel(),
             r_texture_new_white_pixel());
-    test.rects[0].color.a=0;
-    ro_particlerefract_update(&test);
+    self->start_up->test.rects[0].color.a=0;
+    ro_particlerefract_update(&self->start_up->test);
+    
+    
+    
+    
+    
+#ifdef __EMSCRIPTEN__
+    emscripten_sleep((Uint32) (block_time*1000));
+#else
+    SDL_Delay((Uint32) (block_time*1000));
+#endif
+}
+
+bool r_render_startup_update(rRender *self, ivec2 window_size, float delta_time) {
+    if(!self->start_up)
+        return true;
     
     // render
-    r_render_begin_frame(self, cols, rows);
-    mat4 cam = camera(cols, rows);
-    ro_text_render(&author_text, &cam);
-    r_render_blit_framebuffer(self, cols, rows);
-    ro_particlerefract_render(&test, 0, &cam, 1, NULL, NULL);
+    r_render_begin_frame(self, window_size);
+    mat4 cam = camera(window_size.x, window_size.y);
+    ro_text_render(&self->start_up->author_text, &cam);
+    r_render_blit_framebuffer(self, window_size);
+    ro_particlerefract_render(&self->start_up->test, 0, &cam, 1, NULL, NULL);
     r_render_end_frame(self);
     
     // check error and abort
@@ -276,15 +306,15 @@ void r_render_show_startup(const rRender *self, int cols, int rows, float block_
         r_exit_failure();
     }
     
-    // clean up and block
-    ro_text_kill(&author_text);
-    ro_particlerefract_kill(&test);
-    
-    
-#ifdef __EMSCRIPTEN__
-    emscripten_sleep((Uint32) (block_time*1000));
-#else
-    SDL_Delay((Uint32) (block_time*1000));
-#endif
+    self->start_up->remaining_time -= delta_time;
+    if(self->start_up->remaining_time <= 0) {
+        // clean up
+        ro_text_kill(&self->start_up->author_text);
+        ro_particlerefract_kill(&self->start_up->test);
+        rhc_free(self->start_up);
+        self->start_up = NULL;
+        return true;
+    }
+    return false;
 }
 

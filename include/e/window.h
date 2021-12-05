@@ -44,6 +44,9 @@ ivec2 e_window_get_size(const eWindow *self);
 // starts the main loop (emscripten needs a main loop function)
 void e_window_main_loop(eWindow *self, e_window_main_loop_fn main_loop);
 
+// resets the main loop functions
+void e_window_reset_main_loop(eWindow *self, e_window_main_loop_fn main_loop);
+
 // to set fullscreen, etc.
 void e_window_set_screen_mode(const eWindow *self, enum e_window_screen_modes mode);
 
