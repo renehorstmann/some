@@ -18,7 +18,7 @@ static struct {
     // stores the last pressed mouse click / touch to render with RoText text
     ePointer_s last_click;
     ////
-    
+
 } L;
 
 
@@ -119,8 +119,8 @@ static void render(eSimple *simple, ivec2 window_size) {
     ro_text_render(&L.text85, camera_mat);
     
     
-    // uncomment to clone the current framebuffer into r_render.framebuffer_tex
-    // r_render_blit_framebuffer(L.render, window_size.x);
+    // uncomment to clone the current framebuffer into r_render_get_framebuffer_tex
+    // r_render_blit_framebuffer(simple->render, window_size);
 }
 
 
