@@ -34,6 +34,8 @@ struct eSimple {
     
     e_simple_update_fn update_fn;
     e_simple_render_fn render_fn;
+    
+    void *user_data;
 };
 
 // call this function once in the main function
