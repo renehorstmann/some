@@ -77,6 +77,7 @@ vec3 e_input_get_accel(const eInput *self);
 void e_input_register_pointer_event(const eInput *self, ePointerEventFn event, void *user_data);
 
 // unregisters a callback
+// dont call this function in a pointer event!
 void e_input_unregister_pointer_event(const eInput *self, ePointerEventFn event_to_unregister);
 
 // sets a pointer event to a vip call, pass event=NULL to reset
@@ -87,6 +88,7 @@ void e_input_set_vip_pointer_event(const eInput *self, ePointerEventFn event, vo
 void e_input_register_wheel_event(const eInput *self, eWheelEventFn event, void *user_data);
 
 // unregisters a callback
+// dont call this function in a wheel event!
 void e_input_unregister_wheel_event(const eInput *self, eWheelEventFn event_to_unregister);
 
 // sets a wheel event to a vip call, pass event=NULL to reset
@@ -97,6 +99,7 @@ void e_input_set_vip_wheel_event(const eInput *self, eWheelEventFn event, void *
 void e_input_register_key_raw_event(const eInput *self, eKeyRawEventFn event, void *user_data);
 
 // unregisters a callback
+// dont call this function in a key raw event!
 void e_input_unregister_key_raw_event(const eInput *self, eKeyRawEventFn event_to_unregister);
 
 // sets a key raw event to a vip call, pass event=NULL to reset
