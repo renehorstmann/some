@@ -20,10 +20,13 @@ typedef struct eSimple eSimple;
 typedef void (*e_simple_init_fn)(eSimple *simple, ivec2 window_size);
 
 // will be called to update the game in updates/s
-typedef void (*e_simple_update_fn)(eSimple *simple, ivec2 window_size, float delta_time);
+// dtime is set to 1/updates_pes_second if available,
+// otherwise to the the time between frames, as with the render_fn
+typedef void (*e_simple_update_fn)(eSimple *simple, ivec2 window_size, float dtime);
 
 // will be called each frame to render
-typedef void (*e_simple_render_fn)(eSimple *simple, ivec2 window_size);
+// dtime is set to the time between frames (not to 1/updates_per_second !)
+typedef void (*e_simple_render_fn)(eSimple *simple, ivec2 window_size, float dtime);
 
 
 struct eSimple {

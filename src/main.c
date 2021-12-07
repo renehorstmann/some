@@ -18,21 +18,21 @@ static void init(eSimple *simple, ivec2 window_size) {
     L.camera = camera_new();
 
     L.text = ro_text_new_font55(128);
-}
-
-
-// this functions is called either each frame or at a specific update/s time
-static void update(eSimple *simple, ivec2 window_size, float delta_time) {
-    // simulate
-    camera_update(&L.camera, window_size);
-
-    u_pose_set_xy(&L.text.pose, L.camera.RO.left + 5, L.camera.RO.top-5);
     ro_text_set_text(&L.text, "Hello World");
 }
 
 
-// this function is calles each frame to render stuff
-static void render(eSimple *simple, ivec2 window_size) {
+// this functions is called either each frame or at a specific update/s time
+static void update(eSimple *simple, ivec2 window_size, float dtime) {
+    // simulate
+    camera_update(&L.camera, window_size);
+
+    u_pose_set_xy(&L.text.pose, L.camera.RO.left + 5, L.camera.RO.top-5);
+}
+
+
+// this function is calles each frame to render stuff, dtime is the time between frames
+static void render(eSimple *simple, ivec2 window_size, float dtime) {
     mat4 *camera_mat = &L.camera.matrices.vp;
 
     ro_text_render(&L.text, camera_mat);
