@@ -33,14 +33,14 @@ void camera_update(Camera_s *self, ivec2 window_size) {
     int wnd_height = window_size.y;
 
     float smaller_size = wnd_width < wnd_height ? wnd_width : wnd_height;
-    self->RO.real_pixel_per_pixel = smaller_size / CAMERA_SIZE;
+    self->RO.scale = smaller_size / CAMERA_SIZE;
     
 #ifdef PIXEL_PERFECT
-        self->RO.real_pixel_per_pixel = floorf(self->RO.real_pixel_per_pixel);
+        self->RO.scale = floorf(self->RO.scale);
 #endif
 
-    float width_2 = wnd_width / (2 * self->RO.real_pixel_per_pixel);
-    float height_2 = wnd_height / (2 * self->RO.real_pixel_per_pixel);
+    float width_2 = wnd_width / (2 * self->RO.scale);
+    float height_2 = wnd_height / (2 * self->RO.scale);
 
     // begin: (top, left) with a full pixel
     // end: (bottom, right) with a maybe splitted pixel

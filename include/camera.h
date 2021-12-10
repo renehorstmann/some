@@ -26,7 +26,7 @@ typedef struct {
     CameraMatrices_s matrices;
 
     struct {
-        float real_pixel_per_pixel;
+        float scale;    // units per pixel
         float left, right, bottom, top;
     } RO;   // read only
 } Camera_s;
