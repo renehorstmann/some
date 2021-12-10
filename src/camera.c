@@ -1,5 +1,6 @@
 #include "u/pose.h"
 #include "mathc/utils/camera.h"
+#include "mathc/sca/float.h"
 #include "camera.h"
 
 
@@ -36,7 +37,9 @@ void camera_update(Camera_s *self, ivec2 window_size) {
     self->RO.scale = smaller_size / CAMERA_SIZE;
     
 #ifdef PIXEL_PERFECT
-        self->RO.scale = floorf(self->RO.scale);
+    if(self->RO.scale>1) {
+        self->RO.scale = sca_floor(self->RO.scale);
+    }
 #endif
 
     float width_2 = wnd_width / (2 * self->RO.scale);
