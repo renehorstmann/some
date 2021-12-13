@@ -141,6 +141,20 @@ cp -r ../res .
 gcc ../src/e/*.c ../src/p/*.c ../src/r/*.c ../src/u/*.c ../src/*.c -I../include/ $(sdl2-config --cflags --libs) -lSDL2_image -lSDL2_ttf -lcurl -lglew32 -lopengl32 -lglu32 -DOPTION_GLEW -DOPTION_SDL -DOPTION_TTF -DOPTION_FETCH -o some
 ```
 
+## Todo
+- window size of GLES to 1080x1080 (web landscape test)
+- custom index.html
+- default logo
+- emcc call to -o index.js insted of .html to avoid overwriting the custom .html
+- js error function namespaced
+- e_io_userfile
+  - read and write (append not available, cause of web...)
+  - saves to the dir user/* ?
+  - web:
+    - downloads the file on write
+    - FileApi? upload dialog for read
+    - mimetype depending on the name ending (.txt, .png)
+
 ## Author
 
 René Horstmann
