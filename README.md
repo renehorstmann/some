@@ -20,6 +20,7 @@ The examples are well documented and easy to follow (in active work, though...).
 - [Pixelc](https://github.com/renehorstmann/Pixelc): A pixel art editor.
 - [Tilec](https://github.com/renehorstmann/Tilec): A tile map editor.
 - [Swarm](https://github.com/renehorstmann/GMTKgamejam21): GMTK GameJam21.
+- [Santas Day Off](https://github.com/renehorstmann/SantasDayOff): A christmas mini game.
 - [JumpHare](https://github.com/renehorstmann/JumpHare): Platformer game.
 
 ## Naming
