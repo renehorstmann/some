@@ -71,23 +71,13 @@ void e_io_idbfs_synced() {
 }
 
 static void idbfs_save() {
-    L.synced = false;
-    
-    // false = load file system from idbfs
+    // false = save file system from idbfs
     EM_ASM(
         e_io_idbfs_synced = false;
         FS.syncfs(false, function (err) {
             assert(!err);
-            e_io_idbfs_synced = true;
         });
     );
-    // sleep a ms until synced to get a synchronous call
-    while(!L.synced) {
-        EM_ASM(
-            if(e_io_idbfs_synced) { ccall('e_io_idbfs_synced', 'v'); }
-        );
-        emscripten_sleep(1);
-    }
 }
 
 
@@ -134,6 +124,8 @@ void e_io_ask_for_file_upload(const char *file, bool ascii, eIoFileUploadCallbac
     emscripten_run_script(script);
 }
 
+
+// protected function, called by window new
 void e_io_savestate_load() {
     idbfs_mount();
 }
@@ -156,7 +148,6 @@ struct eIoSavestateString e_io_savestate_file_path(const char *filename) {
 String e_io_savestate_read(const char *filename, bool ascii) {
     if(!savestate_filename_valid(filename))
         return string_new_invalid();
-    idbfs_mount();
     return file_read(
             e_io_savestate_file_path(filename).s,
             ascii);
@@ -166,7 +157,6 @@ String e_io_savestate_read(const char *filename, bool ascii) {
 bool e_io_savestate_write(const char *filename, Str_s content, bool ascii) {
     if(!savestate_filename_valid(filename))
         return false;
-    idbfs_mount();
     bool ok = file_write(
             e_io_savestate_file_path(filename).s,
             content, ascii);
@@ -178,7 +168,6 @@ bool e_io_savestate_write(const char *filename, Str_s content, bool ascii) {
 bool e_io_savestate_append(const char *filename, Str_s content, bool ascii) {
     if(!savestate_filename_valid(filename))
         return false;
-    idbfs_mount();
     bool ok = file_append(
             e_io_savestate_file_path(filename).s,
             content, ascii);
@@ -196,6 +185,7 @@ void e_io_ask_for_file_upload(const char *file, bool ascii, eIoFileUploadCallbac
     // noop (just for web)
 }
 
+// protected function, called by window new
 void e_io_savestate_load() {
     // noop (just for web)
 }
