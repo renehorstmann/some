@@ -83,10 +83,7 @@
             var fr = new FileReader();
             fr.onload = function () {
                 var data = fr.result;
-                var mode = 'wb';
-                if (file_upload_is_ascii)
-                    mode = 'w';
-                var stream = FS.open(file_upload_filename, mode);
+                var stream = FS.open(file_upload_filename, 'w');
                 var data_bytes = new Uint8Array(data);
                 FS.write(stream, data_bytes, 0, data_bytes.length, 0);
                 FS.close(stream);
@@ -102,12 +99,12 @@
     file_uploader = document.getElementById('file_uploader');
     file_uploader_png = document.getElementById('file_uploader_png');
     file_uploader_txt = document.getElementById('file_uploader_txt');
-    file_uploader_png = document.getElementById('file_uploader_json');
+    file_uploader_json = document.getElementById('file_uploader_json');
 
     file_uploader.addEventListener('change', handle_file_upload, false);
     file_uploader_png.addEventListener('change', handle_file_upload, false);
     file_uploader_txt.addEventListener('change', handle_file_upload, false);
-    file_uploader_png.addEventListener('change', handle_file_upload, false);
+    file_uploader_json.addEventListener('change', handle_file_upload, false);
 
     function ask_for_file_upload(filename, as_ascii) {
         // Check for the various File API support.
@@ -115,6 +112,8 @@
             alert('The File APIs are not fully supported in this browser.');
             return;
         }
+        
+        console.log(`Offering file upload for "${filename}".`);
 
         file_upload_filename = filename;
         file_upload_is_ascii = as_ascii;
