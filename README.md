@@ -1,6 +1,6 @@
 # some
 
-Sdl2 OpenGl Mini Engine.
+Sdl2 OpenGL Mini Engine.
 
 A small C game engine, that can be compiled to Desktop, Android, Web, ... Using SDL2, OpenGL3.3, OpenGLES3.0, WebGL2.0
 to be platform independent.
