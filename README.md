@@ -13,7 +13,7 @@ Fork this repo and have fun. Have a look into some header files for some further
 ## Tutorial
 
 In the repository [some_examples](https://github.com/renehorstmann/some_examples) are some examples and modules to use for the some framework, like buttons, etc.
-The examples are well documented and easy to follow (in active work, though...).
+The examples are well documented and easy to follow.
 
 ## Example Apps
 

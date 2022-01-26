@@ -63,6 +63,11 @@ void camera_update(Camera_s *self, ivec2 window_size) {
 
 
 void camera_set_pos(Camera_s *self, float x, float y) {
+#ifdef PIXEL_PERFECT  
+    // reset x and y to match a real pixel
+    x = floorf(x * self->RO.scale) / self->RO.scale;
+    y = floorf(y * self->RO.scale) / self->RO.scale;
+#endif
     u_pose_set_xy(&self->matrices.v, x, y);
 }
 
