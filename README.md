@@ -9,6 +9,9 @@ to be platform independent.
 
 Fork this repo and have fun. Have a look into some header files for some further explanation.
 
+## Live demo 
+Just the hello world [livedemo](https://renehorstmann.github.io/some) compiled with emscripten.
+See [main.c](src/main.c)
 
 ## Tutorial
 
