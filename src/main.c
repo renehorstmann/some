@@ -31,7 +31,7 @@ static void update(eSimple *simple, ivec2 window_size, float dtime) {
 }
 
 
-// this function is calles each frame to render stuff, dtime is the time between frames
+// this function is called each frame to render stuff, dtime is the time between frames
 static void render(eSimple *simple, ivec2 window_size, float dtime) {
     mat4 *camera_mat = &L.camera.matrices.vp;
 
