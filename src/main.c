@@ -28,10 +28,6 @@ static void update(eSimple *simple, ivec2 window_size, float dtime) {
     camera_update(&L.camera, window_size);
 
     u_pose_set_xy(&L.text.pose, L.camera.RO.left + 5, L.camera.RO.top-5);
-    
-    char buf[256];
-    snprintf(buf, sizeof buf, "%i %i : %f", window_size.x, window_size.y, L.camera.RO.scale);
-    ro_text_set_text(&L.text, buf);
 }
 
 
