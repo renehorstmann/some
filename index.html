@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     
     <title>some</title>
 
@@ -83,17 +82,6 @@
 
 
 <script type='text/javascript'>
-
-    
-
-    // Assuming <html> has `width: 100%`. 
-    var width = document.documentElement.clientWidth * window.devicePixelRatio; 
-    viewport = document.querySelector("meta[name=viewport]"); 
-    viewport.setAttribute('content', 'width=' + width + ', minimum-scale: 1'); 
-
-    document.documentElement.style.transform = 'scale( 1 / window.devicePixelRatio )'; 
-    document.documentElement.style.transformOrigin = 'top left'; 
-
 
     function set_exit_failure_error_msg() {
         var newContent = '<!DOCTYPE html><html><body style="background-color:black;"><h1 style="color:white;">Potato Browsers are not supported!</h1><p style="color:silver;">Full WebGL2.0 is needed!</p></body></html>';
