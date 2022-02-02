@@ -37,7 +37,7 @@ See Windows MSYS2 below, if you want to create an .exe to distribute for Windows
 
 - run Powershell as admin
 ```
-PS wsl--install
+PS wsl --install
 ```
 
 ### In Ubuntu or WSL Ubuntu
