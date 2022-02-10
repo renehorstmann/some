@@ -76,6 +76,7 @@ export CMAKE_GENERATOR="Unix Makefiles"
 # add mingw32 lib to the path, in this dir should be the opengl libraries (dll)
 export PATH=$PATH:/c/msys64/mingw64/x86_64-w64-mingw32/lib
 ```
+- If you an IDE, you may need to add the PATH to ...mingw32/lib (see above) into the windows system variables
 
 ### Run Hello World
 In Ubuntu, WSL Ubuntu or MSYS2-Mingw-x64 Terminal:
