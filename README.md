@@ -57,38 +57,37 @@ sudo apt install libcurl4-openssl-dev
 ### Windows MSYS2
 - install https://www.msys2.org/
 - update the package manager (as the site says: `pacman -Syu` ; restart ; `pacman -Su`)
-- In MSYS2-Terminal
+- In "MSYS2 MSYS" Terminal
 ```sh
 # basic stuff for c coding
 pacman -S --needed base-devel mingw-w64-x86_64-toolchain
-pacman -S mingw-w64-x86_64-cmake mingw-w64-x86_64-tools-git
+pacman -S git mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
 # install sdl stuff
 # 	net, ttf are optional, see OPTION_SOCKET and OPTION_TTF
 #	mixer is not part of the some engine, but useful
-pacman -S mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_image mingw-w64-x86_64-SDL2_net mingw-w64-x86_64-SDL2_ttf mingw-w64-x86_64-SDL2_mixer
+pacman -S mingw-w64-x86_64-glew mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_image mingw-w64-x86_64-SDL2_net mingw-w64-x86_64-SDL2_ttf mingw-w64-x86_64-SDL2_mixer
 # install curl (optional) for OPTION_FETCH 
 pacman -S mingw-w64-x86_64-curl
 ```
-- add the following lines at the end of the file .bashrc (runs on terminal startup) (run `nano ~/.bashrc`)
+- add the following line at the end of the file .bashrc (runs on terminal startup) (run `nano ~/.bashrc`)
 ```
-# set the cmake generator to unix make
-export CMAKE_GENERATOR="Unix Makefiles"
 # add mingw32 lib to the path, in this dir should be the opengl libraries (dll)
 export PATH=$PATH:/c/msys64/mingw64/x86_64-w64-mingw32/lib
 ```
+- Close the terminal
 - If you use an IDE, you may need to add the PATH to ...mingw32/lib (see above) into the windows system variables
 
 ### Run Hello World
-In Ubuntu, WSL Ubuntu or MSYS2-Mingw-x64 Terminal:
+In Ubuntu, WSL Ubuntu or "MSYS2 MinGW x64" Terminal:
 ```sh
 # clone the repo
 git clone https://github.com/renehorstmann/some
 # mv and make a build dir
 cd some && mkdir build && cd build
 # run cmake
-cmake ..
+cmake .. # [-DCMAKE_BUILD_TYPE=Release] for release mode
 # compile
-make 	# [-j12] to compile with 12 threads... 
+cmake --build . # [-- -j16] to compile with 16 threads... 
 # run
 ./some
 ```
