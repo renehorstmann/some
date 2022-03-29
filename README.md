@@ -43,7 +43,7 @@ PS wsl --install
 ### In Ubuntu or WSL Ubuntu
 ```sh
 # update the system
-sudo apt update && apt upgrade
+sudo apt update && sudo apt upgrade
 # install basic stuff for c coding
 sudo apt install build-essential gdb git cmake 
 # install sdl stuff 
