@@ -37,7 +37,7 @@ See Windows MSYS2 below, if you want to create an .exe to distribute for Windows
 
 - run Powershell as admin
 ```
-PS wsl --install
+wsl --install
 ```
 
 ### In Ubuntu or WSL Ubuntu
@@ -124,6 +124,7 @@ git clone https://github.com/renehorstmann/some
 
 ## Compiling for Web
 Using Emscripten https://emscripten.org/
+
 Tested under Ubuntu and WSL Ubuntu.
 You should have already cloned the project and `cd` to that dir:
 
@@ -141,7 +142,29 @@ cp -r ../res .
 ```sh
 emcc -O3 \
 -I../include/ \
--s USE_SDL=2 -s USE_SDL_IMAGE=2 -s USE_SDL_TTF=2 -s FULL_ES3=1 -s \
+-s USE_SDL=2 -s USE_SDL_IMAGE=2 -s FULL_ES3=1 -s
+EXPORTED_FUNCTIONS='["_main", "_e_io_idbfs_synced", "_e_io_file_upload_done"]' \
+-s EXPORTED_RUNTIME_METHODS=FS \
+-s SDL2_IMAGE_FORMATS='["png"]' \
+--preload-file ./res \
+-s ALLOW_MEMORY_GROWTH=1 -s ASYNCIFY=1 -s EXIT_RUNTIME=1 \
+-lidbfs.js \
+-DOPTION_GLES -DOPTION_SDL \
+../src/e/*.c ../src/p/*.c ../src/r/*.c ../src/u/*.c ../src/*.c \
+-o index.js
+```
+
+- Test the website (open a browser and call localhost:8000)
+```sh
+python3 -m http.server --bind localhost  # [port]
+```
+
+- Compile with all options:
+> fetch is more reliable than websockets, so SDL_net and OPTION_SOCKET are missing here
+```sh
+emcc -O3 \
+-I../include/ \
+-s USE_SDL=2 -s USE_SDL_IMAGE=2 -s USE_SDL_MIXER=2 -s USE_SDL_TTF=2 -s FULL_ES3=1 -s \
 EXPORTED_FUNCTIONS='["_main", "_e_io_idbfs_synced", "_e_io_file_upload_done"]' \
 -s EXPORTED_RUNTIME_METHODS=FS \
 -s SDL2_IMAGE_FORMATS='["png"]' \
@@ -153,26 +176,22 @@ EXPORTED_FUNCTIONS='["_main", "_e_io_idbfs_synced", "_e_io_file_upload_done"]' \
 -o index.js
 ```
 
-- Test the website (open a browser and call localhost:8000)
-```sh
-python3 -m http.server --bind localhost  # [port]
-```
-
 ## Naming
 
 ### Functions
 
-A function like: `e_window_new` got its name of:
+A function like: `e_window_init` got its name of:
 
 - `e`: as namespace for the package e
 - `window`: module name
-- `new`: module function/method name
+- `init`: module function/method name
 
 ### Components
 
 Each component may have some basic function names:
 
 ```c
+*_init      // initializes a (single member) module
 *_new       // returns a new component
 *_new_*     // special new
 *_kill      // deinitialize a comp.
@@ -215,18 +234,6 @@ glsl like math library for C, see [Mathc](https://github.com/renehorstmann/Mathc
 
 A C standard library addition, see [rhc](https://github.com/renehorstmann/rhc)
 
-## Globals
-
-The following globals are used:
-
-- singletons for some modules:
-    - e_window
-    - e_input
-    - e_gui
-    - e_simple
-    - r_render
-- Pseudo random value: [static _Thread_local uint32_t x](src/u/u_prandom.c)
-- [rhc](https://github.com/renehorstmann/rhc) globals
 
 
 ## Author
