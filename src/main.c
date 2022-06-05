@@ -43,7 +43,7 @@ static void render(float dtime) {
 int main(int argc, char **argv) {
     e_simple_start("some", "Horsimann",
                    1.0f,   // startup block time (the time in which "Horsimann" is displayed at startup)
-                   0,      // updates/s, <=0 to turn off and use fps
+                   0,      // update deltatime_ms, <=0 to turn off and use fps (5=200hz)
                    init, update, render);
     return 0;
 }
