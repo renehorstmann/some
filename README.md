@@ -22,10 +22,11 @@ The examples are well documented and easy to follow.
 ## Example Apps
 
 - [Pixelc](https://github.com/renehorstmann/Pixelc): A pixel art editor.
-- [Tilec](https://github.com/renehorstmann/Tilec): A tile map editor.
 - [Swarm](https://github.com/renehorstmann/GMTKgamejam21): GMTK GameJam21.
 - [Santas Day Off](https://github.com/renehorstmann/SantasDayOff): A christmas mini game.
 - [JumpHare](https://github.com/renehorstmann/JumpHare): Platformer game.
+- [Tea](https://github.com/renehorstmann/tea): A simple stupid tea timer.
+- [Tilec](https://github.com/renehorstmann/Tilec): A tile map editor (deprecated...).
 
 
 ## Install for compiling on Desktop
@@ -142,7 +143,7 @@ cp -r ../res .
 ```sh
 emcc -O3 \
 -I../include/ \
--s USE_SDL=2 -s USE_SDL_IMAGE=2 -s FULL_ES3=1 -s
+-s USE_SDL=2 -s USE_SDL_IMAGE=2 -s FULL_ES3=1 -s \
 EXPORTED_FUNCTIONS='["_main", "_e_io_idbfs_synced", "_e_io_file_upload_done"]' \
 -s EXPORTED_RUNTIME_METHODS=FS \
 -s SDL2_IMAGE_FORMATS='["png"]' \
