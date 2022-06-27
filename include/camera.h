@@ -6,7 +6,7 @@
 // to control the camera position and size
 //
 
-#include "rhc/rhc.h"
+#include "s/s.h"
 #include "mathc/types/float.h"
 #include "mathc/types/int.h"
 

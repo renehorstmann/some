@@ -5,7 +5,7 @@
 // pixel color based on mathc ucvec4 (uchar)
 //
 
-#include "rhc/rhc.h"
+#include "s/s.h"
 #include "mathc/vec/ucvec4.h"
 #include "mathc/vec/vec4.h"
 
@@ -56,8 +56,8 @@ static uColor_s u_color_from_hex(const char *hex_string) {
     }
 
     // error
-    rhc_error = "color from hex failed";
-    log_error("u_color_from_hex failed: for %s", hex_string);
+    s_error_set("color from hex failed");
+    s_log_error("u_color_from_hex failed: for %s", hex_string);
     return c;
 }
 

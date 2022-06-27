@@ -42,7 +42,7 @@ static float sca_random_normal(float mean, float sigma) {
     u2 = sca_random();
 
     float mag = sigma * sca_sqrt((float) -2 * log(u1));
-    return mean + mag * sca_cos(2 * M_PI * u2);
+    return mean + mag * sca_cos(2 * SCA_PI * u2);
 }
 
 //

@@ -35,7 +35,7 @@
 // aa stand for axis aligned / not rotated
 // these functions are usually faster
 
-#include "rhc/rhc.h"
+#include "s/s.h"
 #include "mathc/mat/mat4.h"
 
 // new pose without a rotation

@@ -1,4 +1,5 @@
 #include "mathc/float.h"
+#include "mathc/bool.h"
 #include "e/window.h"
 #include "e/gui_nk.h"
 #include "e/gui.h"
@@ -61,6 +62,8 @@ static struct {
 
     TouchID touch_ids[E_MAX_TOUCH_IDS];
     int touch_ids_size;
+    
+    bool mouse_pressed[E_POINTER_BUTTON_NUM];
 
     RegPointerArray reg_pointer;
     RegPointer reg_pointer_e_vip;  // .cb==NULL if none
@@ -100,7 +103,7 @@ static ePointer_s pointer_finger(enum ePointerAction action, float x, float y, S
     }
     if (id < 0) {
         if (L.touch_ids_size >= E_MAX_TOUCH_IDS) {
-            log_warn("e_input_update: to many touch ids, reset to 0!");
+            s_log_warn("e_input_update: to many touch ids, reset to 0!");
             L.touch_ids_size = 0;
         }
 
@@ -110,10 +113,10 @@ static ePointer_s pointer_finger(enum ePointerAction action, float x, float y, S
 
         if (action == E_POINTER_MOVE) {
             action = E_POINTER_DOWN;
-            log_warn("e_input_update: touch got new id but action==move");
+            s_log_warn("e_input_update: touch got new id but action==move");
         }
         if (action == E_POINTER_UP) {
-            log_error("e_input_update: touch got up but unknown id");
+            s_log_error("e_input_update: touch got up but unknown id");
             id--;
             L.touch_ids_size--;
         }
@@ -185,23 +188,31 @@ static void input_handle_pointer_touch(SDL_Event *event) {
 }
 
 static void input_handle_pointer_mouse(SDL_Event *event) {
+    int btn_sdl = event->button.button;
+    int btn_some = 1 - btn_sdl;
+    int btn_idx = btn_sdl - 1;
+    bool pressed = bvecN_any(L.mouse_pressed, E_POINTER_BUTTON_NUM);
     switch (event->type) {
         case SDL_MOUSEBUTTONDOWN:
-            if (event->button.button <= 0 || event->button.button > 3)
+            if (btn_idx<0 || btn_idx>=E_POINTER_BUTTON_NUM)
                 break;
             emit_pointer_events(pointer_mouse(
                     E_POINTER_DOWN,
-                    1 - event->button.button));
+                    btn_some));
+            L.mouse_pressed[btn_idx] = true;
             break;
         case SDL_MOUSEMOTION:
-            emit_pointer_events(pointer_mouse(E_POINTER_MOVE, 0));
+            emit_pointer_events(pointer_mouse(
+                    pressed? E_POINTER_MOVE : E_POINTER_HOVER, 
+                    0));
             break;
         case SDL_MOUSEBUTTONUP:
-            if (event->button.button <= 0 || event->button.button > 3)
+            if (btn_idx<0 || btn_idx>=E_POINTER_BUTTON_NUM)
                 break;
             emit_pointer_events(pointer_mouse(
                     E_POINTER_UP,
-                    1 - event->button.button));
+                    btn_some));
+            L.mouse_pressed[btn_idx] = false;
             break;
     }
 }
@@ -251,14 +262,14 @@ static void input_handle_keys(SDL_Event *event) {
 static void input_handle_sensors(SDL_Event *event) {
     SDL_Sensor *sensor = SDL_SensorFromInstanceID(event->sensor.which);
     if (!sensor || SDL_SensorGetType(sensor) != SDL_SENSOR_ACCEL) {
-        log_warn("e_input_update: Couldn't get sensor for sensor event\n");
+        s_log_warn("e_input_update: Couldn't get sensor for sensor event\n");
         return;
     }
 
     const float *data = event->sensor.data;
     memcpy(e_input.accel.v, data, sizeof(e_input.accel));
 
-    // log_trace("e_input_update: Gyro update: %.2f, %.2f, %.2f", data[0], data[1], data[2]);
+    // s_log_trace("e_input_update: Gyro update: %.2f, %.2f, %.2f", data[0], data[1], data[2]);
 }
 #endif
 
@@ -269,12 +280,12 @@ static void input_handle_sensors(SDL_Event *event) {
 //
 
 void e_input_init() {
-    assume(!e_input.init, "should be called only once");
+    s_assume(!e_input.init, "should be called only once");
     e_input.init = true;
 
-    log_info("init");
+    s_log("init");
 
-    assume(e_window.init, "needs an sdl window to get its size");
+    s_assume(e_window.init, "needs an sdl window to get its size");
 
 #ifdef OPTION_GYRO
     int num_sensors = SDL_NumSensors();
@@ -291,7 +302,7 @@ void e_input_init() {
 
     e_input.accel_active = accel_opened;
     if (accel_opened)
-        log_info("e_input_init: Opened acceleration sensor");
+        s_log("e_input_init: Opened acceleration sensor");
 #endif
 }
 
@@ -347,7 +358,7 @@ void e_input_update() {
 
 
 void e_input_register_pointer_event(ePointerEventFn event, void *user_data) {
-    assume(L.reg_pointer.size < E_MAX_POINTER_EVENTS, "too many registered pointer events");
+    s_assume(L.reg_pointer.size < E_MAX_POINTER_EVENTS, "too many registered pointer events");
     L.reg_pointer.array[L.reg_pointer.size++] = (RegPointer) {event, user_data};
 }
 
@@ -365,7 +376,7 @@ void e_input_unregister_pointer_event(ePointerEventFn event_to_unregister) {
         }
     }
     if (!found) {
-        log_warn("failed: event not registered");
+        s_log_warn("failed: event not registered");
     }
 }
 
@@ -375,7 +386,7 @@ void e_input_set_vip_pointer_event(ePointerEventFn event, void *user_data) {
 }
 
 void e_input_register_wheel_event(eWheelEventFn event, void *user_data) {
-    assume(L.reg_wheel.size < E_MAX_WHEEL_EVENTS, "too many registered wheel events");
+    s_assume(L.reg_wheel.size < E_MAX_WHEEL_EVENTS, "too many registered wheel events");
     L.reg_wheel.array[L.reg_wheel.size++] = (RegWheel) {event, user_data};
 }
 
@@ -393,7 +404,7 @@ void e_input_unregister_wheel_event(eWheelEventFn event_to_unregister) {
         }
     }
     if (!found) {
-        log_warn("failed: event not registered");
+        s_log_warn("failed: event not registered");
     }
 }
 
@@ -403,7 +414,7 @@ void e_input_set_vip_wheel_event(eWheelEventFn event, void *user_data) {
 }
 
 void e_input_register_key_raw_event(eKeyRawEventFn event, void *user_data) {
-    assume(L.reg_key_raw.size < E_MAX_KEY_RAW_EVENTS, "too many registered key raw events");
+    s_assume(L.reg_key_raw.size < E_MAX_KEY_RAW_EVENTS, "too many registered key raw events");
     L.reg_key_raw.array[L.reg_key_raw.size++] = (RegKeyRaw) {event, user_data};
 }
 
@@ -421,7 +432,7 @@ void e_input_unregister_key_raw_event(eKeyRawEventFn event_to_unregister) {
         }
     }
     if (!found) {
-        log_warn("failed: event not registered");
+        s_log_warn("failed: event not registered");
     }
 }
 

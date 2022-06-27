@@ -40,7 +40,7 @@ const char *e_io_savestate_file_path(const char *filename);
 // web will read a IndexedDB file (like a cookie)
 // others read savestate_<filename>
 // filename must not include directories (/)
-String e_io_savestate_read(const char *filename, bool ascii);
+sString *e_io_savestate_read(const char *filename, bool ascii);
 
 
 // write a savestate file
@@ -49,7 +49,7 @@ String e_io_savestate_read(const char *filename, bool ascii);
 // others create savestate_<filename>
 // filename must not include directories (/)
 // returns false on error
-bool e_io_savestate_write(const char *filename, Str_s content, bool ascii);
+bool e_io_savestate_write(const char *filename, sStr_s content, bool ascii);
 
 
 // appends to a savestate file
@@ -58,7 +58,7 @@ bool e_io_savestate_write(const char *filename, Str_s content, bool ascii);
 // others create savestate_<filename>
 // filename must not include directories (/)
 // returns false on error
-bool e_io_savestate_append(const char *filename, Str_s content, bool ascii);
+bool e_io_savestate_append(const char *filename, sStr_s content, bool ascii);
 
 
 #endif //E_IO_H

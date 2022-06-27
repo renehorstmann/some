@@ -1,6 +1,9 @@
 #ifndef P_CIRCLE_H
 #define P_CIRCLE_H
 
+
+#include "math.h"
+
 //
 // circle as collision object
 //

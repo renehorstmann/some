@@ -13,7 +13,7 @@ static struct {
 
 // this function will be called at the start of the app
 static void init() {
-    log_info("init");
+    s_log("init");
 
     // init systems
     camera_init();

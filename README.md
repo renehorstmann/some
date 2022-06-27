@@ -30,6 +30,12 @@ The examples are well documented and easy to follow.
 
 
 ## Install for compiling on Desktop
+Options:
+- Ubuntu
+- Windows
+  - WSL Ubuntu
+  - Msys2 - Mingw-w64
+  - MSVC (Microsoft C++ Compiler from Visual Studio)
 
 ### Install WSL (Windows Subsystem Linux) Ubuntu on Windows 11:
 With WSL you can use all the awesome unix tools in Windows with a Ubuntu terminal.
@@ -78,13 +84,35 @@ export PATH=$PATH:/c/msys64/mingw64/x86_64-w64-mingw32/lib
 - Close the terminal
 - If you use an IDE, you may need to add the PATH to ...mingw32/lib (see above) into the windows system variables
 
+### Windows MSVC
+> TODO: validate
+- install MSVC [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
+- install a [git client](https://git-scm.com/download/win)
+- install [cmake](https://cmake.org/download/) (add to system PATH)
+- install [vcpkg](https://vcpkg.io/en/getting-started.html)
+- In PowerShell Terminal
+```sh
+# install sdl stuff
+# 	net, ttf are optional, see OPTION_SOCKET and OPTION_TTF
+#	mixer is not part of the some engine, but useful
+vcpgk install sdl2 sdl2-image sdl2-net sdl2-ttf sdl2-mixer
+# install curl (optional) for OPTION_FETCH 
+vcpgk install curl
+```
+
 ### Run Hello World
-In Ubuntu, WSL Ubuntu or "MSYS2 MinGW x64" Terminal:
+In Ubuntu, WSL Ubuntu, "MSYS2 MinGW x64", Powershell Terminal:
 ```sh
 # clone the repo
 git clone https://github.com/renehorstmann/some
 # mv and make a build dir
-cd some && mkdir build && cd build
+cd some 
+mkdir build
+cd build
+#
+# Note: If your platform is MSVC, you have to include the vcpkg file:
+# cmake .. -DCMAKE_TOOLCHAIN_FILE=C:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake
+#
 # run cmake
 cmake .. # [-DCMAKE_BUILD_TYPE=Release] for release mode
 # compile
@@ -150,7 +178,7 @@ EXPORTED_FUNCTIONS='["_main", "_e_io_idbfs_synced", "_e_io_file_upload_done"]' \
 --preload-file ./res \
 -s ALLOW_MEMORY_GROWTH=1 -s ASYNCIFY=1 -s EXIT_RUNTIME=1 \
 -lidbfs.js \
--DOPTION_GLES -DOPTION_SDL \
+-DPLATFORM_EMSCRIPTEN -DOPTION_GLES -DOPTION_SDL \
 ../src/e/*.c ../src/p/*.c ../src/r/*.c ../src/u/*.c ../src/*.c \
 -o index.js
 ```
@@ -172,7 +200,7 @@ EXPORTED_FUNCTIONS='["_main", "_e_io_idbfs_synced", "_e_io_file_upload_done"]' \
 --preload-file ./res \
 -s ALLOW_MEMORY_GROWTH=1 -s ASYNCIFY=1 -s EXIT_RUNTIME=1 -s FETCH=1 \
 -lidbfs.js \
--DOPTION_GLES -DOPTION_SDL -DOPTION_TTF -DOPTION_FETCH \
+-DPLATFORM_EMSCRIPTEN -DOPTION_GLES -DOPTION_SDL -DOPTION_TTF -DOPTION_FETCH \
 ../src/e/*.c ../src/p/*.c ../src/r/*.c ../src/u/*.c ../src/*.c \
 -o index.js
 ```
@@ -203,7 +231,7 @@ Each component may have some basic function names:
 
 ### More Style rules
 
-For more style rules used in my projects, see [rhc/style](https://github.com/renehorstmann/rhc)
+For more style rules used in my projects, see [s/style](https://github.com/renehorstmann/s)
 
 ## Packages
 
@@ -231,9 +259,10 @@ Physics (may be expanded later)
 
 glsl like math library for C, see [Mathc](https://github.com/renehorstmann/Mathc)
 
-### rhc
+### s
 
-A C standard library addition, see [rhc](https://github.com/renehorstmann/rhc)
+A C standard library addition, see [rhc](https://github.com/renehorstmann/rhc).
+Renamed to the namespace `s`
 
 
 

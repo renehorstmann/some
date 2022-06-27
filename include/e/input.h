@@ -8,7 +8,7 @@
 #include "core.h"
 #include "mathc/types/float.h"
 
-#define E_MAX_TOUCH_IDS 12
+#define E_MAX_TOUCH_IDS 16
 
 #define E_MAX_POINTER_EVENTS 32
 #define E_MAX_WHEEL_EVENTS 32
@@ -17,6 +17,7 @@
 // ePointer_s::id for middle and right button clicks
 #define E_POINTER_BUTTON_MIDDLE -1
 #define E_POINTER_BUTTON_RIGHT -2
+#define E_POINTER_BUTTON_NUM 3
 
 // Keyboard state
 typedef struct {
@@ -26,7 +27,10 @@ typedef struct {
 
 
 enum ePointerAction {
-    E_POINTER_DOWN, E_POINTER_MOVE, E_POINTER_UP,
+    E_POINTER_DOWN,       // start of a press
+    E_POINTER_MOVE,       // updates while pressed
+    E_POINTER_UP,         // end of press
+    E_POINTER_HOVER,      // not pressed (so not available for touch devices)
     E_POINTER_NUM_ACTIONS
 };
 
