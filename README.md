@@ -231,7 +231,7 @@ Each component may have some basic function names:
 
 ### More Style rules
 
-For more style rules used in my projects, see [s/style](https://github.com/renehorstmann/s)
+For more style rules used in my projects, see [rhc/style](https://github.com/renehorstmann/rhc)
 
 ## Packages
 
