@@ -40,7 +40,7 @@ Options:
 ### Install WSL (Windows Subsystem Linux) Ubuntu on Windows 11:
 With WSL you can use all the awesome unix tools in Windows with a Ubuntu terminal.
 But you can not distribute your compiled programs, the users have to have WSL installed.
-See Windows MSYS2 below, if you want to create an .exe to distribute for Windows
+See Windows MSYS2 or MSVC below, if you want to create an .exe to distribute for Windows
 
 - run Powershell as admin
 ```
