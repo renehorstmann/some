@@ -5,7 +5,8 @@ project(some C)
 set(USE_SDL_MIXER false)
 set(USE_SDL_NET false)
 set(USE_SDL_TTF false)
-set(USE_FETCH true)
+set(USE_FETCH false)
+set(USE_SANITIZER true)
 
 # Platforms definitions:
 # PLATFORM_MSVC         Microsoft C++ Compiler
@@ -26,7 +27,7 @@ set(USE_FETCH true)
 # -not used- OPTION_GL_ERROR       if set, functions use r_render_check_error (heavy op, if summed up)
 #
 # NDEBUG                is used at a few points, too
-# MATHC_NO_PRINT_COLOR  disable colored mathc prints
+# M_NO_PRINT_COLOR  disable colored m prints
 # S_LOG_DO_NOT_USE_COLOR          dont use colored logs
 # S_LOG_DO_NOT_PRINT_TIME_FILE    disable time and file in logs
 
@@ -147,8 +148,17 @@ endif ()
 if (PLATFORM_MSVC)
     message("Setup Windows MSVC")
 
-    #    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W4 /WX")
+    # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W4 /WX")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /wd4244 /wd4305 /wd4996 /wd5105")
+
+    if(USE_SANITIZER)
+        if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+            message("Using MS sanitizer")
+            add_definitions(-DOPTION_SANITIZER)
+            set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=address")
+            set(CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fsanitize=address")
+        endif ()
+    endif()
 
     add_definitions(-Dmain=SDL_main)
     add_definitions(-DOPTION_GLEW)
@@ -198,13 +208,14 @@ if (PLATFORM_UNIX)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -pedantic")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-long-long -Wno-unused-function -Wno-unused-variable -Wno-missing-braces -Wno-unused-parameter")
 
-    # using sanitizer
-    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-        message("Using Google sanitizer")
-        add_definitions(-DOPTION_SANITIZER)
-        set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address -fsanitize=undefined")
-        set(CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address -fsanitize=undefined")
-    endif ()
+    if(USE_SANITIZER)
+        if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+            message("Using Google sanitizer")
+            add_definitions(-DOPTION_SANITIZER)
+            set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address -fsanitize=undefined")
+            set(CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address -fsanitize=undefined")
+        endif ()
+    endif()
 
     find_package(SDL2 REQUIRED)
     find_library(SDL2_IMAGE_LIBRARIES SDL2_image REQUIRED)
@@ -254,7 +265,7 @@ if (PLATFORM_MOBILE)
     add_definitions(-DOPTION_GLES)
     add_definitions(-DOPTION_SDL)
     #add_definitions(-DOPTION_GYRO)
-    add_definitions(-DMATHC_NO_PRINT_COLOR)
+    add_definitions(-DM_NO_PRINT_COLOR)
     add_definitions(-DS_LOG_DO_NOT_USE_COLOR)
     add_definitions(-DS_LOG_DO_NOT_PRINT_TIME_FILE)
 

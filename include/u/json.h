@@ -4,6 +4,7 @@
 // load and save json files from strings or files
 
 #include "s/s.h"
+#include "s/string.h"
 
 typedef struct uJson uJson;
 

@@ -2,7 +2,7 @@
 
 #include "e/simple.h"
 #include "s/s_full.h"
-#include "mathc/sca/float.h"
+#include "m/sca/float.h"
 
 #define OUT_SMOOTH_ALPHA 0.025
 

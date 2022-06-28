@@ -1,5 +1,5 @@
 #include <SDL2/SDL_image.h>
-#include "mathc/sca/int.h"
+#include "m/sca/int.h"
 #include "u/image.h"
 
 

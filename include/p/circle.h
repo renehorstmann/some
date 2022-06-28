@@ -9,7 +9,7 @@
 //
 
 #include "core.h"
-#include "mathc/types/float.h"
+#include "m/types/float.h"
 
 
 typedef struct {

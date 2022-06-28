@@ -3,7 +3,7 @@
 
 #include "s/s.h"
 #include "s/allocator.h"
-#include "mathc/sca/float.h"
+#include "m/sca/float.h"
 #include "color.h"
 
 

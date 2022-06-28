@@ -1,5 +1,5 @@
-#include "mathc/float.h"
-#include "mathc/bool.h"
+#include "m/float.h"
+#include "m/bool.h"
 #include "e/window.h"
 #include "e/gui_nk.h"
 #include "e/gui.h"
@@ -27,6 +27,7 @@ typedef struct {
 typedef struct {
     ePointerEventFn cb;
     void *ud;
+    bool hover;
 } RegPointer;
 
 typedef struct {
@@ -148,14 +149,19 @@ static ePointer_s pointer_finger(enum ePointerAction action, float x, float y, S
 
 static void emit_pointer_events(ePointer_s action) {
     if (L.reg_pointer_e_vip.cb) {
+        if(action.action == E_POINTER_HOVER && !L.reg_pointer_e_vip.hover)
+            return;
         L.reg_pointer_e_vip.cb(action, L.reg_pointer_e_vip.ud);
         return;
     }
 
     // copy to be safe to unregister in an event
     RegPointerArray array = L.reg_pointer;
-    for (int i = 0; i < array.size; i++)
+    for (int i = 0; i < array.size; i++) {
+        if(action.action == E_POINTER_HOVER && !array.array[i].hover)
+            continue;
         array.array[i].cb(action, array.array[i].ud);
+    }
 }
 
 static void emit_wheel_events(bool up) {
@@ -203,7 +209,7 @@ static void input_handle_pointer_mouse(SDL_Event *event) {
             break;
         case SDL_MOUSEMOTION:
             emit_pointer_events(pointer_mouse(
-                    pressed? E_POINTER_MOVE : E_POINTER_HOVER, 
+                    pressed? E_POINTER_MOVE : E_POINTER_HOVER,
                     0));
             break;
         case SDL_MOUSEBUTTONUP:
@@ -359,7 +365,12 @@ void e_input_update() {
 
 void e_input_register_pointer_event(ePointerEventFn event, void *user_data) {
     s_assume(L.reg_pointer.size < E_MAX_POINTER_EVENTS, "too many registered pointer events");
-    L.reg_pointer.array[L.reg_pointer.size++] = (RegPointer) {event, user_data};
+    L.reg_pointer.array[L.reg_pointer.size++] = (RegPointer) {event, user_data, false};
+}
+
+void e_input_register_pointer_event_with_hovering(ePointerEventFn event, void *user_data) {
+    s_assume(L.reg_pointer.size < E_MAX_POINTER_EVENTS, "too many registered pointer events");
+    L.reg_pointer.array[L.reg_pointer.size++] = (RegPointer) {event, user_data, true};
 }
 
 void e_input_unregister_pointer_event(ePointerEventFn event_to_unregister) {
@@ -383,6 +394,13 @@ void e_input_unregister_pointer_event(ePointerEventFn event_to_unregister) {
 void e_input_set_vip_pointer_event(ePointerEventFn event, void *user_data) {
     L.reg_pointer_e_vip.cb = event;
     L.reg_pointer_e_vip.ud = user_data;
+    L.reg_pointer_e_vip.hover = false;
+}
+
+void e_input_set_vip_pointer_event_with_hovering(ePointerEventFn event, void *user_data) {
+    L.reg_pointer_e_vip.cb = event;
+    L.reg_pointer_e_vip.ud = user_data;
+    L.reg_pointer_e_vip.hover = true;
 }
 
 void e_input_register_wheel_event(eWheelEventFn event, void *user_data) {

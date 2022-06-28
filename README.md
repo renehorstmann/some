@@ -255,9 +255,10 @@ Utilities like setting up a 2D pose or loading an image
 
 Physics (may be expanded later)
 
-### mathc
+### m
 
 glsl like math library for C, see [Mathc](https://github.com/renehorstmann/Mathc)
+Renamed to namespace `m`
 
 ### s
 

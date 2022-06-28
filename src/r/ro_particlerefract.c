@@ -1,5 +1,5 @@
-#include "mathc/float.h"
-#include "mathc/sca/int.h"
+#include "m/float.h"
+#include "m/sca/int.h"
 #include "r/render.h"
 #include "r/program.h"
 #include "r/rect.h"

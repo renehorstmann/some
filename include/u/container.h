@@ -7,7 +7,7 @@
 
 #include "s/s.h"
 #include "s/allocator.h"
-#include "mathc/types/float.h"
+#include "m/types/float.h"
 
 
 #define U_CONTAINER_MAX_COLS_ROWS 128

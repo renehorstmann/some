@@ -21,7 +21,7 @@
 #include <SDL2/SDL_opengl.h>
 #endif
 
-#include "mathc/types/float.h"
+#include "m/types/float.h"
 
 
 #ifdef PLATFORM_EMSCRIPTEN

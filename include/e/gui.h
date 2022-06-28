@@ -7,7 +7,7 @@
 // window functions dont need the eGui handle
 //
 
-#include "mathc/types/float.h"
+#include "m/types/float.h"
 
 struct nk_context;
 

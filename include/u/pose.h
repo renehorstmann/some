@@ -36,7 +36,7 @@
 // these functions are usually faster
 
 #include "s/s.h"
-#include "mathc/mat/mat4.h"
+#include "m/mat/mat4.h"
 
 // new pose without a rotation
 static mat4 u_pose_new(float x, float y, float w, float h) {

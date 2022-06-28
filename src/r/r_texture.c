@@ -1,5 +1,5 @@
 #include <SDL2/SDL_image.h>
-#include "mathc/uchar.h"
+#include "m/uchar.h"
 #include "r/render.h"
 #include "r/texture.h"
 

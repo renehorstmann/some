@@ -2,15 +2,15 @@
 #define U_COLOR_H
 
 //
-// pixel color based on mathc ucvec4 (uchar)
+// pixel color based on m ucvec4 (uchar)
 //
 
 #include "s/s.h"
-#include "mathc/vec/ucvec4.h"
-#include "mathc/vec/vec4.h"
+#include "m/vec/ucvec4.h"
+#include "m/vec/vec4.h"
 
 // a color is a unsigned char vector with rgba elements
-// access like other mathc types
+// access like other m types
 typedef ucvec4 uColor_s;
 
 // returns a == b

@@ -6,6 +6,7 @@
 //
 
 #include "core.h"
+#include "s/string.h"
 
 
 #define E_IO_SAVESTATE_MAX_FILENAME_LENGTH 128

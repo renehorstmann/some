@@ -1,8 +1,8 @@
 #include "e/window.h"
 #include "e/gui.h"
 #include "u/pose.h"
-#include "mathc/utils/camera.h"
-#include "mathc/sca/float.h"
+#include "m/utils/camera.h"
+#include "m/sca/float.h"
 #include "camera.h"
 
 
@@ -37,6 +37,7 @@ void camera_update() {
     }
 #endif
 
+    // set nuklear scale for the debug gui windows
     e_gui.scale = camera.RO.scale/3;
 
     float width_2 = wnd_width / (2 * camera.RO.scale);
