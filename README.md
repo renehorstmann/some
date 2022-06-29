@@ -1,9 +1,14 @@
 # some
 
-Sdl2 OpenGL Mini Engine.
+**Sdl2 OpenGL Mini Engine.**
 
-A small C game engine, that can be compiled to Desktop, Android, Web, ... Using SDL2, OpenGL3.3, OpenGLES3.0, WebGL2.0
-to be platform independent.
+A small C game engine, that can be compiled to Desktop, Android, Web, ... 
+
+Using SDL2, OpenGL3.3, OpenGLES3.0, WebGL2.0 to be platform independent.
+
+some's main goal is to create apps and games that run directly on the different platforms. 
+
+**Also as a web version on smartphones!** 
 
 ## Getting started
 
@@ -16,7 +21,7 @@ See [main.c](src/main.c)
 ## Tutorial
 
 In the repository [some_examples](https://github.com/renehorstmann/some_examples) 
-are some examples and modules to use for the some framework, like buttons, textinput, etc.
+are some examples and modules to use for the some framework, like buttons, textinput, colorpicker, etc.
 The examples are well documented and easy to follow.
 
 ## Example Apps
@@ -29,25 +34,19 @@ The examples are well documented and easy to follow.
 - [Tilec](https://github.com/renehorstmann/Tilec): A tile map editor (deprecated...).
 
 
-## Install for compiling on Desktop
+
+## Install and run
 Options:
-- Ubuntu
-- Windows
-  - WSL Ubuntu
-  - Msys2 - Mingw-w64
-  - MSVC (Microsoft C++ Compiler from Visual Studio)
+- Desktop
+  - [Ubuntu](#S-install_ubuntu)
+  - [Windows 11 WSL Ubuntu](#S-install_windows_wsl)
+  - [Windows Msys2](#S-install_windows_msys2)
+  - [Windows MSVC](#S-install_windows_msvc)
+- [Android](#S-install_android)
+- [Web](#S-install_web)
 
-### Install WSL (Windows Subsystem Linux) Ubuntu on Windows 11:
-With WSL you can use all the awesome unix tools in Windows with a Ubuntu terminal.
-But you can not distribute your compiled programs, the users have to have WSL installed.
-See Windows MSYS2 or MSVC below, if you want to create an .exe to distribute for Windows
-
-- run Powershell as admin
-```
-wsl --install
-```
-
-### In Ubuntu or WSL Ubuntu
+### <a name="S-install_ubuntu"></a>Install for Ubuntu or WSL Ubuntu
+- Install the needed libraries in the shell:
 ```sh
 # update the system
 sudo apt update && sudo apt upgrade
@@ -61,8 +60,26 @@ sudo apt install libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev l
 sudo apt install libcurl4-openssl-dev
 ```
 
-### Windows MSYS2
-- install https://www.msys2.org/
+- [now run the hello world demo](#S-run_hello_world)
+
+
+### <a name="S-install_windows_wsl"></a>Install Windows 11 WSL (Windows Subsystem Linux) Ubuntu
+With WSL you can use all the awesome unix tools in Windows with an Ubuntu terminal.
+But you can not distribute your compiled programs, the users have to have WSL installed.
+See Windows MSYS2 or MSVC below, if you want to create an .exe to distribute for Windows
+
+- run Powershell as admin
+```
+wsl --install
+```
+- see [Ubuntu](#S-install_ubuntu) with the Windows Ubuntu shell
+
+
+### <a name="S-install_windows_msys2"></a>Install Windows MSYS2
+MSYS2 is a package manager for Windows, that can install the compiler Mingw-w64, 
+which is a port of the GCC-Compiler with wrapper POSIX headers for Windows.
+
+- install [MSYS2](https://www.msys2.org/)
 - update the package manager (as the site says: `pacman -Syu` ; restart ; `pacman -Su`)
 - In "MSYS2 MSYS" Terminal
 ```sh
@@ -84,35 +101,16 @@ export PATH=$PATH:/c/msys64/mingw64/x86_64-w64-mingw32/lib
 - Close the terminal
 - If you use an IDE, you may need to add the PATH to ...mingw32/lib (see above) into the windows system variables
 
-### Windows MSVC
-> TODO: validate
-- install MSVC [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
-- install a [git client](https://git-scm.com/download/win)
-- install [cmake](https://cmake.org/download/) (add to system PATH)
-- install [vcpkg](https://vcpkg.io/en/getting-started.html)
-- In PowerShell Terminal
-```sh
-# install sdl stuff
-# 	net, ttf are optional, see OPTION_SOCKET and OPTION_TTF
-#	mixer is not part of the some engine, but useful
-vcpgk install sdl2 sdl2-image sdl2-net sdl2-ttf sdl2-mixer
-# install curl (optional) for OPTION_FETCH 
-vcpgk install curl
-```
+- [now run the hello world demo](#S-run_hello_world)
 
-### Run Hello World
-In Ubuntu, WSL Ubuntu, "MSYS2 MinGW x64", Powershell Terminal:
+
+### <a name="S-run_hello_world"></a>Run Hello World
+In Ubuntu, WSL Ubuntu or "MSYS2 MinGW x64" Terminal:
 ```sh
 # clone the repo
 git clone https://github.com/renehorstmann/some
 # mv and make a build dir
-cd some 
-mkdir build
-cd build
-#
-# Note: If your platform is MSVC, you have to include the vcpkg file:
-# cmake .. -DCMAKE_TOOLCHAIN_FILE=C:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake
-#
+cd some && mkdir build && cd build
 # run cmake
 cmake .. # [-DCMAKE_BUILD_TYPE=Release] for release mode
 # compile
@@ -121,8 +119,74 @@ cmake --build . # [-- -j16] to compile with 16 threads...
 ./some
 ```
 
-## Install, compile and run directly on Android
-- I used the full/paid version of CxxDroid (from Google Play), other c compilers with SDL support may work, too
+### <a name="S-install_windows_msvc"></a>Install Windows MSVC
+MSVC is the Microsoft C(++) Compiler, that comes with Visual Studio.
+The compiler can also be installed without the IDE.
+
+- install MSVC [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
+  - or [Visual Studio](https://visualstudio.microsoft.com/de/downloads/) if you want that IDE
+- install a [git client](https://git-scm.com/download/win)
+- install [cmake](https://cmake.org/download/) (add to system PATH)
+- install [vcpkg](https://vcpkg.io/en/getting-started.html)
+    - we alredy installed the MSVC compiler, so no need to install Visual Studio, if you dont want that IDE
+
+    - To install vcpk in PowerShell:
+  ```sh
+  cd C:\
+  mkdir dev
+  cd dev
+  git clone https://github.com/Microsoft/vcpkg.git
+  .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+  cd vcpkg
+  ```
+- Install packages in Powershell
+```sh
+cd C:\dev\vcpkg
+# install sdl stuff
+# 	net, ttf are optional, see OPTION_SOCKET and OPTION_TTF
+#	mixer is not part of the some engine, but useful
+.\vcpkg install glew:x64-windows sdl2:x64-windows sdl2-image:x64-windows sdl2-net:x64-windows sdl2-ttf:x64-windows sdl2-mixer:x64-windows
+# install curl (optional) for OPTION_FETCH 
+.\vcpkg install curl:x64-windows
+```
+
+- [now run the hello world demo with MSVC](#S-run_msvc_hello_world)
+
+### <a name="S-run_msvc_hello_world"></a>Run Hello World with MSVC
+In the Powershell Terminal:
+```sh
+# clone the repo
+git clone https://github.com/renehorstmann/some
+# mv and make a build dir
+cd some 
+mkdir build
+cd build
+#
+# run cmake
+# Note: you may have to edit the toolchain path for vcpkg
+cmake .. -DCMAKE_TOOLCHAIN_FILE=C:/dev/vcpkg/scripts/buildsystems/vcpkg.cmake # [-DCMAKE_BUILD_TYPE=Release] for release mode
+# compile
+cmake --build .
+# run
+.\Debug\some.exe
+```
+
+
+### <a name="S-install_android"></a>Install, compile and run directly on Android
+Useful to test and code on the go. 
+
+In fact, most of some's code, my games and apps were developed that way!
+
+I recommend using a good Touchscreen-Keyboard-App with the right settings.
+In my case its the Samsung default keyboard (Samsung Galaxy Note 8, btw.).
+My recommended settings for the Samsung Keyboard:
+- Smart typing / Keyboard swipe controls: **Cursor controls**
+	- so its easy to navigate to the code with swipes instead of tipping on the line and position you want to editor
+- Keyboard layout and feedback / Keyboard layout: **Number keys** checked; **Alternative characters** checked
+	- so you can insert glyphs with a long press on the key, instead of switching to the alt. chars. site
+
+I used the full/paid version of [CxxDroid](https://play.google.com/store/apps/details?id=ru.iiec.cxxdroid) (from Google Play), other c compilers with SDL support may work, too
+
 - Install F-Droid: https://f-droid.org/
 - In F-Droid, install Termux (https://termux.com/)
 - In Termux, clone the project
@@ -131,7 +195,7 @@ cmake --build . # [-- -j16] to compile with 16 threads...
 pkg upgrade
 # install basic stuff
 pkg install git
-# get access to the local file system of your android device from termux
+# get access to the local file system of your android device from termux (needs the storage permission)
 termux-setup-storage
 # cd to your file system
 cd ~/storage/shared
@@ -151,10 +215,14 @@ git clone https://github.com/renehorstmann/some
 - You should now be able to compile and run directly on Android
 
 
-## Compiling for Web
-Using Emscripten https://emscripten.org/
+### <a name="S-install_web"></a>Compiling for Web
+some compiles fine as website with wasm and webgl, that can also be used on mobile browsers.
 
-Tested under Ubuntu and WSL Ubuntu.
+Using the [Emscripten compiler](https://emscripten.org/docs/getting_started/downloads.html)
+
+Tested under Ubuntu and WSL Ubuntu (may work on Windows too, if the compile calls are changed).
+
+
 You should have already cloned the project and `cd` to that dir:
 
 - Create a sub directory to compile the website
