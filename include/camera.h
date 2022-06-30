@@ -2,7 +2,7 @@
 #define SOME_CAMERA_H
 
 //
-// PixelPerfect canvas camera with view matrix.
+// PixelPerfect camera with view matrix.
 // to control the camera position and size
 //
 
@@ -54,7 +54,7 @@ struct Camera_Globals {
 extern struct Camera_Globals camera;
 
 
-// creates a new camera
+// initializes camera
 void camera_init();
 
 // updates the camera matrices

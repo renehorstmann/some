@@ -70,8 +70,8 @@ void camera_update() {
 void camera_set_pos(float x, float y) {
 #ifdef PIXEL_PERFECT
     // reset x and y to match a real pixel
-    x = floorf(x * camera.RO.scale) / camera.RO.scale;
-    y = floorf(y * camera.RO.scale) / camera.RO.scale;
+    x = sca_floor(x * camera.RO.scale) / camera.RO.scale;
+    y = sca_floor(y * camera.RO.scale) / camera.RO.scale;
 #endif
     u_pose_set_xy(&camera.matrices.v, x, y);
 }
