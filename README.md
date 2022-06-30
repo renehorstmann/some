@@ -128,7 +128,7 @@ The compiler can also be installed without the IDE.
 - install a [git client](https://git-scm.com/download/win)
 - install [cmake](https://cmake.org/download/) (add to system PATH)
 - install [vcpkg](https://vcpkg.io/en/getting-started.html)
-    - we alredy installed the MSVC compiler, so no need to install Visual Studio, if you dont want that IDE
+    - we already installed the MSVC compiler, so no need to install Visual Studio, if you dont want that IDE
 
     - To install vcpk in PowerShell:
   ```sh
