@@ -170,7 +170,7 @@ cmake --build .
 # run
 .\Debug\some.exe
 ```
-
+> An IDE may also need the cmake option for the toolchain file
 
 ### <a name="S-install_android"></a>Install, compile and run directly on Android
 Useful to test and code on the go. 
