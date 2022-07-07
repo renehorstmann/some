@@ -123,8 +123,9 @@ cmake --build . # [-- -j16] to compile with 16 threads...
 MSVC is the Microsoft C(++) Compiler, that comes with Visual Studio.
 The compiler can also be installed without the IDE.
 
-- install MSVC [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
-  - or [Visual Studio](https://visualstudio.microsoft.com/de/downloads/) if you want that IDE
+- install MSVC [Buildtools](https://visualstudio.microsoft.com/de/downloads/)
+  - scroll down to "Tools for Visual Studio"
+  - or install Visual Studio IDE directly if you want to use it
 - install a [git client](https://git-scm.com/download/win)
 - install [cmake](https://cmake.org/download/) (add to system PATH)
 - install [vcpkg](https://vcpkg.io/en/getting-started.html)
