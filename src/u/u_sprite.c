@@ -20,7 +20,7 @@ static void reorder(ucvec4 *dst, const ucvec4 *src, ivec2 sprite_size, ivec2 spr
 }
 
 
-// grid to vertical
+// grid from vertical
 static void reorder_back(ucvec4 *dst, const ucvec4 *src, ivec2 sprite_size, ivec2 sprites) {
 
     for (int sr = 0; sr < sprites.y; sr++) {
@@ -206,10 +206,10 @@ uSprite u_sprite_new_clone_insert_col_a(uSprite from, int col_behind, sAllocator
         }
         memset(u_sprite_sprite(self, col_behind+1, r), 0, 
                 u_sprite_sprite_data_size(from));
-        if(col_behind<from.cols-1) 
+       if(col_behind<from.cols-1) 
             memcpy(u_sprite_sprite(self, col_behind+2, r),
                     u_sprite_sprite(from, col_behind+1, r),
-                    u_sprite_sprite_data_size(from) * (from.rows-col_behind-1));
+                    u_sprite_sprite_data_size(from) * (from.cols-col_behind-1));
     }
     return self;
 }
@@ -270,7 +270,7 @@ uSprite u_sprite_new_reorder_from_image_a(int sprite_cols, uImage from, sAllocat
     }
     uSprite self = u_sprite_new_empty_a(from.cols/sprite_cols, from.rows, sprite_cols, from.layers, a);
     reorder(self.img.data, from.data, 
-            (ivec2) {{from.cols, from.rows}},
+            (ivec2) {{self.img.cols, self.img.rows}},
             (ivec2) {{self.cols, self.rows}});
     return self;
 }
@@ -298,9 +298,9 @@ void u_sprite_kill(uSprite *self) {
 uImage u_sprite_reorder_to_new_image_a(uSprite self, sAllocator_i a) {
     if(!u_sprite_valid(self))
         return u_image_new_invalid_a(a);
-    uImage img = u_image_new_empty_a(self.img.cols, self.img.rows, self.rows, a);
+    uImage img = u_image_new_empty_a(self.img.cols*self.cols, self.img.rows, self.rows, a);
     reorder_back(img.data, self.img.data, 
-            (ivec2) {{img.cols, img.rows}},
+            (ivec2) {{self.img.cols, self.img.rows}},
             (ivec2) {{self.cols, self.rows}});
     return img;
 }
