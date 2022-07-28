@@ -42,6 +42,7 @@ Options:
   - [Windows 11 WSL Ubuntu](#S-install_windows_wsl)
   - [Windows Msys2](#S-install_windows_msys2)
   - [Windows MSVC](#S-install_windows_msvc)
+- [In an Android App](#S-install_cxxdroid)
 - [Android](#S-install_android)
 - [Web](#S-install_web)
 
@@ -174,7 +175,7 @@ cmake --build .
 ```
 > An IDE may also need the cmake option for the toolchain file
 
-### <a name="S-install_android"></a>Install, compile and run directly on Android
+### <a name="S-install_cxxdroid"></a>Install, compile and run directly on Android
 Useful to test and code on the go. 
 
 In fact, most of some's code, my games and apps were developed that way!
@@ -216,6 +217,8 @@ git clone https://github.com/renehorstmann/some
 - Open a file from some in CxxDroid
 - You should now be able to compile and run directly on Android
 
+### <a name="S-install_android"></a>Android App with AndroidStudio
+Have a look at the [some_android](https://github.com/renehorstmann/some_android) AndroidStudio project generator template.
 
 ### <a name="S-install_web"></a>Compiling for Web
 some compiles fine as website with wasm and webgl, that can also be used on mobile browsers.
