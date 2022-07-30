@@ -23,7 +23,7 @@ static void init() {
 }
 
 
-// this functions is called either each frame or at a specific update/s time
+// this function is called either each frame or at a specific update/s time
 static void update(float dtime) {
     // simulate
     camera_update();
