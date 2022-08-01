@@ -353,3 +353,4 @@ This project is licensed under the MIT License - see the someLICENSE file for de
     - [Emscripten](emscripten.org) (MIT License)
     - [nuklear](https://github.com/Immediate-Mode-UI/Nuklear) for debug gui windows (MIT License)
     - [curl](https://curl.se/docs/copyright.html) (MIT like License)
+    - [sfd](https://github.com/rxi/sfd) for simple file dialogs (MIT License)

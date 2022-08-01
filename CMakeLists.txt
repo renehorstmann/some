@@ -126,6 +126,7 @@ if (PLATFORM_MINGW)
             SDL2main
             SDL2
             SDL2_image
+            comdlg32        # e_ext_sfd
             ${OPENGL_LIB}
             ${GLEW_LIB}
             ${GLU_LIB}
@@ -164,6 +165,7 @@ if (PLATFORM_MSVC)
             SDL2::SDL2main
             SDL2::SDL2_image
             GLEW::GLEW
+            comdlg32        # e_ext_sfd
             )
 
     if (USE_SDL_MIXER)
