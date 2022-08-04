@@ -1,8 +1,6 @@
 #ifndef S_ERROR_H
 #define S_ERROR_H
 
-#include "export.h"
-
 //
 // error management
 //      used for files and sockets for example.
