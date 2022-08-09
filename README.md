@@ -31,7 +31,6 @@ The examples are well documented and easy to follow.
 - [Santas Day Off](https://github.com/renehorstmann/SantasDayOff): A christmas mini game.
 - [JumpHare](https://github.com/renehorstmann/JumpHare): Platformer game.
 - [Tea](https://github.com/renehorstmann/tea): A simple stupid tea timer.
-- [Tilec](https://github.com/renehorstmann/Tilec): A tile map editor (deprecated...).
 
 
 
