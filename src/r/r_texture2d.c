@@ -2,22 +2,27 @@
 #include "r/render.h"
 #include "r/texture2d.h"
 
+bool r_texture2d_size_in_limits(int image_cols, int image_rows) {
+    s_assume(image_cols > 0 && image_rows > 0, "texture2d size invalid");
+    return image_cols <= r_render.limits.max_texture_size
+            && image_rows <= r_render.limits.max_texture_size;
+}
 
 rTexture2D r_texture2d_new(int image_cols, int image_rows, const void *opt_buffer) {
-    r_render_error_check("r_texture2d_newBEGIN");
+    if(!r_texture2d_size_in_limits(image_cols, image_rows))
+        return r_texture2d_new_invalid();
 
-    s_assume(image_cols > 0 && image_rows > 0, "texture2d size invalid");
+    r_render_error_check("r_texture2d_newBEGIN");
 
     rTexture2D self = {0, {{image_cols, image_rows}}};
 
 
     glGenTextures(1, &self.tex);
     glBindTexture(GL_TEXTURE_2D, self.tex);
-
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                  self.size.x, self.size.y,
                  0, GL_RGBA, GL_UNSIGNED_BYTE, opt_buffer);
-
+    
     if(r_render.init_textures_as_filtered_linear) 
         r_texture2d_filter_linear(self);
     else
