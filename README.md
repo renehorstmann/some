@@ -24,6 +24,13 @@ In the repository [some_examples](https://github.com/renehorstmann/some_examples
 are some examples and modules to use for the some framework, like buttons, textinput, colorpicker, etc.
 The examples are well documented and easy to follow.
 
+## Sponsoring
+You want to support me?
+> Buy Pixelc Premium on [Google Play](https://play.google.com/store/apps/details?id=de.horsimann.pixelcpremium).
+Its just like [Pixelc](https://github.com/renehorstmann/Pixelc), but with a golden background
+
+> Buy coins in EXTREME COIN STACKER on  [Google Play](https://play.google.com/store/apps/details?id=de.horsimann.coinstacker).
+
 ## Example Apps
 
 - [Pixelc](https://github.com/renehorstmann/Pixelc): A pixel art editor.
