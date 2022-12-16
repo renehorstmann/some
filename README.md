@@ -44,15 +44,15 @@ Its just like [Pixelc](https://github.com/renehorstmann/Pixelc), but with a dark
 ## Install and run
 Options:
 - Desktop
-  - [Ubuntu](#S-install_ubuntu)
-  - [Windows 11 WSL Ubuntu](#S-install_windows_wsl)
-  - [Windows Msys2](#S-install_windows_msys2)
-  - [Windows MSVC](#S-install_windows_msvc)
-- [In an Android App](#S-install_cxxdroid)
-- [Android](#S-install_android)
-- [Web](#S-install_web)
+  - [Ubuntu](#install-for-ubuntu-or-wsl-ubuntu)
+  - [Windows 11 WSL Ubuntu](#install-for-windows-11-wsl-windows-subsystem-linux-ubuntu)
+  - [Windows Msys2](#install-windows-msys2)
+  - [Windows MSVC](#install-windows-msvc)
+- [In an Android App](#install-compile-and-run-directly-on-android)
+- [To an Android App](#android-app-with-androidstudio)
+- [Web](#compiling-for-web)
 
-### <a name="S-install_ubuntu"></a>Install for Ubuntu or WSL Ubuntu
+### Install for Ubuntu or WSL Ubuntu
 - Install the needed libraries in the shell:
 ```sh
 # update the system
@@ -67,10 +67,10 @@ sudo apt install libsdl2-dev libsdl2-image-dev libsdl2-net-dev libsdl2-ttf-dev l
 sudo apt install libcurl4-openssl-dev
 ```
 
-- [now run the hello world demo](#S-run_hello_world)
+- [now run the hello world demo](#run-hello-world)
 
 
-### <a name="S-install_windows_wsl"></a>Install Windows 11 WSL (Windows Subsystem Linux) Ubuntu
+### Install Windows 11 WSL (Windows Subsystem Linux) Ubuntu
 With WSL you can use all the awesome unix tools in Windows with an Ubuntu terminal.
 But you can not distribute your compiled programs, the users have to have WSL installed.
 See Windows MSYS2 or MSVC below, if you want to create an .exe to distribute for Windows
@@ -79,10 +79,10 @@ See Windows MSYS2 or MSVC below, if you want to create an .exe to distribute for
 ```
 wsl --install
 ```
-- see [Ubuntu](#S-install_ubuntu) with the Windows Ubuntu shell
+- see [Ubuntu](#install-for-ubuntu-or-wsl-ubuntu) with the Windows Ubuntu shell
 
 
-### <a name="S-install_windows_msys2"></a>Install Windows MSYS2
+### Install Windows MSYS2
 MSYS2 is a package manager for Windows, that can install the compiler Mingw-w64, 
 which is a port of the GCC-Compiler with wrapper POSIX headers for Windows.
 
@@ -108,10 +108,10 @@ export PATH=$PATH:/c/msys64/mingw64/x86_64-w64-mingw32/lib
 - Close the terminal
 - If you use an IDE, you may need to add the PATH to ...mingw32/lib (see above) into the windows system variables
 
-- [now run the hello world demo](#S-run_hello_world)
+- [now run the hello world demo](#run-hello-world)
 
 
-### <a name="S-run_hello_world"></a>Run Hello World
+### Run Hello World
 In Ubuntu, WSL Ubuntu or "MSYS2 MinGW x64" Terminal:
 ```sh
 # clone the repo
@@ -126,7 +126,7 @@ cmake --build . # [-- -j16] to compile with 16 threads...
 ./some
 ```
 
-### <a name="S-install_windows_msvc"></a>Install Windows MSVC
+### Install Windows MSVC
 MSVC is the Microsoft C(++) Compiler, that comes with Visual Studio.
 The compiler can also be installed without the IDE.
 
@@ -159,9 +159,9 @@ cd C:\dev\vcpkg
 .\vcpkg install curl:x64-windows
 ```
 
-- [now run the hello world demo with MSVC](#S-run_msvc_hello_world)
+- [now run the hello world demo with MSVC](#run-hello-world-with-msvc)
 
-### <a name="S-run_msvc_hello_world"></a>Run Hello World with MSVC
+### Run Hello World with MSVC
 In the Powershell Terminal:
 ```sh
 # clone the repo
@@ -181,7 +181,7 @@ cmake --build .
 ```
 > An IDE may also need the cmake option for the toolchain file
 
-### <a name="S-install_cxxdroid"></a>Install, compile and run directly on Android
+### Install, compile and run directly on Android
 Useful to test and code on the go. 
 
 In fact, most of some's code, my games and apps were developed that way!
@@ -223,10 +223,10 @@ git clone https://github.com/renehorstmann/some
 - Open a file from some in CxxDroid
 - You should now be able to compile and run directly on Android
 
-### <a name="S-install_android"></a>Android App with AndroidStudio
+### Android App with AndroidStudio
 Have a look at the [some_android](https://github.com/renehorstmann/some_android) AndroidStudio project generator template.
 
-### <a name="S-install_web"></a>Compiling for Web
+### Compiling for Web
 some compiles fine as website with wasm and webgl, that can also be used on mobile browsers.
 
 Using the [Emscripten compiler](https://emscripten.org/docs/getting_started/downloads.html)
