@@ -1,5 +1,6 @@
 #include "e/window.h"
 #include "e/gui.h"
+#include "r/render.h"
 #include "u/pose.h"
 #include "m/utils/camera.h"
 #include "m/sca/float.h"
@@ -39,6 +40,10 @@ void camera_update() {
 
     // set nuklear scale for the debug gui windows
     e_gui.scale = camera.RO.scale/3;
+    
+    // set the render scale to fix render issues
+    r_render.camera_scale = camera.RO.scale;
+    
 
     float width_2 = wnd_width / (2 * camera.RO.scale);
     float height_2 = wnd_height / (2 * camera.RO.scale);
@@ -68,12 +73,8 @@ void camera_update() {
 
 
 void camera_set_pos(float x, float y) {
-#ifdef PIXEL_PERFECT
-    // reset x and y to match a real pixel
-    x = sca_floor(x * camera.RO.scale) / camera.RO.scale;
-    y = sca_floor(y * camera.RO.scale) / camera.RO.scale;
-#endif
-    u_pose_set_xy(&camera.matrices.v, x, y);
+    vec2 pos = camera_pos_on_real_pixel(x, y);
+    u_pose_set_xy(&camera.matrices.v, pos.x, pos.y);
 }
 
 void camera_set_size(float size) {
@@ -82,4 +83,10 @@ void camera_set_size(float size) {
 
 void camera_set_angle(float alpha) {
     u_pose_set_angle(&camera.matrices.v, alpha);
+}
+
+vec2 camera_pos_on_real_pixel(float x, float y) {
+    x = (float) ((int) (x * camera.RO.scale)) / camera.RO.scale;
+    y = (float) ((int) (y * camera.RO.scale)) / camera.RO.scale;
+    return (vec2) {{x, y}};
 }
