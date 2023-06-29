@@ -133,6 +133,7 @@ static void resume_wnd() {
     // delta_time should not be near infinity...
     L.last_time_ms = SDL_GetTicks();
     L.pause = false;
+    s_log_trace("e_window: resume callbacks finished");
 }
 
 
@@ -220,6 +221,10 @@ void e_window_init(const char *title, eWindowStartUpOptions_s *opt_options) {
         }
 #endif
 
+#ifdef OPTION_GAMEPAD
+    SDL_SetHintWithPriority(SDL_HINT_ACCELEROMETER_AS_JOYSTICK, "0", SDL_HINT_OVERRIDE);
+#endif
+
     // setup OpenGL usage
     s_log("OpenGL minimal version: %d.%d", E_GL_MAJOR_VERSION, E_GL_MINOR_VERSION);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, E_GL_MAJOR_VERSION);
@@ -283,8 +288,6 @@ void e_window_kill() {
     emscripten_cancel_main_loop();
     EM_ASM(set_error_img(););
 #endif
-
-    SDL_DestroyMutex(L.run_once_lock);
 }
 
 void e_window_main_loop(e_window_main_loop_fn main_loop, void *user_data) {
@@ -304,6 +307,8 @@ void e_window_main_loop(e_window_main_loop_fn main_loop, void *user_data) {
 #endif
     }
 #endif
+
+    SDL_DestroyMutex(L.run_once_lock);
 
 
 #ifdef OPTION_SANITIZER
