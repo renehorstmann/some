@@ -11,6 +11,14 @@ static struct {
 } L;
 
 
+static void pointer_event(ePointer_s pointer, void *user_data) {
+    // only support single touch (first finger and cursor have id==0)
+    if (pointer.id != 0)
+        return;
+
+    printf("pos at: %f:%f\n", pointer.pos.x, pointer.pos.y);
+}
+
 // this function will be called at the start of the app
 static void init() {
     s_log("init");
@@ -20,6 +28,8 @@ static void init() {
 
     L.text = ro_text_new_font55(128);
     ro_text_set_text(&L.text, "Hello World");
+
+    e_input_register_pointer_event(pointer_event, NULL);
 }
 
 
